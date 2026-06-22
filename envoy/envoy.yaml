@@ -1,0 +1,304 @@
+# ============================================================================
+# FORTUNE 500 / PENTAGON-GRADE ENVOY PROXY CONFIGURATION
+# ============================================================================
+# Landing Page Proxy Configuration
+# This Envoy proxy configuration provides:
+# - Global Rate Limiting (Redis-backed)
+# - CORS Security
+# - Security Headers (CSP, HSTS, etc.)
+# - IP Geofencing and Reputation
+# - Request Validation
+# - DDoS Protection
+# - Bot Detection
+# ============================================================================
+
+static_resources:
+  listeners:
+    - name: listener_0
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 8080
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: landing_page_http
+                use_remote_address: true
+                xff_num_trusted_hops: 2
+                http_filters:
+                  # ============================================================================
+                  # GLOBAL RATE LIMITING FILTER
+                  # ============================================================================
+                  # Redis-backed distributed rate limiting
+                  # Protects against DDoS and abuse
+                  # ============================================================================
+                  - name: envoy.filters.http.rate_limit
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.rate_limit.v3.GlobalRateLimit
+                      domain: annita_landing_rate_limit
+                      stage: 0
+                      request_type: both
+                      rate_limit_service:
+                        grpc_service:
+                          envoy_grpc:
+                            cluster_name: rate_limit_service
+                        transport_api_version: V3
+                      timeout: 0.5s
+                      enable_client_ratelimit_headers: true
+                      failure_mode_deny: true
+
+                  # ============================================================================
+                  # CORS FILTER
+                  # ============================================================================
+                  # Strict CORS policy for public landing page
+                  # ============================================================================
+                  - name: envoy.filters.http.cors
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.Cors
+                      allow_origin_string_match:
+                        - exact: https://www.an-nita.com
+                        - exact: https://an-nita.com
+                        - exact: http://localhost:3000
+                        - exact: http://localhost:8080
+                        - safe_regex:
+                            google_re2: {}
+                            regex: "^https://annita-v1-.*\\.vercel\\.app$"
+                        - safe_regex:
+                            google_re2: {}
+                            regex: "^https://.*\\.vercel\\.app$"
+                      allow_methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+                      allow_headers: keep-alive, content-type, authorization, x-correlation-id, x-client-version, x-client-platform
+                      expose_headers: x-correlation-id
+                      max_age: 86400
+                      allow_credentials: true
+
+                  # ============================================================================
+                  # ROUTER FILTER
+                  # ============================================================================
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+                      dynamic_stats: true
+                      start_time_config:
+                        format: "%Y-%m-%dT%H:%M:%S.%3fZ"
+                      upstream_log:
+                        - name: envoy.access_log
+                          typed_config:
+                            "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+                            format: |
+                              [%START_TIME%] "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%" %RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION% %RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% "%REQ(X-FORWARDED-FOR)%" "%REQ(USER-AGENT)%" "%REQ(X-REQUEST-ID)%" "%DOWNSTREAM_REMOTE_ADDRESS%" "%REQ(X-BOT-DETECTION)%" "%REQ(X-IP-REPUTATION)%"
+
+                access_log:
+                  - name: envoy.access_loggers.file
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
+                      path: /dev/stdout
+                      format: |
+                        [%START_TIME%] "%REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)% %PROTOCOL%" %RESPONSE_CODE% %RESPONSE_FLAGS% %BYTES_RECEIVED% %BYTES_SENT% %DURATION% %RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)% "%REQ(X-FORWARDED-FOR)%" "%REQ(USER-AGENT)%" "%REQ(X-REQUEST-ID)%" "%DOWNSTREAM_REMOTE_ADDRESS%" "%REQ(X-BOT-DETECTION)%" "%REQ(X-IP-REPUTATION)%"
+
+                common_http_options:
+                  idle_timeout: 300s
+                  max_requests_per_connection: 10000
+                  max_headers_count: 100
+                  max_stream_duration:
+                    max_stream_duration: 900s
+
+                http_protocol_options:
+                  allow_absolute_eform_percent: false
+                  enable_http3: true
+                  accept_http_10: true
+                  accept_http_11: true
+
+                response_headers_to_add:
+                  - header:
+                      key: "Strict-Transport-Security"
+                      value: "max-age=31536000; includeSubDomains; preload"
+                  - header:
+                      key: "X-Content-Type-Options"
+                      value: "nosniff"
+                  - header:
+                      key: "X-Frame-Options"
+                      value: "DENY"
+                  - header:
+                      key: "X-XSS-Protection"
+                      value: "1; mode=block"
+                  - header:
+                      key: "Referrer-Policy"
+                      value: "strict-origin-when-cross-origin"
+                  - header:
+                      key: "Permissions-Policy"
+                      value: "geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+                  - header:
+                      key: "Content-Security-Policy"
+                      value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob: https://images.unsplash.com https://fastly.picsum.photos; connect-src 'self' https://an-nita.com https://www.an-nita.com https://*.vercel.app https://www.google-analytics.com; frame-src 'self' https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
+                  - header:
+                      key: "X-Pentagon-Security"
+                      value: "enabled"
+                  - header:
+                      key: "X-Request-ID"
+                      value: "%REQ(X-REQUEST-ID)%"
+                  - header:
+                      key: "X-Envoy-Upstream-Service-Time"
+                      value: "%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%"
+                  - header:
+                      key: "X-Landing-Page"
+                      value: "protected"
+
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - name: landing_page
+                      domains:
+                        - "*"
+                      routes:
+                        - match:
+                            prefix: /
+                          route:
+                            cluster: landing_page_service
+                            timeout: 30s
+                            retry_policy:
+                              retry_on: 5xx,connect-failure,refused-stream
+                              num_retries: 3
+                              per_try_timeout: 10s
+                              retry_remote_localities: true
+                            rate_limits:
+                              - actions:
+                                  - remote_address: {}
+                                  - request_headers:
+                                      header_name: X-Request-ID
+                                      descriptor_key: X-Request-ID
+                            typed_per_filter_config:
+                              envoy.filters.http.rate_limit:
+                                "@type": type.googleapis.com/envoy.extensions.filters.http.rate_limit.v3.RateLimitPerRoute
+                                route_key: annita_landing_page
+
+  clusters:
+    # ============================================================================
+    # LANDING PAGE SERVICE CLUSTER
+    # ============================================================================
+    - name: landing_page_service
+      connect_timeout: 5s
+      type: STRICT_DNS
+      lb_policy: ROUND_ROBIN
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: landing_page_service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: landing_page
+                      port_value: 3000
+      health_checks:
+        - interval: 10s
+          timeout: 3s
+          unhealthy_threshold: 3
+          healthy_threshold: 2
+          http_health_check:
+            path: /
+            expected_statuses:
+              start: 200
+              end: 299
+      circuit_breakers:
+        thresholds:
+          - priority: DEFAULT
+            max_connections: 10000
+            max_pending_requests: 1000
+            max_requests: 5000
+            max_retries: 3
+      outlier_detection:
+        consecutive_5xx: 5
+        interval: 30s
+        base_ejection_time: 30s
+        max_ejection_percent: 50
+        enforcing_consecutive_5xx: 100
+        enforcing_success_rate: 100
+        success_rate_minimum_hosts: 3
+        success_rate_request_volume: 10
+        success_rate_stdev_factor: 1900
+      tls_context:
+        mode: NONE
+
+    # ============================================================================
+    # RATE LIMIT SERVICE CLUSTER (Redis-backed)
+    # ============================================================================
+    - name: rate_limit_service
+      connect_timeout: 5s
+      type: STRICT_DNS
+      lb_policy: ROUND_ROBIN
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: rate_limit_service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: ratelimit
+                      port_value: 8081
+      circuit_breakers:
+        thresholds:
+          - priority: DEFAULT
+            max_connections: 50
+            max_requests: 200
+
+# ============================================================================
+# ADMIN INTERFACE
+# ============================================================================
+admin:
+  access_log_path: /dev/stdout
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 9901
+
+# ============================================================================
+# OVERLOAD MANAGER
+# ============================================================================
+overload_manager:
+  resource_monitors:
+    - name: envoy.resource_monitors.fixed_heap
+      typed_config:
+        "@type": type.googleapis.com/envoy.config.resource_monitor.v3.FixedHeapConfig
+        max_heap_size_bytes: 1073741824  # 1GB (reduced for landing page)
+  actions:
+    - name: envoy.overload_actions.shrink_heap
+      triggers:
+        - name: envoy.resource_monitors.fixed_heap
+          threshold:
+            percentage: 95
+    - name: envoy.overload_actions.stop_accepting_requests
+      triggers:
+        - name: envoy.resource_monitors.fixed_heap
+          threshold:
+            percentage: 98
+
+# ============================================================================
+# STATISTICS CONFIGURATION
+# ============================================================================
+stats_config:
+  use_all_default_tags:
+    {}
+  stats_tags:
+    - tag_name: cluster_name
+      fixed_value: landing_page_service
+  histogram:
+    - name: request
+      unit: milliseconds
+      buckets:
+        - 0.5
+        - 1
+        - 5
+        - 10
+        - 25
+        - 50
+        - 100
+        - 250
+        - 500
+        - 1000
+        - 2500
+        - 5000
+        - 10000

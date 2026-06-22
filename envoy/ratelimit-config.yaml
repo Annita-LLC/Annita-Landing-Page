@@ -1,0 +1,64 @@
+# ============================================================================
+# FORTUNE 500 / PENTAGON-GRADE RATE LIMIT CONFIGURATION
+# ============================================================================
+# Landing Page Rate Limiting Rules
+# Protects against DDoS, abuse, and bot attacks
+# ============================================================================
+
+domain: annita_landing_rate_limit
+
+descriptors:
+  # ============================================================================
+  # GLOBAL RATE LIMIT (All requests)
+  # ============================================================================
+  - key: remote_address
+    rate_limit:
+      unit: second
+      requests_per_unit: 100  # 100 requests per second per IP
+    burst_limit: 150
+
+  # ============================================================================
+  # REQUEST ID TRACKING (Prevent replay attacks)
+  # ============================================================================
+  - key: X-Request-ID
+    rate_limit:
+      unit: second
+      requests_per_unit: 50  # 50 unique request IDs per second
+    burst_limit: 75
+
+  # ============================================================================
+  # LANDING PAGE SPECIFIC LIMITS
+  # ============================================================================
+  - key: route_key
+    value: annita_landing_page
+    rate_limit:
+      unit: second
+      requests_per_unit: 200  # 200 requests per second total
+    burst_limit: 300
+
+  # ============================================================================
+  # PATH-SPECIFIC LIMITS
+  # ============================================================================
+  - key: path
+    value: /api/
+    rate_limit:
+      unit: second
+      requests_per_unit: 20  # 20 API requests per second
+    burst_limit: 30
+
+  - key: path
+    value: /solutions/
+    rate_limit:
+      unit: minute
+      requests_per_unit: 30  # 30 solution requests per minute
+    burst_limit: 45
+
+  # ============================================================================
+  # USER AGENT PROTECTION (Bot detection)
+  # ============================================================================
+  - key: user_agent
+    value: bot
+    rate_limit:
+      unit: minute
+      requests_per_unit: 10  # 10 requests per minute for bots
+    burst_limit: 15

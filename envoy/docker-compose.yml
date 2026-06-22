@@ -1,0 +1,126 @@
+# ============================================================================
+# FORTUNE 500 / PENTAGON-GRADE LANDING PAGE PROXY DOCKER COMPOSE
+# ============================================================================
+# Services:
+# - envoy: Edge proxy with rate limiting, security headers
+# - ratelimit: Redis-backed global rate limiting service
+# - redis: Rate limiting data store
+# - landing_page: Next.js landing page application
+# ============================================================================
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # ENVOY PROXY
+  # ============================================================================
+  envoy:
+    image: envoyproxy/envoy:v1.29.0
+    container_name: annita-landing-envoy
+    ports:
+      - "8080:8080"  # HTTP
+      - "8443:8443"  # HTTPS
+      - "9901:9901"  # Admin interface
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml:ro
+      - ./ratelimit-config.yaml:/etc/ratelimit/config.yaml:ro
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - landing-network
+    depends_on:
+      - ratelimit
+      - landing_page
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9901/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # ============================================================================
+  # RATE LIMIT SERVICE
+  # ============================================================================
+  ratelimit:
+    image: envoyproxy/ratelimit:latest
+    container_name: annita-landing-ratelimit
+    command: [
+      "/bin/ratelimit",
+      "--config", "/etc/ratelimit/config.yaml",
+      "--redis-host", "redis",
+      "--redis-port", "6379",
+      "--redis-type", "single",
+      "--debug"
+    ]
+    volumes:
+      - ./ratelimit-config.yaml:/etc/ratelimit/config.yaml:ro
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - LOG_LEVEL=info
+    networks:
+      - landing-network
+    depends_on:
+      - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8081"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # ============================================================================
+  # REDIS (Rate Limiting Data Store)
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: annita-landing-redis-ratelimit
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks:
+      - landing-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================================
+  # LANDING PAGE SERVICE (Next.js)
+  # ============================================================================
+  landing_page:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: annita-landing-page
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://an-nita.com}
+    networks:
+      - landing-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  landing-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local

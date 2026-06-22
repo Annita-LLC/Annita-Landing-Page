@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Annita Design System Colors */
+  --color-bg-deep: #080D1A;
+  --color-bg-surface: #0F1729;
+  --color-bg-elevated: #162038;
+  --color-accent-green: #00C28A;
+  --color-accent-gold: #F5A623;
+  --color-text-primary: #F0F4FF;
+  --color-text-secondary: #8A9BBB;
+  --color-text-muted: #4A5775;
+  --color-border: #1A2640;
+  --color-border-accent: #00C28A33;
+  --color-error: #FF4D6A;
+  --color-success: #00C28A;
+  --color-coming-soon: #F5A62333;
+  
+  /* Legacy variables for compatibility */
+  --background: #080D1A;
+  --foreground: #F0F4FF;
+  --muted: #8A9BBB;
+  --muted-foreground: #4A5775;
+  --border: #1A2640;
+  --accent: #00C28A;
+  --accent-foreground: #080D1A;
+  --accent-soft: rgba(0, 194, 138, 0.08);
+  --surface: #0F1729;
+  --surface-elevated: #162038;
+  --ring: rgba(0, 194, 138, 0.35);
+  --hero-glow: radial-gradient(
+    ellipse 100% 80% at 50% -20%,
+    rgba(0, 194, 138, 0.14),
+    transparent 55%
+  );
+  --gradient-primary: linear-gradient(135deg, #00C28A 0%, #00A875 100%);
+  --gradient-secondary: linear-gradient(135deg, #F5A623 0%, #E8941A 100%);
+  --glass-bg: rgba(15, 23, 41, 0.8);
+  --glass-border: rgba(26, 38, 64, 0.5);
+  --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 40px rgba(0, 194, 138, 0.3);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px #1A2640;
+  --shadow-card-hover: 0 8px 32px rgba(0,194,138,0.08), 0 0 0 1px #00C28A33;
+  --shadow-button-glow: 0 0 24px rgba(0,194,138,0.25);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+  }
+  
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .premium-shadow {
+    box-shadow: var(--shadow-premium);
+  }
+  
+  .glow-effect {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .card-shadow {
+    box-shadow: var(--shadow-card);
+  }
+  
+  .card-shadow-hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  .button-glow {
+    box-shadow: var(--shadow-button-glow);
+  }
+  
+  .mesh-gradient {
+    background-image: 
+      radial-gradient(at 40% 20%, rgba(0, 194, 138, 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(0, 194, 138, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(245, 166, 35, 0.08) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, rgba(0, 194, 138, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(0, 194, 138, 0.08) 0px, transparent 50%);
+  }
+  
+  /* Radial gradient pulse animation for hero */
+  @keyframes radial-pulse {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+  }
+  
+  .radial-pulse {
+    animation: radial-pulse 8s ease-in-out infinite;
+  }
+  
+  /* Disable animations on mobile for performance */
+  @media (max-width: 639px) {
+    .radial-pulse {
+      animation: none;
+    }
+  }
+  
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* iOS safe area support */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Prevent horizontal scroll */
+  .no-overflow-x {
+    overflow-x: hidden;
+  }
+  
+  /* Word break for long content */
+  .word-break {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Cyber & Tech utilities */
+  .tech-grid {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(0, 194, 138, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 194, 138, 0.05) 1px, transparent 1px);
+  }
+  
+  .tech-scanline {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .tech-scanline::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(to bottom, transparent, rgba(0, 194, 138, 0.12), transparent);
+    animation: tech-scan 6s linear infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes tech-scan {
+    0% { top: -100%; }
+    100% { top: 200%; }
+  }
+
+  .cyber-bracket-left::before {
+    content: '[';
+    color: #00C28A;
+    margin-right: 0.35rem;
+    font-family: monospace;
+    opacity: 0.8;
+  }
+
+  .cyber-bracket-right::after {
+    content: ']';
+    color: #00C28A;
+    margin-left: 0.35rem;
+    font-family: monospace;
+    opacity: 0.8;
+  }
+
+  .tech-glow-card {
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .tech-glow-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(to bottom right, rgba(0, 194, 138, 0.15), transparent, rgba(245, 166, 35, 0.15));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .tech-glow-card:hover::before {
+    background: linear-gradient(to bottom right, #00C28A, transparent, #F5A623);
+  }
+
+  .glow-dot {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .glow-dot::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #00C28A;
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 8px rgba(0, 194, 138, 0.6);
+    animation: dot-pulse 2s infinite alternate;
+  }
+  
+  @keyframes dot-pulse {
+    0% { transform: scale(0.85); opacity: 0.6; box-shadow: 0 0 4px rgba(0, 194, 138, 0.4); }
+    100% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 12px rgba(0, 194, 138, 0.9); }
+  }
+
+  .tech-glow-text {
+    text-shadow: 0 0 10px rgba(0, 194, 138, 0.4);
+  }
+}
