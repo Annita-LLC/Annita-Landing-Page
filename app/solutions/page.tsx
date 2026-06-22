@@ -54,11 +54,29 @@ export default function SolutionsPage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 md:px-8 py-24 overflow-hidden tech-scanline" style={{ minHeight: '100svh' }}>
+      <section className="relative min-h-[60vh] md:min-h-screen flex items-center justify-center px-4 md:px-8 py-16 md:py-24 overflow-hidden tech-scanline">
+        <div className="absolute inset-0 tech-grid opacity-[0.08]" />
         <div className="absolute inset-0" style={{ 
-          backgroundImage: 'linear-gradient(135deg, rgba(0, 194, 138, 0.03) 0%, transparent 50%), linear-gradient(225deg, rgba(0, 194, 138, 0.03) 0%, transparent 50%)',
-          backgroundSize: '40px 40px'
+          backgroundImage: 'radial-gradient(circle at 50% -20%, rgba(0, 194, 138, 0.15), transparent 70%), linear-gradient(135deg, rgba(0, 194, 138, 0.03) 0%, transparent 50%), linear-gradient(225deg, rgba(0, 194, 138, 0.03) 0%, transparent 50%)',
+          backgroundSize: '100% 100%, 40px 40px, 40px 40px'
         }} />
+        
+        {/* Corner micro brackets */}
+        <span className="absolute top-8 left-8 w-6 h-6 border-t border-l border-[#00C28A]/20" />
+        <span className="absolute top-8 right-8 w-6 h-6 border-t border-r border-[#00C28A]/20" />
+        <span className="absolute bottom-8 left-8 w-6 h-6 border-b border-l border-[#00C28A]/20" />
+        <span className="absolute bottom-8 right-8 w-6 h-6 border-b border-r border-[#00C28A]/20" />
+
+        {/* Floating System Telemetry Log */}
+        <div className="hidden lg:block absolute bottom-6 left-8 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 select-none pointer-events-none">
+          <div>[INFRA: CUSTOM_SOLUTIONS_CLUSTER]</div>
+          <div>PORT: CLUSTER_3000 // STATUS: READY</div>
+        </div>
+        <div className="hidden lg:block absolute bottom-6 right-8 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 text-right select-none pointer-events-none">
+          <div>BUILD_AGENT: SECURE // COMPILE: OK</div>
+          <div>TELEMETRY_LOG: active</div>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -69,10 +87,14 @@ export default function SolutionsPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
-            style={{ backgroundColor: 'rgba(0, 194, 138, 0.08)', border: '1px solid rgba(0, 194, 138, 0.2)' }}
+            className="inline-flex items-center gap-4 px-3 py-1.5 rounded-md mb-8 border border-[#00C28A]/20 bg-[#0F1729]/60 backdrop-blur-md relative overflow-hidden group"
           >
-            <span className="text-sm font-semibold tracking-[0.2em] uppercase" style={{ color: '#00C28A', fontFamily: 'var(--font-syne)' }}>ANNITA CUSTOM SOLUTIONS</span>
+            <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[#00C28A]/50" />
+            <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[#00C28A]/50" />
+            <span className="w-2 h-2 rounded-full bg-[#00C28A] animate-ping" />
+            <span className="text-[10px] font-mono tracking-widest text-[#8A9BBB] uppercase">
+              SYS_NODE // <span className="text-[#00C28A] font-bold">SOLUTIONS_CORE</span>
+            </span>
           </motion.div>
           
           <motion.h1 

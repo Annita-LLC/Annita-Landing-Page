@@ -47,11 +47,29 @@ export default function SubmittedPage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 md:px-8 py-16 overflow-hidden tech-scanline" style={{ minHeight: '100svh' }}>
+      <section className="relative min-h-[60vh] md:min-h-screen flex items-center justify-center px-4 md:px-8 py-16 overflow-hidden tech-scanline">
+        <div className="absolute inset-0 tech-grid opacity-[0.08]" />
         <div className="absolute inset-0" style={{ 
-          backgroundImage: 'linear-gradient(135deg, rgba(0, 194, 138, 0.03) 0%, transparent 50%), linear-gradient(225deg, rgba(0, 194, 138, 0.03) 0%, transparent 50%)',
-          backgroundSize: '40px 40px'
+          backgroundImage: 'radial-gradient(circle at 50% -20%, rgba(0, 194, 138, 0.15), transparent 70%), linear-gradient(135deg, rgba(0, 194, 138, 0.03) 0%, transparent 50%), linear-gradient(225deg, rgba(0, 194, 138, 0.03) 0%, transparent 50%)',
+          backgroundSize: '100% 100%, 40px 40px, 40px 40px'
         }} />
+        
+        {/* Corner micro brackets */}
+        <span className="absolute top-8 left-8 w-6 h-6 border-t border-l border-[#00C28A]/20" />
+        <span className="absolute top-8 right-8 w-6 h-6 border-t border-r border-[#00C28A]/20" />
+        <span className="absolute bottom-8 left-8 w-6 h-6 border-b border-l border-[#00C28A]/20" />
+        <span className="absolute bottom-8 right-8 w-6 h-6 border-b border-r border-[#00C28A]/20" />
+
+        {/* Floating System Telemetry Log */}
+        <div className="hidden lg:block absolute bottom-6 left-8 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 select-none pointer-events-none">
+          <div>[INBOUND_GATE: SUBMIT_RECEIPT]</div>
+          <div>INDEX: INGESTED // TRANSACTION: LOGGED</div>
+        </div>
+        <div className="hidden lg:block absolute bottom-6 right-8 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 text-right select-none pointer-events-none">
+          <div>DATA_ISOLATION: SECURE</div>
+          <div>TELEMETRY: registered_success</div>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -80,7 +80,7 @@ export default function Navigation() {
   return (
     <>
       <motion.header 
-        className="sticky top-0 z-50 w-full h-16 md:h-[64px] transition-all"
+        className="sticky top-0 z-50 w-full h-14 md:h-[64px] transition-all"
         style={{ background: navBackground, borderColor: navBorder }}
       >
         <div className="flex items-center justify-between gap-4 h-full px-4 md:px-8 max-w-[1400px] mx-auto w-full">
@@ -258,10 +258,9 @@ export default function Navigation() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-y-0 right-0 w-full md:w-80 bg-[#080D1A]/95 border-l border-[#00C28A]/10 shadow-[0_0_50px_rgba(0,194,138,0.08)] z-50 lg:hidden tech-grid tech-scanline"
-            style={{ top: '64px' }}
+            className="fixed top-[56px] md:top-[64px] bottom-0 right-0 w-full md:w-80 bg-[#080D1A]/95 border-l border-[#00C28A]/10 shadow-[0_0_50px_rgba(0,194,138,0.08)] z-50 lg:hidden tech-grid tech-scanline"
           >
-            <div className="flex flex-col h-full px-6 py-8 overflow-y-auto relative z-10 backdrop-blur-md">
+            <div className="flex flex-col h-full px-6 py-8 overflow-y-auto custom-scrollbar relative z-10 backdrop-blur-md">
               
               {/* Cyber Status Dashboard Panel */}
               <div className="mb-6 p-4 rounded-xl border border-[#1A2640] bg-[#0F1729]/60 relative overflow-hidden">

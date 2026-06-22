@@ -247,4 +247,24 @@ body {
   .tech-glow-text {
     text-shadow: 0 0 10px rgba(0, 194, 138, 0.4);
   }
+
+  /* Custom scrollbar for high-tech panels */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(8, 13, 26, 0.5);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 194, 138, 0.25);
+    border-radius: 2px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 194, 138, 0.55);
+  }
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 194, 138, 0.25) rgba(8, 13, 26, 0.5);
+  }
 }

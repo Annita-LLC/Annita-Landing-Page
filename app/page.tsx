@@ -138,9 +138,21 @@ export default function HomePage() {
       <WelcomeModal />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center px-4 md:px-8 py-24 overflow-hidden tech-scanline" style={{ minHeight: '100svh' }}>
+      <section className="relative min-h-[60vh] md:min-h-screen flex items-center px-4 md:px-8 py-16 md:py-24 overflow-hidden tech-scanline">
         <div className="absolute inset-0 radial-pulse" />
         
+        {/* Floating System Telemetry Log */}
+        <div className="hidden xl:block absolute bottom-12 left-12 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 select-none pointer-events-none z-10">
+          <div>[GATEWAY CORE PROTOCOL: v1.4.2]</div>
+          <div>SYS_LOAD: NOMINAL // EDGE_NODES: 3,000+</div>
+          <div>ENCRYPT_LAYER: SECURE_AES_256</div>
+        </div>
+        <div className="hidden xl:block absolute bottom-12 right-12 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 text-right select-none pointer-events-none z-10">
+          <div>SSL_HANDSHAKE: SUCCESSFUL</div>
+          <div>PROD_CLUSTER: MONROVIA_HQ_SECURE</div>
+          <div>TELEMETRY: INTEGRATED // PORTAL: ONLINE</div>
+        </div>
+
         <div className="relative z-10 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Hero Left Column */}
@@ -590,30 +602,30 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-28 px-8 max-w-[1400px] mx-auto">
+      <section className="py-12 md:py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative glass rounded-3xl p-12 md:p-16 overflow-hidden"
+          className="relative glass rounded-3xl p-6 md:p-16 overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent/5" />
           <div className="relative z-10 text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Transform Your Business?</h2>
-            <p className="text-lg text-muted-foreground mb-8">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4">Ready to Transform Your Business?</h2>
+            <p className="text-sm md:text-lg text-muted-foreground mb-8">
               Join thousands of MSMEs already leveraging Annita's ecosystem to scale, innovate, and succeed in the digital age.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="/solutions" 
-                className="group px-8 py-4 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2 premium-shadow hover:glow-effect"
+                className="group px-6 py-3 md:px-8 md:py-4 bg-accent text-accent-foreground rounded-lg font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2 premium-shadow hover:glow-effect"
               >
                 Start Your Journey
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link 
                 href="/login" 
-                className="px-8 py-4 border-2 border-border rounded-lg font-semibold hover:border-accent hover:text-accent transition-all glass"
+                className="px-6 py-3 md:px-8 md:py-4 border-2 border-border rounded-lg font-semibold hover:border-accent hover:text-accent transition-all glass"
               >
                 Explore the Ecosystem
               </Link>

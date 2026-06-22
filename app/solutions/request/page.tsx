@@ -215,8 +215,10 @@ export default function RequestPage() {
 
     try {
       // Map file arrays to file metadata objects for JSON serialization
+      // Cast is required: TypeScript cannot structurally verify solutionTypes via spread + index signature
       const submissionData = {
         ...formData,
+        solutionTypes: formData.solutionType,
         brandAssets: formData.brandAssets.map((file: File) => ({
           name: file.name,
           size: file.size,
@@ -227,7 +229,7 @@ export default function RequestPage() {
           size: file.size,
           type: file.type,
         })),
-      }
+      } as import('@/lib/api').SolutionsRequestFormData
 
       const result = await submitSolutionsRequestForm(submissionData)
       if (result.success) {
@@ -253,7 +255,7 @@ export default function RequestPage() {
       <Navigation />
 
       {/* Progress Bar */}
-      <div className="sticky top-16 z-40 px-4 md:px-8 py-4" style={{ backgroundColor: '#080D1A', borderBottom: '1px solid #1A2640' }}>
+      <div className="sticky top-[56px] md:top-16 z-40 px-4 md:px-8 py-4" style={{ backgroundColor: '#080D1A', borderBottom: '1px solid #1A2640' }}>
         <div className="max-w-[720px] mx-auto">
           <div className="flex items-center justify-between mb-4">
             {steps.map((step) => (

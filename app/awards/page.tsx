@@ -56,23 +56,41 @@ export default function AwardsPage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center px-8 py-24 overflow-hidden tech-scanline">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_100%_80%_at_50%_-20%,rgba(29,78,216,0.14),transparent_55%)]" />
+      <section className="relative min-h-[40vh] md:min-h-[50vh] flex items-center justify-center px-4 md:px-8 py-16 md:py-20 overflow-hidden tech-scanline">
+        <div className="absolute inset-0 tech-grid opacity-[0.08]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_100%_80%_at_50%_-20%,rgba(0,194,138,0.14),transparent_55%)]" />
+        
+        {/* Corner micro brackets */}
+        <span className="absolute top-8 left-8 w-6 h-6 border-t border-l border-accent/20" />
+        <span className="absolute top-8 right-8 w-6 h-6 border-t border-r border-accent/20" />
+        <span className="absolute bottom-8 left-8 w-6 h-6 border-b border-l border-accent/20" />
+        <span className="absolute bottom-8 right-8 w-6 h-6 border-b border-r border-accent/20" />
+
+        {/* Floating System Telemetry Log */}
+        <div className="hidden lg:block absolute bottom-6 left-8 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 select-none pointer-events-none">
+          <div>[INDEX: AWARDS_LEDGER.log]</div>
+          <div>TELEMETRY: BROADCAST // SECURE: TRUE</div>
+        </div>
+        <div className="hidden lg:block absolute bottom-6 right-8 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 text-right select-none pointer-events-none">
+          <div>AWARDS_VERIFIED: ACTIVE</div>
+          <div>COMPLIANCE_STATUS: VERIFIED</div>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
           className="relative z-10 max-w-4xl mx-auto text-center"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/12 border border-accent/20 mb-8"
-          >
-            <Sparkles className="w-4 h-4 text-accent" />
-            <span className="text-sm font-semibold text-accent">Excellence Recognized</span>
-          </motion.div>
+          <div className="inline-flex items-center gap-4 px-3 py-1.5 rounded-md mb-8 border border-accent/20 bg-[#0F1729]/60 backdrop-blur-md relative overflow-hidden group">
+            <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-accent/50" />
+            <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-accent/50" />
+            <span className="w-2 h-2 rounded-full bg-accent animate-ping" />
+            <span className="text-[10px] font-mono tracking-widest text-[#8A9BBB] uppercase flex items-center gap-2">
+              <Sparkles className="w-3 h-3 text-accent animate-pulse" />
+              SYS_NODE // <span className="text-accent font-bold">RECOGNITIONS</span>
+            </span>
+          </div>
           
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
