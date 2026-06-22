@@ -53,13 +53,30 @@ export async function submitContactForm(data: ContactUsFormData): Promise<ApiRes
       body: JSON.stringify(data),
     });
 
+    if (!response.ok) {
+      if (response.status >= 500) {
+        return {
+          success: false,
+          message: `Database Connection Offline. The database is currently down or the server failed to respond (HTTP ${response.status}). Please try again shortly.`
+        };
+      }
+      const errRes = await response.json().catch(() => ({ message: `Request failed with status ${response.status}` }));
+      return {
+        success: false,
+        message: errRes.message || 'Submission failed. Please try again.'
+      };
+    }
+
     const result = await response.json();
     return result;
   } catch (error) {
     console.error('Error submitting Contact Us form:', error);
+    const isNetworkError = error instanceof TypeError || (error as any).message?.includes('fetch') || (error as any).message?.includes('network');
     return {
       success: false,
-      message: 'An error occurred. Please try again later.'
+      message: isNetworkError
+        ? 'Database Connection Offline. The server is unreachable. Please verify your network connection and try again.'
+        : 'An unexpected error occurred. Please try again later.'
     };
   }
 }
@@ -77,13 +94,30 @@ export async function submitSalesForm(data: ContactSalesFormData): Promise<ApiRe
       body: JSON.stringify(data),
     });
 
+    if (!response.ok) {
+      if (response.status >= 500) {
+        return {
+          success: false,
+          message: `Database Connection Offline. The database is currently down or the server failed to respond (HTTP ${response.status}). Please try again shortly.`
+        };
+      }
+      const errRes = await response.json().catch(() => ({ message: `Request failed with status ${response.status}` }));
+      return {
+        success: false,
+        message: errRes.message || 'Submission failed. Please try again.'
+      };
+    }
+
     const result = await response.json();
     return result;
   } catch (error) {
     console.error('Error submitting Contact Sales form:', error);
+    const isNetworkError = error instanceof TypeError || (error as any).message?.includes('fetch') || (error as any).message?.includes('network');
     return {
       success: false,
-      message: 'An error occurred. Please try again later.'
+      message: isNetworkError
+        ? 'Database Connection Offline. The server is unreachable. Please verify your network connection and try again.'
+        : 'An unexpected error occurred. Please try again later.'
     };
   }
 }
@@ -101,13 +135,31 @@ export async function submitSolutionsRequestForm(data: SolutionsRequestFormData)
       body: JSON.stringify(data),
     });
 
+    if (!response.ok) {
+      if (response.status >= 500) {
+        return {
+          success: false,
+          message: `Database Connection Offline. The database is currently down or the server failed to respond (HTTP ${response.status}). Please try again shortly.`
+        };
+      }
+      const errRes = await response.json().catch(() => ({ message: `Request failed with status ${response.status}` }));
+      return {
+        success: false,
+        message: errRes.message || 'Submission failed. Please try again.'
+      };
+    }
+
     const result = await response.json();
     return result;
   } catch (error) {
     console.error('Error submitting Solutions Request form:', error);
+    const isNetworkError = error instanceof TypeError || (error as any).message?.includes('fetch') || (error as any).message?.includes('network');
     return {
       success: false,
-      message: 'An error occurred. Please try again later.'
+      message: isNetworkError
+        ? 'Database Connection Offline. The server is unreachable. Please verify your network connection and try again.'
+        : 'An unexpected error occurred. Please try again later.'
     };
   }
 }
+

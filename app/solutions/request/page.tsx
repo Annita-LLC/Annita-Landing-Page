@@ -2,9 +2,10 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
-import { ArrowLeft, ArrowRight, CheckCircle2, Upload, X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Upload, X, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import Navigation from '@/components/navigation'
+import { submitSolutionsRequestForm } from '@/lib/api'
 
 const solutionTypes = [
   { id: 'mobile', name: 'Mobile Application', icon: '📱' },
@@ -81,6 +82,8 @@ const securityRequirements = [
 
 export default function RequestPage() {
   const [currentStep, setCurrentStep] = useState(1)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
   const [formData, setFormData] = useState({
     // Step 1: About You
     fullName: '',
@@ -205,12 +208,44 @@ export default function RequestPage() {
     })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Save form data to localStorage for confirmation page
-    localStorage.setItem('solutionsFormSubmitted', JSON.stringify(formData))
-    // Redirect to confirmation page
-    window.location.href = '/solutions/request/submitted'
+    setIsSubmitting(true)
+    setSubmitError('')
+
+    try {
+      // Map file arrays to file metadata objects for JSON serialization
+      const submissionData = {
+        ...formData,
+        brandAssets: formData.brandAssets.map((file: File) => ({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+        })),
+        wireframesFiles: formData.wireframesFiles.map((file: File) => ({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+        })),
+      }
+
+      const result = await submitSolutionsRequestForm(submissionData)
+      if (result.success) {
+        // Save form data to localStorage for confirmation page rendering
+        localStorage.setItem('solutionsFormSubmitted', JSON.stringify(formData))
+        // Clear drafts
+        localStorage.removeItem('solutionsFormDraft')
+        // Redirect to confirmation page
+        window.location.href = '/solutions/request/submitted'
+      } else {
+        setSubmitError(result.message)
+      }
+    } catch (err) {
+      console.error('Error submitting form:', err)
+      setSubmitError('An unexpected error occurred. Please try again later.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -1119,14 +1154,21 @@ export default function RequestPage() {
               )}
             </AnimatePresence>
 
+            {submitError && (
+              <div className="mb-6 p-4 rounded-lg text-sm" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid #EF4444', color: '#EF4444' }}>
+                {submitError}
+              </div>
+            )}
+
             {/* Navigation Buttons */}
             <div className="flex items-center justify-between pt-6" style={{ borderTop: '1px solid #1A2640' }}>
               {currentStep > 1 ? (
                 <button
                   type="button"
                   onClick={handleBack}
+                  disabled={isSubmitting}
                   className="px-6 py-3 rounded-lg font-semibold transition-all"
-                  style={{ backgroundColor: '#0F1729', color: '#8A9BBB', border: '1px solid #1A2640' }}
+                  style={{ backgroundColor: '#0F1729', color: '#8A9BBB', border: '1px solid #1A2640', opacity: isSubmitting ? 0.5 : 1 }}
                 >
                   Back
                 </button>
@@ -1147,10 +1189,18 @@ export default function RequestPage() {
               ) : (
                 <button
                   type="submit"
-                  className="w-full px-8 py-3 rounded-full font-semibold transition-all"
-                  style={{ backgroundColor: '#00C28A', color: '#080D1A' }}
+                  disabled={isSubmitting}
+                  className="w-full px-8 py-3 rounded-full font-semibold transition-all flex items-center justify-center gap-2"
+                  style={{ backgroundColor: '#00C28A', color: '#080D1A', opacity: isSubmitting ? 0.7 : 1 }}
                 >
-                  Submit My Project Brief
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Submitting Brief...
+                    </>
+                  ) : (
+                    'Submit My Project Brief'
+                  )}
                 </button>
               )}
             </div>
