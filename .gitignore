@@ -1,37 +1,29 @@
 # ==============================================================================
-# PENTAGON-LEVEL HIGH-SECURITY GITIGNORE
-# ANNITA LANDING PAGE - PRODUCTION SPECIFICATION
+# FORTUNE 500 PENTAGON-LEVEL HIGH-SECURITY GITIGNORE
+# PROJECT: ANNITA LANDING PAGE
 # ==============================================================================
 
-# Dependency Directories
-node_modules/
-jspm_packages/
-web_modules/
-
-# Next.js Build Outputs
-.next/
-out/
-build/
-dist/
-
-# Local Environment Variables & Secrets (Prevent credential leakage)
+# ------------------------------------------------------------------------------
+# 1. Credentials, Secrets & Sensitive Configuration Files
+# ------------------------------------------------------------------------------
+# Prevent any and all credential/secret leakages
 .env
 .env.local
+.env.development
 .env.development.local
+.env.test
 .env.test.local
 .env.production.local
+.env.staging
+.env.staging.local
 *.env
-*.env.local
+*.env.*
+# Exclusions (Only allow tracking non-sensitive environment templates if desired)
 !.env.example
+# Keep the production env public references if required, but block any other production env
 !.env.production
 
-# Sentry & Crash Reporting Configurations
-.sentryclirc
-sentry.properties
-sentry.edge.config.ts.bak
-sentry.server.config.ts.bak
-
-# API Keys, Cryptographic Credentials, and Security Certs
+# Private Keys, Certificates, and Cryptographic credentials
 *.pem
 *.key
 *.pub
@@ -40,26 +32,23 @@ sentry.server.config.ts.bak
 *.pfx
 *.p12
 *.der
-secring.*
-pubring.*
 *.gpg
 *.asc
 *.sig
-oauth-credentials.json
-client_secret*.json
-jwt-*.key
-service-account*.json
+*.csr
+*.cer
+*.keytool
+*.keystore
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+.ssh/
 
-# Logs and Diagnostics
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Serverless & Deployment Traces
+# Cloud Providers & Platform Credentials/Configs
+.aws/
+.gcloud/
+.azure/
 .serverless/
 .serverless_plugins/
 .vercel/
@@ -67,6 +56,147 @@ lerna-debug.log*
 .now/
 .now
 vercel.json.bak
+credentials.json
+client_secret*.json
+service-account*.json
+jwt-*.key
+oauth-credentials.json
+secring.*
+pubring.*
+
+# Package Manager Credentials
+.npmrc
+.pypirc
+.netrc
+.yarnrc
+.yarnrc.yml
+npm-shrinkwrap.json
+
+# ------------------------------------------------------------------------------
+# 2. Scripts, Executables & Compiled Binaries (Never push scripts/programs)
+# ------------------------------------------------------------------------------
+# Shell / Command Scripts
+*.sh
+*.bash
+*.zsh
+*.ksh
+*.csh
+*.tcsh
+*.bat
+*.cmd
+*.ps1
+*.psm1
+*.psd1
+*.vbs
+*.vba
+
+# Python Scripts and Bytecode (Unless in a designated python project folder, block globally)
+*.py
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.pytest_cache/
+venv/
+.venv/
+env/
+ENV/
+jython/
+pypy/
+
+# Executables & Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.out
+*.app
+*.dmg
+*.msi
+*.pkg
+*.deb
+*.rpm
+*.jar
+*.war
+*.ear
+
+# ------------------------------------------------------------------------------
+# 3. Databases, Dumps & Large Datasets (No raw or backup data)
+# ------------------------------------------------------------------------------
+# Database engines
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.sql
+*.dump
+*.mdb
+*.accdb
+prisma/dev.db
+
+# Spreadsheet / Tabular Data / PII Candidates
+*.csv
+*.tsv
+*.xls
+*.xlsx
+*.xlsm
+*.ods
+*.numbers
+
+# Large/Temporary Backups and Dumps
+backup/
+backups/
+dump/
+dumps/
+data/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.rar
+*.7z
+*.iso
+
+# ------------------------------------------------------------------------------
+# 4. Dependency & Package Directories
+# ------------------------------------------------------------------------------
+node_modules/
+jspm_packages/
+web_modules/
+.npm/
+.yarn/
+.pnpm-store/
+
+# ------------------------------------------------------------------------------
+# 5. Build, Cache, & Diagnostic Directories
+# ------------------------------------------------------------------------------
+# Next.js / React build outputs
+.next/
+out/
+build/
+dist/
+.cache/
+.turbo/
+.eslintcache
+.stylelintcache
+tsconfig.tsbuildinfo
+next-env.d.ts.bak
+
+# Logs and Crash Reports
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.sentryclirc
+sentry.properties
+sentry.edge.config.ts.bak
+sentry.server.config.ts.bak
 
 # Testing & Coverage Outputs
 coverage/
@@ -79,11 +209,20 @@ playwright-report/
 blob-report/
 playwright/.cache/
 
-# System Files and IDE Cache
-.DS_Store
+# ------------------------------------------------------------------------------
+# 6. System Files & Local IDE Metadata
+# ------------------------------------------------------------------------------
+# Windows System Files
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# macOS System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor / IDE Configs (Prevent pushing developer-specific workspaces)
 .vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -95,24 +234,6 @@ Desktop.ini
 *.njsproj
 *.sln
 *.sw?
-.eslintcache
-.stylelintcache
-tsconfig.tsbuildinfo
-
-# SQLite, Prisma and Local Database Dumps
-*.db
-*.db-journal
-*.sqlite
-*.sqlite3
-*.sqlite-journal
-*.sql
-*.dump
-prisma/dev.db
-
-# Diagnostic / Temporary Files
-.tmp/
-temp/
-tmp/
 *.bak
 *.swp
 *~
