@@ -144,10 +144,10 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
+            className="text-base md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
             style={{ color: '#8A9BBB' }}
           >
-            Have questions about our solutions? Want to discuss a project? We're here to help.
+            Questions? We're here to help with your project.
           </motion.p>
         </motion.div>
       </section>

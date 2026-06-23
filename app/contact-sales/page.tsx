@@ -146,10 +146,10 @@ export default function ContactSalesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
+            className="text-base md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
             style={{ color: '#8A9BBB' }}
           >
-            Ready to transform your organization? Our enterprise team is here to discuss your large-scale project needs.
+            Transform your organization. Our team is ready for your large-scale projects.
           </motion.p>
         </motion.div>
       </section>
