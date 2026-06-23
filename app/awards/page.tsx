@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Award, Trophy, Users, Globe, ChevronRight, ArrowRight, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import NextImage from 'next/image'
 import Navigation from '@/components/navigation'
 
 export default function AwardsPage() {
@@ -171,6 +172,120 @@ export default function AwardsPage() {
           </Link>
         </motion.div>
       </section>
+
+      {/* Techy Footer */}
+      <footer className="relative overflow-hidden" style={{ backgroundColor: '#080D1A', borderTop: '1px solid #1A2640' }}>
+        {/* Animated Grid Background */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `
+              linear-gradient(rgba(0, 194, 138, 0.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(0, 194, 138, 0.3) 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px'
+          }} />
+        </div>
+
+        {/* Scanline Effect */}
+        <div className="absolute inset-0 pointer-events-none opacity-5">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00C28A]/5 to-transparent animate-scanline" />
+        </div>
+
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+          {/* Top Section */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            {/* Brand Section */}
+            <div className="md:col-span-1">
+              <div className="flex items-center gap-3 mb-4">
+                <NextImage
+                  src="/annita-real-logo.png"
+                  alt="Annita Logo"
+                  width={40}
+                  height={40}
+                  className="rounded-lg"
+                />
+                <div>
+                  <div className="font-bold text-white">Annita<span className="text-[#00C28A]">.</span></div>
+                  <div className="text-[10px] font-mono text-[#00C28A]">SYSTEM: ONLINE</div>
+                </div>
+              </div>
+              <p className="text-xs text-[#8A9BBB] mb-4 leading-relaxed">
+                Building Africa's digital infrastructure with world-class technology solutions.
+              </p>
+              <div className="flex items-center gap-2 text-[10px] font-mono text-[#4A5775]">
+                <span className="w-1.5 h-1.5 bg-[#00C28A] rounded-full animate-pulse" />
+                <span>STATUS: OPERATIONAL</span>
+              </div>
+            </div>
+
+            {/* Ecosystem Links */}
+            <div>
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
+                Ecosystem
+              </div>
+              <div className="space-y-2">
+                <Link href="/login" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Annita Ecosystem</Link>
+                <a href="https://www.an-nitapay.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">AnnitaPay</a>
+                <a href="https://www.an-nita-pulse.org" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Annita Pulse</a>
+                <a href="https://www.ezri-africa.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Ezri</a>
+                <a href="https://an-nitaimpactinnovationhub.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">AIIM Hub</a>
+              </div>
+            </div>
+
+            {/* Company Links */}
+            <div>
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
+                Company
+              </div>
+              <div className="space-y-2">
+                <Link href="/solutions" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Custom Solutions</Link>
+                <Link href="/about" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">About Us</Link>
+                <Link href="/awards" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Awards</Link>
+                <Link href="/contact" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Contact Us</Link>
+                <Link href="/contact-sales" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Contact Sales</Link>
+              </div>
+            </div>
+
+            {/* Tech Stats */}
+            <div>
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
+                System Metrics
+              </div>
+              <div className="space-y-2 text-[10px] font-mono">
+                <div className="flex justify-between">
+                  <span className="text-[#8A9BBB]">LATENCY</span>
+                  <span className="text-[#00C28A]">18ms</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#8A9BBB]">UPTIME</span>
+                  <span className="text-[#00C28A]">99.9%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#8A9BBB]">REGIONS</span>
+                  <span className="text-[#00C28A]">6</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#8A9BBB]">VERSION</span>
+                  <span className="text-[#00C28A]">v2.0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Section */}
+          <div className="pt-8 border-t border-[#1A2640]/50 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-center md:text-left">
+              <p className="text-[10px] font-mono text-[#4A5775]">© 2026 Annita LLC. All rights reserved.</p>
+            </div>
+            <div className="text-center md:text-right">
+              <p className="text-[10px] font-mono text-[#4A5775]">Built in Liberia. Built for the World.</p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -2,12 +2,88 @@
 
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
+// @ts-ignore
+import countries from 'world-map-country-shapes'
 
 interface Route {
   from: { x: number; y: number; label: string }
   to: { x: number; y: number; label: string }
   delay: number
 }
+
+interface Continent {
+  name: string
+  x: number
+  y: number
+  countries: { name: string; x: number; y: number }[]
+}
+
+const continents: Continent[] = [
+  {
+    name: 'Africa',
+    x: 50,
+    y: 50,
+    countries: [
+      { name: 'Liberia', x: 50, y: 55 },
+      { name: 'Nigeria', x: 25, y: 35 },
+      { name: 'Egypt', x: 52, y: 25 },
+      { name: 'South Africa', x: 20, y: 65 },
+      { name: 'Kenya', x: 80, y: 40 },
+    ]
+  },
+  {
+    name: 'Asia',
+    x: 75,
+    y: 30,
+    countries: [
+      { name: 'China', x: 85, y: 25 },
+      { name: 'India', x: 58, y: 18 },
+      { name: 'Japan', x: 75, y: 20 },
+      { name: 'UAE', x: 55, y: 35 },
+      { name: 'Saudi Arabia', x: 58, y: 30 },
+    ]
+  },
+  {
+    name: 'Europe',
+    x: 52,
+    y: 20,
+    countries: [
+      { name: 'UK', x: 48, y: 28 },
+      { name: 'Germany', x: 55, y: 20 },
+      { name: 'France', x: 52, y: 22 },
+      { name: 'Netherlands', x: 50, y: 18 },
+    ]
+  },
+  {
+    name: 'North America',
+    x: 15,
+    y: 30,
+    countries: [
+      { name: 'USA', x: 15, y: 30 },
+      { name: 'Canada', x: 12, y: 32 },
+      { name: 'Mexico', x: 15, y: 45 },
+    ]
+  },
+  {
+    name: 'South America',
+    x: 22,
+    y: 55,
+    countries: [
+      { name: 'Brazil', x: 25, y: 35 },
+      { name: 'Argentina', x: 20, y: 40 },
+      { name: 'Chile', x: 18, y: 38 },
+      { name: 'Colombia', x: 22, y: 42 },
+    ]
+  },
+  {
+    name: 'Oceania',
+    x: 80,
+    y: 60,
+    countries: [
+      { name: 'Australia', x: 80, y: 60 },
+    ]
+  }
+]
 
 const expansionRoutes: Route[] = [
   // West Africa
@@ -103,11 +179,19 @@ const expansionRoutes: Route[] = [
 
 export default function TechGlobe() {
   const [rotation, setRotation] = useState(0)
+  const [currentView, setCurrentView] = useState(0)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setRotation(prev => (prev + 0.2) % 360)
+      setRotation(prev => (prev + 0.3) % 360)
     }, 50)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentView(prev => (prev + 1) % continents.length)
+    }, 8000)
     return () => clearInterval(interval)
   }, [])
 
@@ -126,67 +210,151 @@ export default function TechGlobe() {
 
       {/* Globe container */}
       <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px]">
-        {/* Globe sphere */}
+        {/* Globe sphere with realistic Earth colors and axial tilt */}
         <motion.div
-          animate={{ rotate: rotation }}
+          animate={{ rotateY: rotation }}
           transition={{ type: 'spring', stiffness: 50, damping: 20 }}
-          className="absolute inset-0 rounded-full"
+          className="absolute inset-0 rounded-full overflow-hidden"
           style={{
-            background: 'radial-gradient(circle at 30% 30%, rgba(0, 194, 138, 0.3), rgba(8, 13, 26, 0.9))',
-            border: '2px solid rgba(0, 194, 138, 0.3)',
-            boxShadow: '0 0 60px rgba(0, 194, 138, 0.2), inset 0 0 60px rgba(0, 194, 138, 0.1)'
+            background: 'radial-gradient(circle at 30% 30%, #1a4d7a, #0a1628)',
+            border: '2px solid rgba(100, 150, 200, 0.3)',
+            boxShadow: '0 0 60px rgba(100, 150, 200, 0.3), inset 0 0 60px rgba(0, 0, 0, 0.5)',
+            transformStyle: 'preserve-3d',
+            transform: 'rotateX(23.5deg)'
           }}
         >
-          {/* Grid lines on globe */}
+          {/* Realistic world map with country shapes */}
           <div className="absolute inset-0 rounded-full overflow-hidden">
-            <svg className="w-full h-full" viewBox="0 0 100 100">
-              {/* Latitude lines */}
+            <svg 
+              className="w-full h-full" 
+              viewBox="0 0 2000 1001" 
+              preserveAspectRatio="xMidYMid slice"
+            >
+              {/* Subtle latitude/longitude grid */}
               {[20, 40, 60, 80].map(lat => (
                 <ellipse
                   key={lat}
-                  cx="50"
-                  cy="50"
-                  rx="45"
-                  ry={45 * Math.sin((lat * Math.PI) / 180)}
+                  cx="1000"
+                  cy="500"
+                  rx="900"
+                  ry={900 * Math.sin((lat * Math.PI) / 180)}
                   fill="none"
-                  stroke="rgba(0, 194, 138, 0.15)"
-                  strokeWidth="0.3"
+                  stroke="rgba(100, 150, 200, 0.1)"
+                  strokeWidth="2"
                 />
               ))}
-              {/* Longitude lines */}
-              {[0, 30, 60, 90, 120, 150].map(lon => (
-                <ellipse
-                  key={lon}
-                  cx="50"
-                  cy="50"
-                  rx={45 * Math.cos((lon * Math.PI) / 180)}
-                  ry="45"
-                  fill="none"
-                  stroke="rgba(0, 194, 138, 0.15)"
-                  strokeWidth="0.3"
-                  transform={`rotate(${lon} 50 50)`}
+              
+              {/* Country shapes from world-map-country-shapes */}
+              {countries.map((country) => (
+                <path
+                  key={country.id}
+                  d={country.shape}
+                  fill="rgba(34, 139, 34, 0.6)"
+                  stroke="rgba(34, 139, 34, 0.8)"
+                  strokeWidth="1"
+                  className="hover:fill-green-400 transition-colors cursor-pointer"
                 />
               ))}
             </svg>
           </div>
 
-          {/* Country markers */}
-          {expansionRoutes.map((route, idx) => (
-            <div
-              key={`from-${idx}`}
-              className="absolute w-2 h-2 rounded-full bg-[#00C28A] animate-pulse"
+          {/* Cloud layer */}
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: 'radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.15) 0%, transparent 50%)',
+              mixBlendMode: 'overlay'
+            }}
+            animate={{ rotate: rotation * 0.8 }}
+            transition={{ type: 'spring', stiffness: 50, damping: 20 }}
+          >
+            <svg className="w-full h-full" viewBox="0 0 100 100">
+              {/* Cloud patches */}
+              <ellipse cx="30" cy="25" rx="10" ry="5" fill="rgba(255, 255, 255, 0.2)" />
+              <ellipse cx="60" cy="35" rx="12" ry="6" fill="rgba(255, 255, 255, 0.15)" />
+              <ellipse cx="45" cy="55" rx="8" ry="4" fill="rgba(255, 255, 255, 0.18)" />
+              <ellipse cx="75" cy="45" rx="9" ry="5" fill="rgba(255, 255, 255, 0.2)" />
+              <ellipse cx="20" cy="50" rx="7" ry="3" fill="rgba(255, 255, 255, 0.15)" />
+            </svg>
+          </motion.div>
+
+          {/* Atmospheric glow */}
+          <div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle at 50% 50%, transparent 60%, rgba(100, 150, 200, 0.1) 100%)',
+              boxShadow: 'inset 0 0 30px rgba(100, 150, 200, 0.2)'
+            }}
+          />
+
+          {/* Day/night shadow overlay */}
+          <motion.div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background: 'linear-gradient(to right, transparent 40%, rgba(0, 0, 0, 0.7) 100%)',
+              mixBlendMode: 'multiply'
+            }}
+          />
+
+          {/* Sun reflection highlight */}
+          <div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle at 25% 35%, rgba(255, 255, 255, 0.15) 0%, transparent 50%)',
+              mixBlendMode: 'overlay'
+            }}
+          />
+
+          {/* Continent labels */}
+          {continents.map((continent, idx) => (
+            <motion.div
+              key={continent.name}
+              className="absolute"
               style={{
-                left: `${route.from.x}%`,
-                top: `${route.from.y}%`,
-                transform: 'translate(-50%, -50%)',
-                boxShadow: '0 0 10px rgba(0, 194, 138, 0.8)'
+                left: `${continent.x}%`,
+                top: `${continent.y}%`,
+                transform: 'translate(-50%, -50%)'
               }}
+              animate={{
+                opacity: currentView === idx ? 1 : 0.3,
+                scale: currentView === idx ? 1.2 : 1
+              }}
+              transition={{ duration: 0.5 }}
             >
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[8px] font-mono text-[#00C28A] whitespace-nowrap">
-                {route.from.label}
+              <div className="text-[10px] font-bold font-mono text-[#00C28A] whitespace-nowrap text-center">
+                {continent.name}
               </div>
-            </div>
+            </motion.div>
           ))}
+
+          {/* Country markers for all continents */}
+          {continents.flatMap((continent, cIdx) =>
+            continent.countries.map((country, idx) => (
+              <motion.div
+                key={`${continent.name}-${country.name}`}
+                className="absolute w-1.5 h-1.5 rounded-full bg-[#00C28A]"
+                style={{
+                  left: `${country.x}%`,
+                  top: `${country.y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  boxShadow: '0 0 8px rgba(0, 194, 138, 0.6)'
+                }}
+                animate={{
+                  opacity: currentView === cIdx ? 1 : 0.4,
+                  scale: currentView === cIdx ? 1.3 : 1
+                }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.div
+                  className="absolute -top-5 left-1/2 -translate-x-1/2 text-[7px] font-mono text-[#8A9BBB] whitespace-nowrap"
+                  animate={{ opacity: currentView === cIdx ? 1 : 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {country.name}
+                </motion.div>
+              </motion.div>
+            ))
+          )}
         </motion.div>
 
         {/* Expansion arrows */}
@@ -276,8 +444,32 @@ export default function TechGlobe() {
         </div>
         <div className="text-right">
           <div>STATUS: LIVE</div>
-          <div>REGION: WEST_AFRICA</div>
+          <motion.div
+            key={currentView}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div>REGION: {continents[currentView].name.toUpperCase()}</div>
+            <div>COUNTRIES: {continents[currentView].countries.length}</div>
+          </motion.div>
         </div>
+      </div>
+
+      {/* Continent indicator */}
+      <div className="absolute top-4 left-4 right-4 flex justify-center gap-2">
+        {continents.map((continent, idx) => (
+          <motion.div
+            key={continent.name}
+            className="w-2 h-2 rounded-full cursor-pointer"
+            style={{
+              backgroundColor: currentView === idx ? '#00C28A' : 'rgba(0, 194, 138, 0.3)'
+            }}
+            onClick={() => setCurrentView(idx)}
+            whileHover={{ scale: 1.2 }}
+            transition={{ duration: 0.2 }}
+          />
+        ))}
       </div>
     </div>
   )

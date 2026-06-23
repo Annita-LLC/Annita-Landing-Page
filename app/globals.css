@@ -212,6 +212,7 @@ body {
     background: linear-gradient(to bottom right, rgba(0, 194, 138, 0.15), transparent, rgba(245, 166, 35, 0.15));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -309,6 +310,15 @@ body {
   @keyframes marquee2 {
     0% { transform: translateX(100%); }
     100% { transform: translateX(0); }
+  }
+
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  .animate-scanline {
+    animation: scanline 3s linear infinite;
   }
 
   .tech-marquee-container:hover .animate-marquee,

@@ -10,39 +10,39 @@ const ecosystemItems = [
   {
     name: 'Annita Ecosystem',
     description: 'Marketplace & SaaS',
-    icon: '🌐',
+    icon: '/annita-real-logo.png',
     href: '/login',
     isFlagship: true,
   },
   {
     name: 'AnnitaPay',
     description: 'Fintech',
-    icon: '💳',
+    icon: '/AnnitaPay-Logo.jpg',
     href: 'https://www.an-nitapay.com',
     isComingSoon: true,
   },
   {
     name: 'Annita Pulse',
     description: 'Digital Health',
-    icon: '❤️',
+    icon: '/Annita-Pulse-Logo.png',
     href: 'https://www.an-nita-pulse.org',
   },
   {
     name: 'Ezri',
     description: 'AI & Careers',
-    icon: '🧭',
+    icon: '/Ezri-Logo.jpg',
     href: 'https://www.ezri-africa.com',
   },
   {
     name: 'Annita Impact-Innovation Hub',
     description: 'Innovation & Community',
-    icon: '💡',
-    href: 'https://www.aiim.com',
+    icon: '/AIIM-Logo.png',
+    href: 'https://an-nitaimpactinnovationhub.com',
   },
   {
     name: 'Custom Solutions',
     description: 'Technology Services',
-    icon: '🔧',
+    icon: '/annita-real-logo.png',
     href: '/solutions',
   },
 ]
@@ -50,21 +50,10 @@ const ecosystemItems = [
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState<string | null>(null)
   const { scrollY } = useScroll()
   const navBackground = useTransform(scrollY, [0, 20], ['rgba(8, 13, 26, 0)', 'rgba(8, 13, 26, 0.92)'])
   const navBorder = useTransform(scrollY, [0, 20], ['rgba(26, 38, 64, 0)', 'rgba(26, 38, 64, 1)'])
-
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [mobileMenuOpen])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -215,7 +204,13 @@ export default function Navigation() {
                       <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-transparent group-hover:border-[#00C28A]/50 transition-colors" />
                       <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-transparent group-hover:border-[#00C28A]/50 transition-colors" />
                       
-                      <span className="text-2xl group-hover:scale-110 transition-transform duration-300">{item.icon}</span>
+                      <Image 
+                        src={item.icon} 
+                        alt={item.name}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 rounded object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <div className="font-semibold text-sm text-white group-hover:text-[#00C28A] transition-colors">{item.name}</div>
@@ -250,168 +245,204 @@ export default function Navigation() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - Fortune 500 Pentagon Level */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-[56px] md:top-[64px] bottom-0 right-0 w-full md:w-80 bg-[#080D1A]/95 border-l border-[#00C28A]/10 shadow-[0_0_50px_rgba(0,194,138,0.08)] z-50 lg:hidden tech-grid tech-scanline"
-          >
-            <div className="flex flex-col h-full overflow-y-auto custom-scrollbar relative z-10 backdrop-blur-md" style={{ WebkitOverflowScrolling: 'touch' }}>
-              <div className="px-6 py-6">
-              
-              {/* Cyber Status Dashboard Panel */}
-              <div className="mb-6 p-4 rounded-xl border border-[#1A2640] bg-[#0F1729]/60 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-16 h-16 bg-[#00C28A]/5 rounded-full blur-xl animate-pulse" />
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono tracking-widest text-[#8A9BBB] uppercase">Core Infrastructure</span>
-                  <span className="glow-dot text-[10px] font-mono text-[#00C28A] uppercase font-bold">ONLINE</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-[#8A9BBB]/60">
-                  <div>LOC: LIBERIA/HQ</div>
-                  <div>VER: v1.2.0-PROD</div>
-                </div>
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/80 z-40 lg:hidden backdrop-blur-md"
+            />
+            
+            {/* Menu Container */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed top-0 bottom-0 right-0 w-full md:w-[420px] bg-[#080D1A]/98 border-l border-[#00C28A]/20 shadow-[0_0_100px_rgba(0,194,138,0.15)] z-50 lg:hidden overflow-hidden"
+            >
+              {/* Animated Background Grid */}
+              <div className="absolute inset-0 opacity-5">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: `
+                    linear-gradient(rgba(0, 194, 138, 0.3) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0, 194, 138, 0.3) 1px, transparent 1px)
+                  `,
+                  backgroundSize: '30px 30px'
+                }} />
+              </div>
 
-                {/* Scrolling Telemetry */}
-                <div className="border-t border-[#1A2640] pt-2.5 mt-2.5">
-                  <div className="text-[8px] font-mono text-[#00C28A]/80 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-[#00C28A] rounded-full animate-pulse" />
-                    Live System Telemetry
-                  </div>
-                  <div className="relative flex overflow-x-hidden w-full tech-marquee-container py-0.5">
-                    <div className="animate-marquee whitespace-nowrap font-mono text-[9px] text-[#8A9BBB] tracking-wider pr-4">
-                      {"SYSTEM: ACTIVE // LOC: LIBERIA/HQ // LATENCY: 18ms // SSL: SECURE // ANNITAPAY: ENCRYPTION ACTIVE // EZRI AI: ANALYZING OPPORTUNITIES // PULSE HEALTH: CHANNELS SECURED // HUB: 24 ACTIVE INNOVATIONS // CUSTOM SOLUTIONS: DELIVERING // INFRASTRUCTURE: NOMINAL // SYSTEM: 100% OPERATIONAL //   "}
+              {/* Scanline Effect */}
+              <div className="absolute inset-0 pointer-events-none opacity-10">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00C28A]/5 to-transparent animate-scanline" />
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="h-full overflow-y-auto custom-scrollbar relative z-10" style={{ WebkitOverflowScrolling: 'touch' }}>
+                {/* Header Section */}
+                <div className="sticky top-0 z-20 bg-[#080D1A]/95 backdrop-blur-xl border-b border-[#1A2640]/50">
+                  <div className="px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-[#00C28A]/10 border border-[#00C28A]/30 flex items-center justify-center overflow-hidden">
+                        <Image
+                          src="/annita-real-logo.png"
+                          alt="Annita Logo"
+                          width={32}
+                          height={32}
+                          className="w-8 h-8 rounded object-contain"
+                        />
+                      </div>
+                      <div>
+                        <div className="font-syne font-bold text-white text-sm">Annita Ecosystem</div>
+                        <div className="text-[10px] font-mono text-[#00C28A]">SYSTEM: ONLINE</div>
+                      </div>
                     </div>
-                    <div className="absolute top-0 left-0 animate-marquee2 whitespace-nowrap font-mono text-[9px] text-[#8A9BBB] tracking-wider pr-4">
-                      {"SYSTEM: ACTIVE // LOC: LIBERIA/HQ // LATENCY: 18ms // SSL: SECURE // ANNITAPAY: ENCRYPTION ACTIVE // EZRI AI: ANALYZING OPPORTUNITIES // PULSE HEALTH: CHANNELS SECURED // HUB: 24 ACTIVE INNOVATIONS // CUSTOM SOLUTIONS: DELIVERING // INFRASTRUCTURE: NOMINAL // SYSTEM: 100% OPERATIONAL //   "}
+                    <button
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="p-2 rounded-lg border border-[#1A2640] hover:border-[#00C28A] bg-[#0F1729]/50 hover:bg-[#00C28A]/10 transition-all"
+                    >
+                      <X className="w-5 h-5 text-[#8A9BBB] hover:text-[#00C28A]" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Quick Stats Bar */}
+                <div className="px-6 py-3 bg-[#0F1729]/50 border-b border-[#1A2640]/30">
+                  <div className="flex items-center justify-between text-[9px] font-mono">
+                    <div className="flex items-center gap-4">
+                      <span className="text-[#8A9BBB]">LATENCY: <span className="text-[#00C28A]">18ms</span></span>
+                      <span className="text-[#8A9BBB]">UPTIME: <span className="text-[#00C28A]">99.9%</span></span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-[#00C28A] rounded-full animate-pulse" />
+                      <span className="text-[#00C28A]">LIVE</span>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Main Navigation */}
-              <div className="mb-8">
-                <div className="text-[10px] font-mono font-semibold uppercase tracking-widest text-[#4A5775] mb-4 border-b border-[#1A2640] pb-2 flex justify-between items-center">
-                  <span>Navigation</span>
-                  <span className="text-[#00C28A]/30 font-bold">SYS_NAV</span>
-                </div>
-                
-                <motion.div 
-                  initial="hidden"
-                  animate="show"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    show: {
-                      opacity: 1,
-                      transition: { staggerChildren: 0.05 }
-                    }
-                  }}
-                  className="space-y-4"
-                >
-                  {[
-                    { name: 'Custom Solutions', href: '/solutions' },
-                    { name: 'About Us', href: '/about' },
-                    { name: 'Awards', href: '/awards' },
-                    { name: 'Contact Us', href: '/contact' },
-                    { name: 'Contact Sales', href: '/contact-sales' }
-                  ].map((link, idx) => (
-                    <motion.div 
-                      key={link.name}
-                      variants={{
-                        hidden: { opacity: 0, x: 20 },
-                        show: { opacity: 1, x: 0 }
-                      }}
-                    >
-                      <Link
-                        href={link.href}
-                        className="block group py-1"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-syne font-semibold text-lg text-white group-hover:text-[#00C28A] transition-colors flex items-center gap-2 group-hover:translate-x-1 transition-transform duration-300">
-                            <span className="text-xs font-mono text-[#00C28A]/50 group-hover:text-[#00C28A] transition-colors">0{idx + 1}.</span>
-                            {link.name}
-                          </span>
-                          <ChevronRight className="w-4 h-4 text-[#4A5775] group-hover:text-[#00C28A] group-hover:translate-x-1 transition-all duration-300" />
+                {/* Main Navigation with Dropdowns */}
+                <div className="px-6 py-6 space-y-2">
+                  {/* Navigation Section */}
+                  <div className="mb-6">
+                    <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
+                      <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
+                      Primary Navigation
+                    </div>
+                    
+                    <div className="space-y-1">
+                      {[
+                        { name: 'Home', href: '/', icon: '🏠' },
+                        { name: 'Custom Solutions', href: '/solutions', icon: '🔧' },
+                        { name: 'About Us', href: '/about', icon: 'ℹ️' },
+                        { name: 'Awards', href: '/awards', icon: '🏆' },
+                        { name: 'Contact Us', href: '/contact', icon: '📧' },
+                        { name: 'Contact Sales', href: '/contact-sales', icon: '💼' }
+                      ].map((item, idx) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg border border-[#1A2640]/30 bg-[#0F1729]/30 hover:bg-[#0F1729]/60 hover:border-[#00C28A]/30 transition-all duration-300 group"
+                        >
+                          <span className="text-lg group-hover:scale-110 transition-transform">{item.icon}</span>
+                          <span className="flex-1 font-medium text-[#F0F4FF] group-hover:text-[#00C28A] transition-colors">{item.name}</span>
+                          <ChevronRight className="w-4 h-4 text-[#4A5775] group-hover:text-[#00C28A] group-hover:translate-x-1 transition-all" />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Ecosystem Dropdown Section */}
+                  <div className="mb-6">
+                    <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
+                      <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
+                      Ecosystem Modules
+                    </div>
+                    
+                    <div className="space-y-2">
+                      {ecosystemItems.map((item) => (
+                        <div key={item.name}>
+                          <button
+                            onClick={() => setMobileDropdownOpen(mobileDropdownOpen === item.name ? null : item.name)}
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-[#1A2640]/30 bg-[#0F1729]/30 hover:bg-[#0F1729]/60 hover:border-[#00C28A]/30 transition-all duration-300 group"
+                          >
+                            <Image 
+                              src={item.icon} 
+                              alt={item.name}
+                              width={32}
+                              height={32}
+                              className="w-8 h-8 rounded object-contain group-hover:scale-110 transition-transform"
+                            />
+                            <span className="flex-1 font-medium text-[#F0F4FF] group-hover:text-[#00C28A] transition-colors">{item.name}</span>
+                            <ChevronRight 
+                              className={`w-4 h-4 text-[#4A5775] transition-all ${
+                                mobileDropdownOpen === item.name ? 'rotate-90 text-[#00C28A]' : 'group-hover:text-[#00C28A]'
+                              }`} 
+                            />
+                          </button>
+                          
+                          {/* Dropdown Content */}
+                          <AnimatePresence>
+                            {mobileDropdownOpen === item.name && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                                className="overflow-hidden"
+                              >
+                                <div className="px-4 py-3 ml-4 border-l-2 border-[#00C28A]/30 bg-[#0F1729]/40 rounded-r-lg mt-1">
+                                  <div className="text-xs text-[#8A9BBB] mb-2">{item.description}</div>
+                                  <Link
+                                    href={item.href}
+                                    onClick={() => {
+                                      setMobileMenuOpen(false)
+                                      setMobileDropdownOpen(null)
+                                    }}
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#00C28A]/10 border border-[#00C28A]/20 rounded text-[#00C28A] text-xs font-medium hover:bg-[#00C28A]/20 transition-all"
+                                  >
+                                    Access Module <ChevronRight className="w-3 h-3" />
+                                  </Link>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
+                      ))}
+                    </div>
+                  </div>
 
-              {/* Ecosystem Section */}
-              <div className="mb-8">
-                <div className="text-[10px] font-mono font-semibold uppercase tracking-widest text-[#4A5775] mb-4 border-b border-[#1A2640] pb-2 flex justify-between items-center">
-                  <span>Our Ecosystem</span>
-                  <span className="text-[#00C28A]/30 font-bold">ECO_SYS</span>
-                </div>
-                
-                <motion.div 
-                  initial="hidden"
-                  animate="show"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    show: {
-                      opacity: 1,
-                      transition: { staggerChildren: 0.05, delayChildren: 0.15 }
-                    }
-                  }}
-                  className="space-y-3"
-                >
-                  {ecosystemItems.map((item) => (
-                    <motion.div 
-                      key={item.name}
-                      variants={{
-                        hidden: { opacity: 0, x: 20 },
-                        show: { opacity: 1, x: 0 }
-                      }}
+                  {/* CTA Section */}
+                  <div className="pt-4 border-t border-[#1A2640]/30">
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full px-6 py-4 bg-gradient-to-r from-[#00C28A] to-[#00C28A]/80 text-[#080D1A] rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-[#00C28A]/25 transition-all duration-300 relative overflow-hidden group"
                     >
-                      <Link
-                        href={item.href}
-                        className="block p-2.5 rounded-lg border border-[#1A2640]/40 bg-[#0F1729]/30 hover:bg-[#0F1729]/80 hover:border-[#00C28A]/20 transition-all duration-300 group"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="text-xl group-hover:scale-110 transition-transform duration-300">{item.icon}</span>
-                          <div className="flex-1">
-                            <div className="font-syne font-semibold text-sm text-white group-hover:text-[#00C28A] transition-colors">
-                              {item.name}
-                            </div>
-                            <div className="text-[11px] text-[#8A9BBB]">{item.description}</div>
-                          </div>
-                          {item.isComingSoon && (
-                            <span className="px-2 py-0.5 bg-[#F5A6231a] text-[#F5A623] text-[9px] font-mono font-bold rounded border border-[#F5A62333] whitespace-nowrap">SOON</span>
-                          )}
-                          {item.isFlagship && (
-                            <span className="px-2 py-0.5 bg-[#00C28A]/10 text-[#00C28A] text-[9px] font-mono font-bold rounded border border-[#00C28A]/20 whitespace-nowrap">FLAG</span>
-                          )}
-                        </div>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
+                      <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                      <div className="relative z-10 flex items-center justify-center gap-2">
+                        <span>Enter Ecosystem</span>
+                        <span className="font-mono">→</span>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
 
-              {/* CTA Button */}
-              <div className="mt-auto pt-4 border-t border-[#1A2640]/50">
-                <Link 
-                  href="/login" 
-                  className="w-full px-6 py-3.5 bg-[#00C28A] text-[#080D1A] rounded-full text-sm font-bold hover:brightness-110 transition-all button-glow text-center block relative overflow-hidden group"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
-                  <span className="relative z-10 flex items-center justify-center gap-2">
-                    Enter Ecosystem <span className="font-mono">→</span>
-                  </span>
-                </Link>
+                {/* Footer Info */}
+                <div className="px-6 py-4 border-t border-[#1A2640]/30 mt-4">
+                  <div className="text-[9px] font-mono text-[#4A5775] text-center">
+                    <div>© 2024 Annita LLC. All rights reserved.</div>
+                    <div className="mt-1">Built for Africa. Operating at World Standard.</div>
+                  </div>
+                </div>
               </div>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

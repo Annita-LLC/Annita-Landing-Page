@@ -23,6 +23,15 @@ export const metadata: Metadata = {
   authors: [{ name: 'Annita LLC Engineering' }],
   creator: 'Annita LLC',
   publisher: 'Annita LLC',
+  icons: {
+    icon: [
+      { url: '/annita-real-logo.png', sizes: 'any', type: 'image/png' },
+      { url: '/favicon.ico', sizes: '16x16', type: 'image/x-icon' }
+    ],
+    apple: [
+      { url: '/annita-real-logo.png', sizes: '180x180', type: 'image/png' }
+    ]
+  },
   formatDetection: {
     email: false,
     address: false,
