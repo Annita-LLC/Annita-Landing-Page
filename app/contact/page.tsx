@@ -129,11 +129,11 @@ export default function ContactPage() {
             </span>
           </motion.div>
           
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-5xl md:text-7xl font-extrabold leading-tight mb-6 word-break"
+            className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 word-break"
             style={{ fontFamily: 'var(--font-syne)', fontWeight: 800 }}
           >
             <span style={{ color: '#F0F4FF' }}>Let's Build</span><br />

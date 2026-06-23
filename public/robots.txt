@@ -1,0 +1,56 @@
+# ============================================================================
+# Annita LLC - Enterprise Robots.txt Configuration
+# ============================================================================
+# Version: 2.0
+# Last Updated: 2026
+# Purpose: Search Engine Crawler Management & Traffic Control
+# ============================================================================
+
+# Allow all major search engines
+User-agent: *
+Allow: /
+
+# Disallow sensitive areas
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /*.xml$
+
+# Allow sitemap access
+Allow: /sitemap.xml
+Allow: /robots.txt
+
+# Crawl-delay for rate limiting (optional, respectful crawling)
+Crawl-delay: 1
+
+# ============================================================================
+# Specific Search Engine Configurations
+# ============================================================================
+
+# Googlebot
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+
+# ============================================================================
+# Sitemap Reference
+# ============================================================================
+Sitemap: https://www.an-nita.com/sitemap.xml
+
+# ============================================================================
+# Security & Compliance Notes
+# ============================================================================
+# - This file is publicly accessible at /robots.txt
+# - Changes should be reviewed by security team
+# - Monitor crawler traffic in analytics
+# - Update sitemap reference after domain changes
+# ============================================================================

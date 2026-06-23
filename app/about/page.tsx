@@ -191,7 +191,7 @@ export default function AboutPage() {
                 </div>
 
                 <div className="text-center mt-2">
-                  <div className="text-3xl font-bold mb-2 font-syne gradient-text">
+                  <div className="text-2xl md:text-3xl font-bold mb-2 font-syne gradient-text">
                     {stat.value}
                   </div>
                   <p className="text-xs uppercase tracking-wider font-mono text-[#8A9BBB] mt-3 group-hover:text-white transition-colors">{stat.label}</p>

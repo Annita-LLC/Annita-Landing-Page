@@ -100,7 +100,7 @@ function AnimatedCounter({ value, prefix = '', suffix }: { value: number; prefix
   }, [isInView, value])
 
   return (
-    <div ref={ref} className="text-3xl font-bold gradient-text font-syne">
+    <div ref={ref} className="text-2xl md:text-3xl font-bold gradient-text font-syne">
       {prefix}{count.toLocaleString()}{suffix}
     </div>
   )
@@ -661,32 +661,32 @@ export default function HomePage() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8 items-center justify-center relative z-10">
           
           <div className="text-center lg:text-left p-3 rounded-lg border border-[#1A2640]/40 bg-[#0F1729]/30 hover:border-[#00C28A]/20 transition-all duration-300">
-            <div className="text-xl md:text-2xl font-bold mb-1 font-syne gradient-text">3,000+</div>
+            <div className="text-lg md:text-2xl font-bold mb-1 font-syne gradient-text">3,000+</div>
             <div className="text-[10px] md:text-xs font-mono uppercase text-[#8A9BBB]">Verified MSMEs<br />Onboarded</div>
           </div>
-          
+
           <div className="text-center lg:text-left p-3 rounded-lg border border-[#1A2640]/40 bg-[#0F1729]/30 hover:border-[#00C28A]/20 transition-all duration-300">
-            <div className="text-xl md:text-2xl font-bold mb-1 font-syne gradient-text">Top 55/200</div>
+            <div className="text-lg md:text-2xl font-bold mb-1 font-syne gradient-text">Top 55/200</div>
             <div className="text-[10px] md:text-xs font-mono uppercase text-[#8A9BBB]">Global Programs<br />Shanghai & Wuhan</div>
           </div>
-          
+
           <div className="text-center lg:text-left p-3 rounded-lg border border-[#1A2640]/40 bg-[#0F1729]/30 hover:border-[#00C28A]/20 transition-all duration-300">
-            <div className="text-xl md:text-2xl font-bold mb-1 font-syne gradient-text">UN STI 2026</div>
+            <div className="text-lg md:text-2xl font-bold mb-1 font-syne gradient-text">UN STI 2026</div>
             <div className="text-[10px] md:text-xs font-mono uppercase text-[#8A9BBB]">SDG Solutions Book<br />Innovation #05</div>
           </div>
-          
+
           <div className="text-center lg:text-left p-3 rounded-lg border border-[#1A2640]/40 bg-[#0F1729]/30 hover:border-[#00C28A]/20 transition-all duration-300">
-            <div className="text-xl md:text-2xl font-bold mb-1 font-syne gradient-text">APGYD 2026</div>
+            <div className="text-lg md:text-2xl font-bold mb-1 font-syne gradient-text">APGYD 2026</div>
             <div className="text-[10px] md:text-xs font-mono uppercase text-[#8A9BBB]">Excellence Program<br />UN-Backed</div>
           </div>
 
           <div className="text-center lg:text-left p-3 rounded-lg border border-[#1A2640]/40 bg-[#0F1729]/30 hover:border-[#00C28A]/20 transition-all duration-300">
-            <div className="text-xl md:text-2xl font-bold mb-1 font-syne gradient-text">OSVP 2024</div>
+            <div className="text-lg md:text-2xl font-bold mb-1 font-syne gradient-text">OSVP 2024</div>
             <div className="text-[10px] md:text-xs font-mono uppercase text-[#8A9BBB]">1st Place Winner<br />Liberia Winner</div>
           </div>
 
           <div className="text-center lg:text-left p-3 rounded-lg border border-[#1A2640]/40 bg-[#0F1729]/30 hover:border-[#00C28A]/20 transition-all duration-300">
-            <div className="text-xl md:text-2xl font-bold mb-1 font-syne gradient-text">AU Fellowship</div>
+            <div className="text-lg md:text-2xl font-bold mb-1 font-syne gradient-text">AU Fellowship</div>
             <div className="text-[10px] md:text-xs font-mono uppercase text-[#8A9BBB]">Top 50 African<br />Businesses</div>
           </div>
         </div>

@@ -4,6 +4,17 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import SiteLoaderWrapper from '@/components/site-loader-wrapper'
 import { Analytics } from '@vercel/analytics/next'
+import CookiesBanner from '@/components/cookies-banner'
+import ScrollProgress from '@/components/scroll-progress'
+import TechCursor from '@/components/tech-cursor'
+import TerminalWidget from '@/components/terminal-widget'
+import NetworkStatus from '@/components/network-status'
+import ParticleBackground from '@/components/particle-background'
+import CommandPalette from '@/components/command-palette'
+import TechClock from '@/components/tech-clock'
+import SocialProofTicker from '@/components/social-proof-ticker'
+import SoundEffects from '@/components/sound-effects'
+import KeyboardShortcuts from '@/components/keyboard-shortcuts'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const syne = Syne({ subsets: ['latin'], variable: '--font-syne', weight: ['600', '700', '800'] })
@@ -126,6 +137,17 @@ export default function RootLayout({
             {children}
           </SiteLoaderWrapper>
         </ThemeProvider>
+        <SoundEffects />
+        <ParticleBackground />
+        <NetworkStatus />
+        <TechClock />
+        <TechCursor />
+        <ScrollProgress />
+        <TerminalWidget />
+        <CommandPalette />
+        <KeyboardShortcuts />
+        <SocialProofTicker />
+        <CookiesBanner />
         <Analytics />
       </body>
     </html>
