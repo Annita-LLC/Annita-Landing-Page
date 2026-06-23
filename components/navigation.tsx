@@ -435,9 +435,12 @@ export default function Navigation() {
 
                 {/* Footer Info */}
                 <div className="px-6 py-4 border-t border-[#1A2640]/30 mt-4">
-                  <div className="text-[9px] font-mono text-[#4A5775] text-center">
+                  <div className="text-[9px] font-mono text-[#4A5775] text-center space-y-1">
                     <div>© 2024 Annita LLC. All rights reserved.</div>
-                    <div className="mt-1">Built for Africa. Operating at World Standard.</div>
+                    <div>Built for Africa. Operating at World Standard.</div>
+                    <Link href="/cookies" onClick={() => setMobileMenuOpen(false)} className="text-[#8A9BBB] hover:text-[#00C28A] transition-colors">
+                      Cookie Policy
+                    </Link>
                   </div>
                 </div>
               </div>
