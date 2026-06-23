@@ -260,7 +260,8 @@ export default function Navigation() {
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="fixed top-[56px] md:top-[64px] bottom-0 right-0 w-full md:w-80 bg-[#080D1A]/95 border-l border-[#00C28A]/10 shadow-[0_0_50px_rgba(0,194,138,0.08)] z-50 lg:hidden tech-grid tech-scanline"
           >
-            <div className="flex flex-col h-full px-6 py-8 overflow-y-auto custom-scrollbar relative z-10 backdrop-blur-md">
+            <div className="flex flex-col h-full overflow-y-auto custom-scrollbar relative z-10 backdrop-blur-md" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div className="px-6 py-6">
               
               {/* Cyber Status Dashboard Panel */}
               <div className="mb-6 p-4 rounded-xl border border-[#1A2640] bg-[#0F1729]/60 relative overflow-hidden">
@@ -407,6 +408,7 @@ export default function Navigation() {
                     Enter Ecosystem <span className="font-mono">→</span>
                   </span>
                 </Link>
+              </div>
               </div>
             </div>
           </motion.div>

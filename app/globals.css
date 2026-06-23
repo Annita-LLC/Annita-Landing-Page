@@ -250,22 +250,34 @@ body {
 
   /* Custom scrollbar for high-tech panels */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 8px;
+    height: 8px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(8, 13, 26, 0.5);
+    background: rgba(8, 13, 26, 0.8);
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 194, 138, 0.25);
-    border-radius: 2px;
+    background: rgba(0, 194, 138, 0.4);
+    border-radius: 4px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 194, 138, 0.55);
+    background: rgba(0, 194, 138, 0.7);
   }
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 194, 138, 0.25) rgba(8, 13, 26, 0.5);
+    scrollbar-color: rgba(0, 194, 138, 0.4) rgba(8, 13, 26, 0.8);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Mobile menu height fix */
+  .mobile-menu-container {
+    height: calc(100vh - 56px);
+  }
+
+  @media (min-width: 768px) {
+    .mobile-menu-container {
+      height: calc(100vh - 64px);
+    }
   }
 
   /* Techy Marquee / Scroller */

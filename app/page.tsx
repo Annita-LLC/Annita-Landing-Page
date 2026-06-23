@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Navigation from '@/components/navigation'
 import WelcomeModal from '@/components/welcome-modal'
 import LiveCodingTerminal from '@/components/live-coding-terminal'
+import TechGlobe from '@/components/tech-globe'
 
 const stats = [
   { value: 3000, label: 'Verified MSMEs', prefix: '', suffix: '+', status: 'ACTIVE_NODE' },
@@ -299,6 +300,26 @@ export default function HomePage() {
             </motion.div>
           ))}
         </motion.div>
+      </section>
+
+      {/* Global Expansion Section */}
+      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style={{ backgroundColor: 'rgba(0, 194, 138, 0.08)', border: '1px solid rgba(0, 194, 138, 0.2)' }}>
+            <Globe className="w-3.5 h-3.5 text-[#00C28A]" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#00C28A] font-mono">LIVE_EXPANSION</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-syne text-[#F0F4FF]">Global Expansion Network</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm">
+            Real-time visualization of Annita's expansion across Africa — connecting markets, building infrastructure, and scaling impact.
+          </p>
+        </motion.div>
+        <TechGlobe />
       </section>
 
       {/* Features Section */}
