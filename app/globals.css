@@ -267,4 +267,41 @@ body {
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 194, 138, 0.25) rgba(8, 13, 26, 0.5);
   }
+
+  /* Techy Marquee / Scroller */
+  .tech-marquee-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .animate-marquee {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+    will-change: transform;
+  }
+  
+  .animate-marquee2 {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee2 20s linear infinite;
+    will-change: transform;
+  }
+  
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+  
+  @keyframes marquee2 {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0); }
+  }
+
+  .tech-marquee-container:hover .animate-marquee,
+  .tech-marquee-container:hover .animate-marquee2 {
+    animation-play-state: paused;
+  }
 }
+

@@ -273,6 +273,22 @@ export default function Navigation() {
                   <div>LOC: LIBERIA/HQ</div>
                   <div>VER: v1.2.0-PROD</div>
                 </div>
+
+                {/* Scrolling Telemetry */}
+                <div className="border-t border-[#1A2640] pt-2.5 mt-2.5">
+                  <div className="text-[8px] font-mono text-[#00C28A]/80 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-[#00C28A] rounded-full animate-pulse" />
+                    Live System Telemetry
+                  </div>
+                  <div className="relative flex overflow-x-hidden w-full tech-marquee-container py-0.5">
+                    <div className="animate-marquee whitespace-nowrap font-mono text-[9px] text-[#8A9BBB] tracking-wider pr-4">
+                      {"SYSTEM: ACTIVE // LOC: LIBERIA/HQ // LATENCY: 18ms // SSL: SECURE // ANNITAPAY: ENCRYPTION ACTIVE // EZRI AI: ANALYZING OPPORTUNITIES // PULSE HEALTH: CHANNELS SECURED // HUB: 24 ACTIVE INNOVATIONS // CUSTOM SOLUTIONS: DELIVERING // INFRASTRUCTURE: NOMINAL // SYSTEM: 100% OPERATIONAL //   "}
+                    </div>
+                    <div className="absolute top-0 left-0 animate-marquee2 whitespace-nowrap font-mono text-[9px] text-[#8A9BBB] tracking-wider pr-4">
+                      {"SYSTEM: ACTIVE // LOC: LIBERIA/HQ // LATENCY: 18ms // SSL: SECURE // ANNITAPAY: ENCRYPTION ACTIVE // EZRI AI: ANALYZING OPPORTUNITIES // PULSE HEALTH: CHANNELS SECURED // HUB: 24 ACTIVE INNOVATIONS // CUSTOM SOLUTIONS: DELIVERING // INFRASTRUCTURE: NOMINAL // SYSTEM: 100% OPERATIONAL //   "}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Main Navigation */}

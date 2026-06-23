@@ -6,6 +6,9 @@ import { ArrowLeft, ArrowRight, CheckCircle2, Upload, X, Loader2 } from 'lucide-
 import Link from 'next/link'
 import Navigation from '@/components/navigation'
 import { submitSolutionsRequestForm } from '@/lib/api'
+import { FormFeedbackModal } from '@/components/FormFeedbackModal'
+import { checkServerHealthWithRetry } from '@/lib/health-check'
+import { HoneypotField } from '@/components/HoneypotField'
 
 const solutionTypes = [
   { id: 'mobile', name: 'Mobile Application', icon: '📱' },
@@ -139,23 +142,6 @@ export default function RequestPage() {
 
   const [uploadedFiles, setUploadedFiles] = useState<{ brand: File[], wireframes: File[] }>({ brand: [], wireframes: [] })
 
-  // Save form data to localStorage
-  useEffect(() => {
-    localStorage.setItem('solutionsFormDraft', JSON.stringify(formData))
-  }, [formData])
-
-  // Load form data from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('solutionsFormDraft')
-    if (saved) {
-      try {
-        setFormData(JSON.parse(saved))
-      } catch (e) {
-        console.error('Error loading saved form:', e)
-      }
-    }
-  }, [])
-
   const steps = [
     { number: 1, title: 'About You' },
     { number: 2, title: 'Your Project' },
@@ -208,10 +194,36 @@ export default function RequestPage() {
     })
   }
 
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalType, setModalType] = useState<'success' | 'error' | 'server-unavailable' | 'checking'>('checking')
+  const [modalMessage, setModalMessage] = useState('')
+  const [modalLatency, setModalLatency] = useState<number | undefined>()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitError('')
+    
+    // Show checking modal
+    setModalType('checking')
+    setModalMessage('Verifying server connection...')
+    setModalOpen(true)
+    setModalLatency(undefined)
+
+    // Check server health first
+    const healthCheck = await checkServerHealthWithRetry()
+    
+    if (!healthCheck.isHealthy) {
+      setModalType('server-unavailable')
+      setModalMessage(healthCheck.message)
+      setModalLatency(healthCheck.latency)
+      setIsSubmitting(false)
+      return
+    }
+
+    // Server is healthy, proceed with submission
+    setModalType('checking')
+    setModalMessage('Submitting your project brief...')
 
     try {
       // Map file arrays to file metadata objects for JSON serialization
@@ -233,17 +245,19 @@ export default function RequestPage() {
 
       const result = await submitSolutionsRequestForm(submissionData)
       if (result.success) {
-        // Save form data to localStorage for confirmation page rendering
-        localStorage.setItem('solutionsFormSubmitted', JSON.stringify(formData))
-        // Clear drafts
-        localStorage.removeItem('solutionsFormDraft')
+        // Close modal before redirect
+        setModalOpen(false)
         // Redirect to confirmation page
         window.location.href = '/solutions/request/submitted'
       } else {
+        setModalType('error')
+        setModalMessage(result.message)
         setSubmitError(result.message)
       }
     } catch (err) {
       console.error('Error submitting form:', err)
+      setModalType('error')
+      setModalMessage('An unexpected error occurred. Please try again later.')
       setSubmitError('An unexpected error occurred. Please try again later.')
     } finally {
       setIsSubmitting(false)
@@ -292,6 +306,7 @@ export default function RequestPage() {
           </Link>
 
           <form onSubmit={handleSubmit} className="space-y-8">
+            <HoneypotField />
             <AnimatePresence mode="wait">
               {currentStep === 1 && (
                 <motion.div
@@ -1232,6 +1247,15 @@ export default function RequestPage() {
           </div>
         </div>
       </footer>
+
+      {/* Form Feedback Modal */}
+      <FormFeedbackModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        type={modalType}
+        message={modalMessage}
+        latency={modalLatency}
+      />
     </div>
   )
 }

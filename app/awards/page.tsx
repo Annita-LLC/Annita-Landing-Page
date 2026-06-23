@@ -96,7 +96,7 @@ export default function AwardsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-5xl md:text-7xl font-extrabold leading-tight mb-6"
+            className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6"
           >
             <span className="gradient-text">Awards &</span><br />
             <span className="gradient-text">Recognitions</span>
@@ -106,7 +106,7 @@ export default function AwardsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
           >
             Global recognition for innovation, impact, and excellence in building Africa's digital future.
           </motion.p>

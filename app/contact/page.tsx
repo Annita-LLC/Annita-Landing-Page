@@ -6,6 +6,9 @@ import Link from 'next/link'
 import Navigation from '@/components/navigation'
 import { useState } from 'react'
 import { submitContactForm, ContactUsFormData } from '@/lib/api'
+import { FormFeedbackModal } from '@/components/FormFeedbackModal'
+import { checkServerHealthWithRetry } from '@/lib/health-check'
+import { HoneypotField } from '@/components/HoneypotField'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState<ContactUsFormData>({
@@ -17,23 +20,53 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalType, setModalType] = useState<'success' | 'error' | 'server-unavailable' | 'checking'>('checking')
+  const [modalMessage, setModalMessage] = useState('')
+  const [modalLatency, setModalLatency] = useState<number | undefined>()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    setSubmitStatus('idle')
-    setErrorMessage('')
+    
+    // Show checking modal
+    setModalType('checking')
+    setModalMessage('Verifying server connection...')
+    setModalOpen(true)
+    setModalLatency(undefined)
 
+    // Check server health first
+    const healthCheck = await checkServerHealthWithRetry()
+    
+    if (!healthCheck.isHealthy) {
+      setModalType('server-unavailable')
+      setModalMessage(healthCheck.message)
+      setModalLatency(healthCheck.latency)
+      setIsSubmitting(false)
+      return
+    }
+
+    // Server is healthy, proceed with submission
+    setModalType('checking')
+    setModalMessage('Submitting your message...')
+    
     try {
       const result = await submitContactForm(formData)
       if (result.success) {
-        setSubmitStatus('success')
+        setModalType('success')
+        setModalMessage('Thank you for contacting Annita! We will respond within 1-2 business days.')
+        setModalLatency(healthCheck.latency)
         setFormData({ name: '', email: '', phone: '', message: '' })
+        setSubmitStatus('success')
       } else {
+        setModalType('error')
+        setModalMessage(result.message)
         setSubmitStatus('error')
         setErrorMessage(result.message)
       }
     } catch (error) {
+      setModalType('error')
+      setModalMessage('An error occurred. Please try again later.')
       setSubmitStatus('error')
       setErrorMessage('An error occurred. Please try again later.')
     } finally {
@@ -150,6 +183,7 @@ export default function ContactPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              <HoneypotField />
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>
                   Full Name *
@@ -282,6 +316,15 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      {/* Form Feedback Modal */}
+      <FormFeedbackModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        type={modalType}
+        message={modalMessage}
+        latency={modalLatency}
+      />
 
       {/* CTA Section */}
       <section className="py-24 px-4 md:px-8 max-w-[1400px] mx-auto text-center">

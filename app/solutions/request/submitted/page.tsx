@@ -1,7 +1,6 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
 import { ArrowRight, CheckCircle2, FileText, Phone, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import Navigation from '@/components/navigation'
@@ -25,23 +24,6 @@ const nextSteps = [
 ]
 
 export default function SubmittedPage() {
-  const [formData, setFormData] = useState<any>(null)
-
-  useEffect(() => {
-    const saved = localStorage.getItem('solutionsFormSubmitted')
-    if (saved) {
-      try {
-        setFormData(JSON.parse(saved))
-        // Clear the saved data after loading
-        localStorage.removeItem('solutionsFormSubmitted')
-      } catch (e) {
-        console.error('Error loading form data:', e)
-      }
-    }
-  }, [])
-
-  const firstName = formData?.fullName?.split(' ')[0] || 'there'
-  const email = formData?.email || 'your email'
   return (
     <div className="min-h-screen tech-grid" style={{ backgroundColor: '#080D1A', color: '#F0F4FF' }}>
       <Navigation />
@@ -113,7 +95,7 @@ export default function SubmittedPage() {
             className="text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
             style={{ color: '#8A9BBB' }}
           >
-            Thank you, {firstName}. We have received your Custom Solutions request and our team will review it within 1–2 business days. Expect to hear from us at {email}.
+            Thank you! We have received your Custom Solutions request and our team will review it within 1–2 business days. Expect to hear from us soon.
           </motion.p>
 
           <motion.div

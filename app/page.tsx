@@ -176,7 +176,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 word-break"
+              className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 word-break"
               style={{ fontFamily: 'var(--font-syne)', fontWeight: 800 }}
             >
               <span style={{ color: '#F0F4FF' }}>Innovation.</span><br />
@@ -188,7 +188,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-lg md:text-xl mb-8 max-w-2xl leading-relaxed"
+              className="text-sm sm:text-base md:text-lg lg:text-xl mb-8 max-w-2xl leading-relaxed"
               style={{ color: '#8A9BBB' }}
             >
               Annita is a global diversified ecosystem spanning marketplace infrastructure, fintech, digital health, AI, and custom technology — built for Africa, operating at world standard.

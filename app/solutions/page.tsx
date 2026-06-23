@@ -101,7 +101,7 @@ export default function SolutionsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-5xl md:text-7xl font-extrabold leading-tight mb-6 word-break"
+            className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6 word-break"
             style={{ fontFamily: 'var(--font-syne)', fontWeight: 800 }}
           >
             <span style={{ color: '#F0F4FF' }}>We Build What</span><br />
@@ -112,7 +112,7 @@ export default function SolutionsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
+            className="text-sm sm:text-base md:text-lg lg:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
             style={{ color: '#8A9BBB' }}
           >
             Annita delivers custom-built technology solutions for MSMEs, governments, and strategic partners across the continent. From concept to deployment — we engineer with precision.
