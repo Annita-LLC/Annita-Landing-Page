@@ -42,7 +42,7 @@ export default function TechClock() {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="fixed top-20 right-4 z-40 hidden md:block"
+      className="fixed top-20 right-4 z-40"
     >
       <div
         className="flex flex-col items-end gap-1 px-4 py-2 rounded-lg"

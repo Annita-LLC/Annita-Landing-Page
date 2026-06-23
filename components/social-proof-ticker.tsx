@@ -70,7 +70,7 @@ export default function SocialProofTicker() {
           initial={{ opacity: 0, x: 100, y: 0 }}
           animate={{ opacity: 1, x: 0, y: 0 }}
           exit={{ opacity: 0, x: 100, y: 0 }}
-          className="fixed bottom-28 right-4 z-40 hidden md:block"
+          className="fixed bottom-28 right-4 z-40"
         >
           <div
             className="flex items-center gap-3 px-4 py-3 rounded-lg"

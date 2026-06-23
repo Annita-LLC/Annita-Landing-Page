@@ -45,7 +45,7 @@ export default function NetworkStatus() {
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="fixed top-20 left-4 z-40 hidden md:block"
+      className="fixed top-20 left-4 z-40"
     >
       <div
         className="flex items-center gap-3 px-4 py-2 rounded-lg"

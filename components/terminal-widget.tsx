@@ -79,7 +79,7 @@ export default function TerminalWidget() {
       {/* Toggle Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-24 right-4 z-40 p-3 rounded-lg hidden md:block"
+        className="fixed bottom-24 right-4 z-40 p-3 rounded-lg"
         style={{
           backgroundColor: '#0F1729',
           border: '1px solid #1A2640',
@@ -98,7 +98,7 @@ export default function TerminalWidget() {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed bottom-24 right-4 z-40 w-96 hidden md:block"
+            className="fixed bottom-24 right-4 z-40 w-[calc(100%-2rem)] md:w-96 left-4 md:left-auto"
             style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', borderRadius: '8px' }}
           >
             {/* Window Header */}

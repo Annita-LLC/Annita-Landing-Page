@@ -34,7 +34,7 @@ export default function TechCursor() {
     <>
       {/* Main cursor */}
       <motion.div
-        className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-50 hidden md:block"
+        className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-50"
         style={{
           backgroundColor: '#00C28A',
           boxShadow: '0 0 20px rgba(0, 194, 138, 0.5), 0 0 40px rgba(0, 194, 138, 0.3)',
@@ -56,7 +56,7 @@ export default function TechCursor() {
 
       {/* Outer ring */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-50 hidden md:block"
+        className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-50"
         style={{
           border: '2px solid #00C28A',
           opacity: 0.5,
@@ -78,7 +78,7 @@ export default function TechCursor() {
 
       {/* Trail effect */}
       <motion.div
-        className="fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none z-50 hidden md:block"
+        className="fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none z-50"
         style={{
           backgroundColor: '#00C28A',
           opacity: 0.3
