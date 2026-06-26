@@ -6,8 +6,23 @@ import { motion } from 'framer-motion'
 export default function TechCursor() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
+  const [isWiderDevice, setIsWiderDevice] = useState(false)
 
   useEffect(() => {
+    // Check if device is wider than tablet (md breakpoint)
+    const checkDevice = () => {
+      setIsWiderDevice(window.innerWidth >= 768)
+    }
+
+    checkDevice()
+    window.addEventListener('resize', checkDevice)
+
+    return () => window.removeEventListener('resize', checkDevice)
+  }, [])
+
+  useEffect(() => {
+    if (!isWiderDevice) return
+
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
@@ -28,7 +43,10 @@ export default function TechCursor() {
       window.removeEventListener('mousemove', updateMousePosition)
       window.removeEventListener('mouseover', handleMouseOver)
     }
-  }, [])
+  }, [isWiderDevice])
+
+  // Don't render on smaller devices
+  if (!isWiderDevice) return null
 
   return (
     <>
