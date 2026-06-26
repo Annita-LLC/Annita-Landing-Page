@@ -15,8 +15,7 @@ NPM_FLAGS = "--production=false"
 NODE_ENV = "production"
 
 # Build-time secrets for Prisma generation
-# These are available during build but not exposed in final image
-DATABASE_URL = "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza195STRPQnJYWC1GMnFob2FrTUFvRzgiLCJhcGlfa2V5IjoiMDFLVzIwN1gzMlhCNDBRRlEyNTQ5OTRNR0YiLCJ0ZW5hbnRfaWQiOiJhZmQzOTllYzk2NTQyNWVlZDBlZDgyNjgxZDlkMWQ3MTUzMzZmYTUwODM0M2M5NDdlMzNkODk0ZDk2NGUyOWYyIiwiaW50ZXJuYWxfc2VjcmV0IjoiY2E5NmE4MWItYTE0Yy00YjlhLTgzMDUtNDNjNWU0YWY5NDY1In0.zzcchFqVoPAbZUWHJlE4s1gwZoHFjojL7XhkeWH4uwo"
+# DATABASE_URL will be provided by Railway Postgres service
 
 # Pre-deploy command for database migrations
 [deploy]
@@ -84,11 +83,12 @@ restartPolicyMaxRetries = 10
 # ============================================================================
 # These should be configured in Railway's environment variables section
 
-# Database Configuration
-# DATABASE_URL = "prisma+postgres://accelerate.prisma-data.net/?api_key=..."
-# PGHOST = "pooled.db.prisma.io"
+# Database Configuration (Railway Postgres Service)
+# DATABASE_URL will be automatically set by Railway when you add a Postgres service
+# Format: postgresql://postgres:password@host:port/database
+# PGHOST = "..."
 # PGPORT = "5432"
-# PGUSER = "..."
+# PGUSER = "postgres"
 # PGPASSWORD = "..."
 # PGDATABASE = "postgres"
 # PGSSLMODE = "require"
