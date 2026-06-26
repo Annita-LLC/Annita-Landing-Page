@@ -36,18 +36,6 @@ export const securityHeaders = helmet({
   referrerPolicy: {
     policy: 'strict-origin-when-cross-origin',
   },
-  permissionsPolicy: {
-    features: {
-      geolocation: ["'none'"],
-      microphone: ["'none'"],
-      camera: ["'none'"],
-      payment: ["'none'"],
-      usb: ["'none'"],
-      magnetometer: ["'none'"],
-      gyroscope: ["'none'"],
-      accelerometer: ["'none'"],
-    },
-  },
 });
 
 // ============================================================================
@@ -125,8 +113,18 @@ export const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
+  // Log full error details for debugging
+  console.error('[ERROR HANDLER] Unhandled error:', {
+    message: err.message,
+    stack: err.stack,
+    path: req.path,
+    method: req.method,
+    requestId: req.id,
+    timestamp: new Date().toISOString(),
+  });
+
   logger.error('Unhandled error', {
     error: err.message,
     stack: err.stack,
