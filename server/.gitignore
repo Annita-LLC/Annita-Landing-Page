@@ -37,8 +37,9 @@ dist
 build
 
 # Prisma
-prisma/migrations/*.sql
-!prisma/migrations
+# Keep migration files for deployment
+# prisma/migrations/*.sql
+# !prisma/migrations
 
 # Railway
 .railway
