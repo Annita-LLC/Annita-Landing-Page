@@ -9,7 +9,7 @@ import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { z } from 'zod';
-import { sendContactFormEmail } from '../lib/email.js';
+import { sendContactFormEmail, sendContactFormConfirmation } from '../lib/email.js';
 
 const router = Router();
 
@@ -54,17 +54,25 @@ router.post('/', async (req: Request, res: Response) => {
       endpoint: 'POST:/api/contact',
     });
 
-    // Send email notification
+    // Send email notifications
     try {
+      // Send to admin
       await sendContactFormEmail({
         name: validatedData.name,
         email: validatedData.email,
         phone: validatedData.phone,
         message: validatedData.message,
       });
-      logger.info('Contact form email sent successfully', { requestId, submissionId: submission.id });
+      logger.info('Contact form email sent to admin successfully', { requestId, submissionId: submission.id });
+
+      // Send confirmation to client
+      await sendContactFormConfirmation({
+        name: validatedData.name,
+        email: validatedData.email,
+      });
+      logger.info('Contact form confirmation email sent to client successfully', { requestId, submissionId: submission.id });
     } catch (emailError) {
-      logger.error('Failed to send contact form email', {
+      logger.error('Failed to send contact form emails', {
         requestId,
         submissionId: submission.id,
         error: emailError instanceof Error ? emailError.message : 'Unknown error',

@@ -9,7 +9,7 @@ import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { z } from 'zod';
-import { sendCustomEmail } from '../lib/email.js';
+import { sendCustomEmail, sendSolutionsRequestConfirmation } from '../lib/email.js';
 
 const router = Router();
 
@@ -152,8 +152,9 @@ router.post('/', async (req: Request, res: Response) => {
       endpoint: 'POST:/api/solutions-request',
     });
 
-    // Send email notification
+    // Send email notifications
     try {
+      // Send to admin
       const emailHtml = `
         <!DOCTYPE html>
         <html>
@@ -225,9 +226,17 @@ router.post('/', async (req: Request, res: Response) => {
         subject: `New Solutions Request from ${validatedData.fullName}`,
         html: emailHtml,
       });
-      logger.info('Solutions request email sent successfully', { requestId, submissionId: submission.id });
+      logger.info('Solutions request email sent to admin successfully', { requestId, submissionId: submission.id });
+
+      // Send confirmation to client
+      await sendSolutionsRequestConfirmation({
+        name: validatedData.fullName,
+        email: validatedData.email,
+        projectName: validatedData.projectName,
+      });
+      logger.info('Solutions request confirmation email sent to client successfully', { requestId, submissionId: submission.id });
     } catch (emailError) {
-      logger.error('Failed to send solutions request email', {
+      logger.error('Failed to send solutions request emails', {
         requestId,
         submissionId: submission.id,
         error: emailError instanceof Error ? emailError.message : 'Unknown error',

@@ -9,7 +9,7 @@ import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { z } from 'zod';
-import { sendSalesInquiryEmail } from '../lib/email.js';
+import { sendSalesInquiryEmail, sendSalesInquiryConfirmation } from '../lib/email.js';
 
 const router = Router();
 
@@ -56,8 +56,9 @@ router.post('/', async (req: Request, res: Response) => {
       endpoint: 'POST:/api/contact-sales',
     });
 
-    // Send email notification
+    // Send email notifications
     try {
+      // Send to admin
       await sendSalesInquiryEmail({
         name: validatedData.name,
         email: validatedData.email,
@@ -65,9 +66,17 @@ router.post('/', async (req: Request, res: Response) => {
         company: validatedData.companyName,
         message: validatedData.projectDescription,
       });
-      logger.info('Sales inquiry email sent successfully', { requestId, submissionId: submission.id });
+      logger.info('Sales inquiry email sent to admin successfully', { requestId, submissionId: submission.id });
+
+      // Send confirmation to client
+      await sendSalesInquiryConfirmation({
+        name: validatedData.name,
+        email: validatedData.email,
+        company: validatedData.companyName,
+      });
+      logger.info('Sales inquiry confirmation email sent to client successfully', { requestId, submissionId: submission.id });
     } catch (emailError) {
-      logger.error('Failed to send sales inquiry email', {
+      logger.error('Failed to send sales inquiry emails', {
         requestId,
         submissionId: submission.id,
         error: emailError instanceof Error ? emailError.message : 'Unknown error',

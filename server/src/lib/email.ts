@@ -37,7 +37,7 @@ if (resendApiKey) {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Contact Form Email Template
+ * Contact Form Email Template (Admin)
  */
 export const contactFormTemplate = (data: {
   name: string;
@@ -104,6 +104,50 @@ export const contactFormTemplate = (data: {
 `;
 
 /**
+ * Contact Form Confirmation Template (Client)
+ */
+export const contactFormConfirmationTemplate = (data: { name: string }) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You for Contacting Annita</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #00C28A 0%, #00A870 100%); color: white; padding: 30px; text-align: center; }
+    .content { background: #f9f9f9; padding: 30px; border-radius: 5px; }
+    .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✅ Thank You!</h1>
+      <p>Your message has been received</p>
+    </div>
+    <div class="content">
+      <h2>Dear ${data.name},</h2>
+      <p>Thank you for contacting Annita LLC. We have received your message and our team will get back to you within 1-2 business days.</p>
+      <p><strong>What happens next:</strong></p>
+      <ul>
+        <li>Our team reviews your inquiry</li>
+        <li>We'll respond via email or phone</li>
+        <li>If needed, we'll schedule a consultation</li>
+      </ul>
+      <p>If you have any urgent questions, please call us at +231 77 505 7227.</p>
+    </div>
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} Annita LLC - Africa's Digital Heartbeat</p>
+      <p>www.an-nita.com | info@an-nita.com</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+/**
  * Newsletter Subscription Template
  */
 export const newsletterTemplate = (email: string) => `
@@ -143,7 +187,7 @@ export const newsletterTemplate = (email: string) => `
 `;
 
 /**
- * Sales Inquiry Template
+ * Sales Inquiry Template (Admin)
  */
 export const salesInquiryTemplate = (data: {
   name: string;
@@ -216,12 +260,57 @@ export const salesInquiryTemplate = (data: {
 </html>
 `;
 
+/**
+ * Sales Inquiry Confirmation Template (Client)
+ */
+export const salesInquiryConfirmationTemplate = (data: { name: string; company: string }) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Inquiry Received</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #00C28A 0%, #00A870 100%); color: white; padding: 30px; text-align: center; }
+    .content { background: #f9f9f9; padding: 30px; border-radius: 5px; }
+    .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✅ Enterprise Inquiry Received</h1>
+      <p>Annita Enterprise Solutions</p>
+    </div>
+    <div class="content">
+      <h2>Dear ${data.name},</h2>
+      <p>Thank you for your interest in Annita Enterprise Solutions. We have received your inquiry from <strong>${data.company}</strong>.</p>
+      <p><strong>What happens next:</strong></p>
+      <ul>
+        <li>Our enterprise team reviews your project requirements</li>
+        <li>We'll contact you within 1-2 business days</li>
+        <li>We'll schedule a detailed consultation call</li>
+        <li>You'll receive a customized proposal</li>
+      </ul>
+      <p>For urgent matters, please call our enterprise team at +231 77 505 7227.</p>
+    </div>
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} Annita LLC - Enterprise Solutions</p>
+      <p>www.an-nita.com | sales@an-nita.com</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // EMAIL SENDING FUNCTIONS
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
- * Send contact form email
+ * Send contact form email (admin notification)
  */
 export async function sendContactFormEmail(data: {
   name: string;
@@ -246,11 +335,43 @@ export async function sendContactFormEmail(data: {
       html,
     });
 
-    logger.info('Contact form email sent', { to: adminEmail, from: data.email });
+    logger.info('Contact form email sent to admin', { to: adminEmail, from: data.email });
     return { success: true };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error('Contact form email failed', { error: errorMessage });
+    return { success: false, error: errorMessage };
+  }
+}
+
+/**
+ * Send contact form confirmation email (client)
+ */
+export async function sendContactFormConfirmation(data: {
+  name: string;
+  email: string;
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resendClient) {
+    const error = 'Email service not initialized';
+    logger.error('Contact form confirmation email failed', { error });
+    return { success: false, error };
+  }
+
+  try {
+    const html = contactFormConfirmationTemplate(data);
+    
+    await resendClient.emails.send({
+      from: resendFromEmail,
+      to: data.email,
+      subject: 'Thank you for contacting Annita LLC',
+      html,
+    });
+
+    logger.info('Contact form confirmation email sent', { to: data.email });
+    return { success: true };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Contact form confirmation email failed', { error: errorMessage });
     return { success: false, error: errorMessage };
   }
 }
@@ -285,7 +406,7 @@ export async function sendNewsletterConfirmation(email: string): Promise<{ succe
 }
 
 /**
- * Send sales inquiry email
+ * Send sales inquiry email (admin notification)
  */
 export async function sendSalesInquiryEmail(data: {
   name: string;
@@ -312,11 +433,44 @@ export async function sendSalesInquiryEmail(data: {
       html,
     });
 
-    logger.info('Sales inquiry email sent', { to: enterpriseEmail, from: data.email });
+    logger.info('Sales inquiry email sent to admin', { to: enterpriseEmail, from: data.email });
     return { success: true };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error('Sales inquiry email failed', { error: errorMessage });
+    return { success: false, error: errorMessage };
+  }
+}
+
+/**
+ * Send sales inquiry confirmation email (client)
+ */
+export async function sendSalesInquiryConfirmation(data: {
+  name: string;
+  email: string;
+  company: string;
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resendClient) {
+    const error = 'Email service not initialized';
+    logger.error('Sales inquiry confirmation email failed', { error });
+    return { success: false, error };
+  }
+
+  try {
+    const html = salesInquiryConfirmationTemplate(data);
+    
+    await resendClient.emails.send({
+      from: resendFromEmail,
+      to: data.email,
+      subject: 'Enterprise Inquiry Received - Annita LLC',
+      html,
+    });
+
+    logger.info('Sales inquiry confirmation email sent', { to: data.email });
+    return { success: true };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Sales inquiry confirmation email failed', { error: errorMessage });
     return { success: false, error: errorMessage };
   }
 }
@@ -349,6 +503,84 @@ export async function sendCustomEmail(params: {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error('Custom email failed', { error: errorMessage });
+    return { success: false, error: errorMessage };
+  }
+}
+
+/**
+ * Solutions Request Confirmation Template (Client)
+ */
+export const solutionsRequestConfirmationTemplate = (data: { name: string; projectName: string }) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solutions Request Received</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #00C28A 0%, #00A870 100%); color: white; padding: 30px; text-align: center; }
+    .content { background: #f9f9f9; padding: 30px; border-radius: 5px; }
+    .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✅ Solutions Request Received</h1>
+      <p>Annita Custom Solutions</p>
+    </div>
+    <div class="content">
+      <h2>Dear ${data.name},</h2>
+      <p>Thank you for submitting your solutions request for <strong>${data.projectName}</strong>. Our team has received your detailed requirements.</p>
+      <p><strong>What happens next:</strong></p>
+      <ul>
+        <li>Our solutions team reviews your project requirements</li>
+        <li>We'll contact you within 1-2 business days</li>
+        <li>We'll schedule a technical consultation</li>
+        <li>You'll receive a detailed proposal and timeline</li>
+      </ul>
+      <p>For urgent matters, please call our solutions team at +231 77 505 7227.</p>
+    </div>
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} Annita LLC - Custom Solutions</p>
+      <p>www.an-nita.com | solutions@an-nita.com</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+/**
+ * Send solutions request confirmation email (client)
+ */
+export async function sendSolutionsRequestConfirmation(data: {
+  name: string;
+  email: string;
+  projectName: string;
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resendClient) {
+    const error = 'Email service not initialized';
+    logger.error('Solutions request confirmation email failed', { error });
+    return { success: false, error };
+  }
+
+  try {
+    const html = solutionsRequestConfirmationTemplate(data);
+    
+    await resendClient.emails.send({
+      from: resendFromEmail,
+      to: data.email,
+      subject: 'Solutions Request Received - Annita LLC',
+      html,
+    });
+
+    logger.info('Solutions request confirmation email sent', { to: data.email });
+    return { success: true };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Solutions request confirmation email failed', { error: errorMessage });
     return { success: false, error: errorMessage };
   }
 }
