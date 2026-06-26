@@ -9,6 +9,10 @@ export default function WelcomeModal() {
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
+    // Check if user has already seen the modal
+    const seen = localStorage.getItem('welcomeModalSeen')
+    if (seen) return
+
     // Show modal 2 seconds after page load
     const timer = setTimeout(() => {
       setIsOpen(true)
@@ -37,7 +41,10 @@ export default function WelcomeModal() {
           >
             {/* Close button */}
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                localStorage.setItem('welcomeModalSeen', 'true')
+                setIsOpen(false)
+              }}
               className="absolute top-4 right-4 p-2 rounded-full transition-colors hover:bg-[#1A2640]"
               style={{ color: '#8A9BBB' }}
             >
@@ -76,17 +83,23 @@ export default function WelcomeModal() {
             <div className="space-y-3">
               <Link
                 href="/solutions"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  localStorage.setItem('welcomeModalSeen', 'true')
+                  setIsOpen(false)
+                }}
                 className="w-full px-6 py-4 rounded-full font-semibold transition-all flex items-center justify-center gap-2"
                 style={{ backgroundColor: '#00C28A', color: '#080D1A' }}
               >
                 Build Custom Solutions
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              
+
               <Link
                 href="/login"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  localStorage.setItem('welcomeModalSeen', 'true')
+                  setIsOpen(false)
+                }}
                 className="w-full px-6 py-4 rounded-full font-semibold transition-all flex items-center justify-center gap-2 border-2 hover:bg-[#00C28A] hover:text-[#080D1A] hover:border-[#00C28A]"
                 style={{ borderColor: '#00C28A', color: '#00C28A' }}
               >

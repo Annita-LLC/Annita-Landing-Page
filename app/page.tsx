@@ -109,9 +109,22 @@ function AnimatedCounter({ value, prefix = '', suffix }: { value: number; prefix
 export default function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [glowOpacity, setGlowOpacity] = useState(0)
+  const [isWiderDevice, setIsWiderDevice] = useState(false)
+
+  useEffect(() => {
+    // Check if device is wider than tablet (md breakpoint)
+    const checkDevice = () => {
+      setIsWiderDevice(window.innerWidth >= 768)
+    }
+    
+    checkDevice()
+    window.addEventListener('resize', checkDevice)
+    
+    return () => window.removeEventListener('resize', checkDevice)
+  }, [])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return
+    if (!containerRef.current || !isWiderDevice) return
     const rect = containerRef.current.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
@@ -120,39 +133,29 @@ export default function HomePage() {
   }
 
   return (
-    <div 
+    <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setGlowOpacity(0.6)}
-      onMouseLeave={() => setGlowOpacity(0)}
+      onMouseEnter={() => isWiderDevice && setGlowOpacity(0.6)}
+      onMouseLeave={() => isWiderDevice && setGlowOpacity(0)}
       className="min-h-screen bg-background text-foreground mesh-gradient relative overflow-hidden tech-grid"
     >
-      {/* Interactive Radial Laser Glow Spotlight */}
-      <div 
-        className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-500" 
-        style={{
-          opacity: glowOpacity,
-          background: `radial-gradient(800px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(0, 194, 138, 0.05), transparent 80%)`
-        }}
-      />
+      {/* Interactive Radial Laser Glow Spotlight - Only on wider devices */}
+      {isWiderDevice && (
+        <div
+          className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-500"
+          style={{
+            opacity: glowOpacity,
+            background: `radial-gradient(800px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(0, 194, 138, 0.05), transparent 80%)`
+          }}
+        />
+      )}
       <Navigation />
       <WelcomeModal />
 
       {/* Hero Section */}
       <section className="relative min-h-[60vh] md:min-h-screen flex items-center px-4 md:px-8 py-16 md:py-24 overflow-hidden tech-scanline">
         <div className="absolute inset-0 radial-pulse" />
-        
-        {/* Floating System Telemetry Log */}
-        <div className="hidden xl:block absolute bottom-12 left-12 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 select-none pointer-events-none z-10">
-          <div>[GATEWAY CORE PROTOCOL: v1.4.2]</div>
-          <div>SYS_LOAD: NOMINAL // EDGE_NODES: 3,000+</div>
-          <div>ENCRYPT_LAYER: SECURE_AES_256</div>
-        </div>
-        <div className="hidden xl:block absolute bottom-12 right-12 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 text-right select-none pointer-events-none z-10">
-          <div>SSL_HANDSHAKE: SUCCESSFUL</div>
-          <div>PROD_CLUSTER: MONROVIA_HQ_SECURE</div>
-          <div>TELEMETRY: INTEGRATED // PORTAL: ONLINE</div>
-        </div>
 
         <div className="relative z-10 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           

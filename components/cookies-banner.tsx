@@ -8,17 +8,49 @@ import { useState, useEffect } from 'react'
 export default function CookiesBanner() {
   const [isVisible, setIsVisible] = useState(false)
   const [hasAccepted, setHasAccepted] = useState(false)
+  const [welcomeModalShown, setWelcomeModalShown] = useState(false)
 
   useEffect(() => {
     // Check if user has already accepted cookies
     const accepted = localStorage.getItem('cookiesAccepted')
-    if (!accepted) {
-      // Show banner after a short delay
-      const timer = setTimeout(() => {
-        setIsVisible(true)
-      }, 1500)
-      return () => clearTimeout(timer)
+    const welcomeSeen = localStorage.getItem('welcomeModalSeen')
+
+    if (accepted) {
+      setHasAccepted(true)
+      return
     }
+
+    // Wait for welcome modal to be shown first
+    const checkWelcomeModal = () => {
+      const welcomeSeenNow = localStorage.getItem('welcomeModalSeen')
+      if (welcomeSeenNow) {
+        setWelcomeModalShown(true)
+        // Show cookies banner after welcome modal is closed (additional delay)
+        const timer = setTimeout(() => {
+          setIsVisible(true)
+        }, 500)
+        return () => clearTimeout(timer)
+      } else {
+        // Check again in 100ms
+        const checkTimer = setTimeout(checkWelcomeModal, 100)
+        return () => clearTimeout(checkTimer)
+      }
+    }
+
+    // Start checking after welcome modal would typically appear (2 seconds)
+    const initialTimer = setTimeout(() => {
+      if (welcomeSeen) {
+        setWelcomeModalShown(true)
+        const showTimer = setTimeout(() => {
+          setIsVisible(true)
+        }, 500)
+        return () => clearTimeout(showTimer)
+      } else {
+        checkWelcomeModal()
+      }
+    }, 2500)
+
+    return () => clearTimeout(initialTimer)
   }, [])
 
   const handleAccept = () => {
