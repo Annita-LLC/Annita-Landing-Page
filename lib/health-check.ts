@@ -4,7 +4,7 @@
  * Redis is not required for landing page forms
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://annita-landing-page-production.up.railway.app';
 
 export interface HealthCheckResult {
   isHealthy: boolean;
@@ -15,14 +15,13 @@ export interface HealthCheckResult {
 
 /**
  * Check if the server and database are healthy and responsive
- * Uses deep health check endpoint but only requires database connectivity
- * Redis is optional for landing page forms
+ * Uses the landing page server's /health endpoint
  */
 export async function checkServerHealth(): Promise<HealthCheckResult> {
   const startTime = Date.now();
   
   try {
-    const response = await fetch(`${API_URL}/api/health/deep`, {
+    const response = await fetch(`${API_URL}/health`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -35,20 +34,20 @@ export async function checkServerHealth(): Promise<HealthCheckResult> {
     if (response.ok) {
       const data = await response.json();
       
-      // Only check database connectivity - Redis is not required for forms
-      if (data.database) {
+      // Check database status from health endpoint
+      if (data.database && data.database.status === 'CONNECTED') {
         return {
           isHealthy: true,
           message: 'Server and database are online and responsive',
           latency,
-          database: data.database,
+          database: true,
         };
       } else {
         return {
           isHealthy: false,
           message: 'Database is not connected. Please try again later.',
           latency,
-          database: data.database,
+          database: false,
         };
       }
     } else {
@@ -56,6 +55,7 @@ export async function checkServerHealth(): Promise<HealthCheckResult> {
         isHealthy: false,
         message: `Server returned status ${response.status}`,
         latency,
+        database: false,
       };
     }
   } catch (error) {
@@ -67,6 +67,7 @@ export async function checkServerHealth(): Promise<HealthCheckResult> {
           isHealthy: false,
           message: 'Server connection timed out',
           latency,
+          database: false,
         };
       }
       if (error.message.includes('fetch')) {
@@ -74,6 +75,7 @@ export async function checkServerHealth(): Promise<HealthCheckResult> {
           isHealthy: false,
           message: 'Unable to connect to server',
           latency,
+          database: false,
         };
       }
     }
@@ -82,6 +84,7 @@ export async function checkServerHealth(): Promise<HealthCheckResult> {
       isHealthy: false,
       message: 'Server connection failed',
       latency,
+      database: false,
     };
   }
 }
