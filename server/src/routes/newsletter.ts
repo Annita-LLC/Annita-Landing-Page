@@ -9,6 +9,7 @@ import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { z } from 'zod';
+import { sendNewsletterConfirmation } from '../lib/email.js';
 
 const router = Router();
 
@@ -48,6 +49,19 @@ router.post('/', async (req: Request, res: Response) => {
       latency: `${latency}ms`,
       endpoint: 'POST:/api/newsletter',
     });
+
+    // Send confirmation email
+    try {
+      await sendNewsletterConfirmation(validatedData.email);
+      logger.info('Newsletter confirmation email sent successfully', { requestId, email: validatedData.email });
+    } catch (emailError) {
+      logger.error('Failed to send newsletter confirmation email', {
+        requestId,
+        email: validatedData.email,
+        error: emailError instanceof Error ? emailError.message : 'Unknown error',
+      });
+      // Don't fail the request if email fails - data is saved
+    }
 
     res.status(201).json({
       success: true,
