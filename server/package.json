@@ -1,0 +1,71 @@
+{
+  "name": "annita-landing-page-server",
+  "version": "1.0.0",
+  "description": "🏆 Fortune 500 Enterprise Server for Annita Landing Page",
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "start": "node --import=tsx src/index.ts",
+    "dev": "tsx --watch src/index.ts",
+    "build": "npx prisma generate && echo 'Prisma client generated'",
+    "build:deploy": "npx dotenv-cli -e .env -- npx prisma generate && echo 'Prisma client generated'",
+    "lint": "echo 'Linting not yet implemented'",
+    "health": "curl -f http://localhost:3001/health || exit 1",
+    "migrate:deploy": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "docker:build": "docker build -t annita-landing-server .",
+    "docker:run": "docker run -p 3001:3001 annita-landing-server",
+    "security:check": "npm audit --audit-level=moderate",
+    "security:fix": "npm audit fix"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.8.0",
+    "@prisma/client": "7.8.0",
+    "@prisma/extension-accelerate": "3.0.1",
+    "@react-email/render": "2.0.9",
+    "cors": "2.8.6",
+    "dotenv": "17.4.2",
+    "express": "5.2.1",
+    "express-rate-limit": "8.5.2",
+    "express-validator": "7.3.2",
+    "helmet": "8.2.0",
+    "pg": "8.22.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "resend": "6.16.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/cors": "2.8.19",
+    "@types/express": "5.0.6",
+    "@types/node": "26.0.1",
+    "@types/pg": "8.20.0",
+    "prisma": "7.8.0",
+    "tsx": "4.22.4",
+    "typescript": "6.0.3"
+  },
+  "overrides": {
+    "@hono/node-server": "1.19.13"
+  },
+  "keywords": [
+    "api",
+    "landing-page",
+    "enterprise",
+    "express",
+    "typescript",
+    "fortune500"
+  ],
+  "author": "Annita LLC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Annita-LLC/Annita-v1.git"
+  },
+  "main": "src/index.ts",
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
+  }
+}

@@ -1,0 +1,119 @@
+# ============================================================================
+# ANNITA LANDING PAGE SERVER - RAILWAY DEPLOYMENT CONFIGURATION
+# ============================================================================
+# Fortune 500 / Pentagon Grade Deployment
+# ============================================================================
+
+[build]
+builder = "NIXPACKS"
+
+[build.env]
+NPM_FLAGS = "--production=false"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+startCommand = "npm run build && npm start"
+
+[[services]]
+name = "landing-page-server"
+description = "Annita Landing Page API Server"
+
+[services.env]
+NODE_ENV = "production"
+PORT = "3001"
+LOG_LEVEL = "INFO"
+LOG_FORMAT = "json"
+
+[services.ports]
+port = 3001
+type = "HTTP"
+
+[[services.ports.checks]]
+interval = 30
+gracePeriod = 10
+timeout = 5
+type = "TCP"
+
+[deploy.healthcheck]
+path = "/health"
+timeout = 300
+
+# ============================================================================
+# PRODUCTION ENVIRONMENT VARIABLES (Set in Railway Dashboard)
+# ============================================================================
+# These should be configured in Railway's environment variables section
+
+# Database Configuration
+# DATABASE_URL = "prisma+postgres://accelerate.prisma-data.net/?api_key=..."
+# PGHOST = "pooled.db.prisma.io"
+# PGPORT = "5432"
+# PGUSER = "..."
+# PGPASSWORD = "..."
+# PGDATABASE = "postgres"
+# PGSSLMODE = "require"
+
+# Security Configuration
+# JWT_SECRET = "your-production-jwt-secret-min-32-chars"
+# JWT_EXPIRES_IN = "7d"
+# CORS_ORIGIN = "https://www.an-nita.com,https://an-nita.com,https://*.railway.app"
+# CORS_CREDENTIALS = "true"
+
+# Rate Limiting
+# RATE_LIMIT_WINDOW_MS = "900000"
+# RATE_LIMIT_MAX_REQUESTS = "100"
+# RATE_LIMIT_BURST_LIMIT = "150"
+
+# Email Configuration (Resend)
+# RESEND_API_KEY = "re_..."
+# RESEND_FROM_EMAIL = "Annita LLC <annita@an-nita.com>"
+# RESEND_FROM_NAME = "Annita LLC"
+# RESEND_REPLY_TO = "support@an-nita.com"
+# ADMIN_EMAIL = "info@an-nita.com"
+# CLIENT_URL = "https://www.an-nita.com"
+
+# Company & Branding
+# COMPANY_NAME = "Annita LLC"
+# COMPANY_TAGLINE = "Africa's Digital Heartbeat"
+# COMPANY_ADDRESS = "Monrovia, Liberia"
+# COMPANY_PHONE = "+231 77 505 7227"
+# COMPANY_EMAIL = "info@an-nita.com"
+# COMPANY_WEBSITE = "https://www.an-nita.com"
+
+# Support Contacts
+# SUPPORT_EMAIL = "support@an-nita.com"
+# ENTERPRISE_EMAIL = "enterprise@an-nita.com"
+# SECURITY_EMAIL = "security@an-nita.com"
+
+# Social Media
+# SOCIAL_FACEBOOK = "https://web.facebook.com/annitallc/"
+# SOCIAL_INSTAGRAM = "https://www.instagram.com/annita_llc/"
+# SOCIAL_LINKEDIN = "https://www.linkedin.com/feed/update/urn:li:activity:7328629052678823938"
+# SOCIAL_YOUTUBE = "https://youtube.com/@annita_llc"
+# SOCIAL_WHATSAPP = "https://wa.me/231775057227"
+# SOCIAL_TIKTOK = "https://www.tiktok.com/@annita_llc"
+
+# Client & CORS Configuration
+# CLIENT_URL = "https://www.an-nita.com"
+# FRONTEND_URL = "https://www.an-nita.com"
+# ALLOWED_ORIGINS = "https://www.an-nita.com,https://an-nita.com,https://*.railway.app"
+
+# Application URLs
+# APP_URL = "https://an-nita.com"
+# NEXT_PUBLIC_APP_URL = "https://www.an-nita.com"
+# NEXT_PUBLIC_API_URL = "https://an-nita.com"
+# NEXT_PUBLIC_BUILD_ID = "v1.0.0"
+
+# Public Server URL
+# PUBLIC_SERVER_URL = "https://api.an-nita.com"
+
+# Monitoring (Optional)
+# SENTRY_DSN = "https://..."
+# SENTRY_ENVIRONMENT = "production"
+
+# Feature Flags
+# FEATURE_ENABLE_ANALYTICS = "true"
+# FEATURE_ENABLE_CONTACT_SUBMISSION = "true"
+# FEATURE_ENABLE_NEWSLETTER = "true"
