@@ -12,7 +12,6 @@ import ParticleBackground from '@/components/particle-background'
 import CommandPalette from '@/components/command-palette'
 import SocialProofTicker from '@/components/social-proof-ticker'
 import SoundEffects from '@/components/sound-effects'
-import KeyboardShortcuts from '@/components/keyboard-shortcuts'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const syne = Syne({ subsets: ['latin'], variable: '--font-syne', weight: ['600', '700', '800'] })
@@ -141,7 +140,6 @@ export default function RootLayout({
         <ScrollProgress />
         <TerminalWidget />
         <CommandPalette />
-        <KeyboardShortcuts />
         <SocialProofTicker />
         <CookiesBanner />
         <Analytics />
