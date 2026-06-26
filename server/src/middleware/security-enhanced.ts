@@ -523,6 +523,12 @@ export function isValidURL(url: string): boolean {
 export const inputValidation = (req: Request, res: Response, next: NextFunction): void => {
   const { body } = req;
 
+  // Skip validation if no body (e.g., GET requests)
+  if (!body) {
+    next();
+    return;
+  }
+
   // Validate email if present
   if (body.email && !isValidEmail(body.email)) {
     res.status(400).json({
