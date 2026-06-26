@@ -10,7 +10,6 @@ import TechCursor from '@/components/tech-cursor'
 import TerminalWidget from '@/components/terminal-widget'
 import ParticleBackground from '@/components/particle-background'
 import CommandPalette from '@/components/command-palette'
-import SocialProofTicker from '@/components/social-proof-ticker'
 import SoundEffects from '@/components/sound-effects'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -140,7 +139,6 @@ export default function RootLayout({
         <ScrollProgress />
         <TerminalWidget />
         <CommandPalette />
-        <SocialProofTicker />
         <CookiesBanner />
         <Analytics />
       </body>

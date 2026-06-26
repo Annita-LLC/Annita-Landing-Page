@@ -173,7 +173,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
               style={{ backgroundColor: 'rgba(0, 194, 138, 0.08)', border: '1px solid rgba(0, 194, 138, 0.2)' }}
             >
-              <span className="text-sm font-semibold tracking-[0.2em] uppercase glow-dot animate-pulse" style={{ color: '#00C28A', fontFamily: 'var(--font-syne)' }}>ANNITA LLC</span>
+              <span className="text-sm font-semibold tracking-[0.2em] uppercase" style={{ color: '#00C28A', fontFamily: 'var(--font-syne)' }}>ANNITA LLC</span>
             </motion.div>
             
             <motion.h1 
