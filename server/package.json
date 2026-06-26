@@ -8,7 +8,7 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
-    "start": "node --import=tsx src/index.ts",
+    "start": "npx prisma generate && node --import=tsx src/index.ts",
     "dev": "tsx --watch src/index.ts",
     "build": "npx prisma generate && echo 'Prisma client generated'",
     "build:deploy": "npx dotenv-cli -e .env -- npx prisma generate && echo 'Prisma client generated'",

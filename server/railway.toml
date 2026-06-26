@@ -5,41 +5,79 @@
 # ============================================================================
 
 [build]
-builder = "NIXPACKS"
+builder = "RAILPACK"
+# Pin Railpack version for reproducible builds
+railpackVersion = "1.0.0"
 
 [build.env]
+# Enterprise-grade build configuration
 NPM_FLAGS = "--production=false"
+NODE_ENV = "production"
 
+# Build-time secrets for Prisma generation
+# These are available during build but not exposed in final image
+DATABASE_URL = "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza195STRPQnJYWC1GMnFob2FrTUFvRzgiLCJhcGlfa2V5IjoiMDFLVzIwN1gzMlhCNDBRRlEyNTQ5OTRNR0YiLCJ0ZW5hbnRfaWQiOiJhZmQzOTllYzk2NTQyNWVlZDBlZDgyNjgxZDlkMWQ3MTUzMzZmYTUwODM0M2M5NDdlMzNkODk0ZDk2NGUyOWYyIiwiaW50ZXJuYWxfc2VjcmV0IjoiY2E5NmE4MWItYTE0Yy00YjlhLTgzMDUtNDNjNWU0YWY5NDY1In0.zzcchFqVoPAbZUWHJlE4s1gwZoHFjojL7XhkeWH4uwo"
+
+# Pre-deploy command for database migrations
 [deploy]
+preDeployCommand = "npx prisma migrate deploy"
+startCommand = "npm start"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
-startCommand = "npm run build && npm start"
 
+# Service configuration
 [[services]]
 name = "landing-page-server"
-description = "Annita Landing Page API Server"
+description = "Annita Landing Page API Server - Enterprise Grade"
 
 [services.env]
 NODE_ENV = "production"
-PORT = "3001"
+PORT = "8080"
 LOG_LEVEL = "INFO"
 LOG_FORMAT = "json"
 
-[services.ports]
-port = 3001
-type = "HTTP"
+# Enterprise security headers
+CORS_ORIGIN = "https://www.an-nita.com,https://an-nita.com,https://*.railway.app"
+CORS_CREDENTIALS = "true"
+RATE_LIMIT_WINDOW_MS = "900000"
+RATE_LIMIT_MAX_REQUESTS = "100"
+RATE_LIMIT_BURST_LIMIT = "150"
 
+[services.ports]
+port = 8080
+type = "HTTP"
+publicPort = 8080
+
+# Health check configuration with enterprise-grade monitoring
 [[services.ports.checks]]
 interval = 30
 gracePeriod = 10
 timeout = 5
 type = "TCP"
 
-[deploy.healthcheck]
+# Additional HTTP health check
+[[services.ports.checks]]
+interval = 30
+gracePeriod = 10
+timeout = 5
+type = "HTTP"
 path = "/health"
-timeout = 300
+
+# Production environment overrides
+[environments.production]
+[environments.production.build]
+builder = "RAILPACK"
+railpackVersion = "1.0.0"
+
+[environments.production.deploy]
+preDeployCommand = "npx prisma migrate deploy"
+startCommand = "npm start"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
 
 # ============================================================================
 # PRODUCTION ENVIRONMENT VARIABLES (Set in Railway Dashboard)

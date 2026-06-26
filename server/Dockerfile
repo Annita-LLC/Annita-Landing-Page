@@ -24,14 +24,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate
-
 # Production image
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -49,9 +46,9 @@ RUN mkdir -p /app/logs && \
 
 USER nextjs
 
-EXPOSE 3001
+EXPOSE 8080
 
-ENV PORT 3001
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=8080
+ENV HOSTNAME="0.0.0.0"
 
 CMD ["npm", "start"]

@@ -15,6 +15,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.vercel.app',
       },
+      {
+        protocol: 'https',
+        hostname: '**.railway.app',
+      },
     ],
     unoptimized: true,
   },
@@ -26,7 +30,7 @@ const nextConfig = {
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com;
       img-src 'self' data: https: blob:;
-      connect-src 'self' https://api.an-nita.com http://localhost:3000;
+      connect-src 'self' https://api.an-nita.com https://annita-landing-page-production.up.railway.app http://localhost:3000;
       media-src 'self';
       object-src 'none';
       base-uri 'self';
