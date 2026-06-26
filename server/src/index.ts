@@ -158,13 +158,21 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
   logger.error('Uncaught exception', { error: error.message, stack: error.stack });
-  gracefulShutdown('uncaughtException');
+  // Don't shutdown on uncaught exceptions in production to allow recovery
+  if (config.env.nodeEnv !== 'production') {
+    gracefulShutdown('uncaughtException');
+  }
 });
 
 // Handle unhandled promise rejections
+// Note: Logger already has a handler for this that logs the error
+// We don't need to shutdown on every unhandled rejection in production
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled promise rejection', { reason, promise });
-  gracefulShutdown('unhandledRejection');
+  logger.error('Unhandled promise rejection', { reason: reason instanceof Error ? reason.message : String(reason), promise });
+  // Only shutdown in development for debugging
+  if (config.env.nodeEnv !== 'production') {
+    gracefulShutdown('unhandledRejection');
+  }
 });
 
 export default app;
