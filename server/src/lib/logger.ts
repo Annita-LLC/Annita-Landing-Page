@@ -222,7 +222,7 @@ export class LandingPageLogger {
     report += `${COLORS.cyanBright}╚═══════════════════════════════════════════════════════════════════════════════════════════╝${COLORS.reset}\n`;
 
     report += `\n🔌 ${COLORS.bright}REST API ENDPOINTS MONITORED (${this.telemetry.endpoints.size} Routes):${COLORS.reset}\n`;
-    this.telemetry.endpoints.forEach((route, key) => {
+    this.telemetry.endpoints.forEach((route) => {
       report += ` ├── 🌐 [${COLORS.cyanBright}${route.method.padEnd(4)}${COLORS.reset}] ${COLORS.dim}${route.path.padEnd(35)}${COLORS.reset}\n`;
     });
 
@@ -463,7 +463,13 @@ export class LandingPageLogger {
    */
   private startTelemetryLoops(): void {
     setInterval(() => {
-      this.checkSystemResources();
+      try {
+        this.checkSystemResources();
+      } catch (error) {
+        // Silently handle telemetry errors to prevent unhandled exceptions
+        // Telemetry failures should not crash the server
+        this.debug('Telemetry collection failed', { error: error instanceof Error ? error.message : String(error) });
+      }
     }, 10000);
   }
 
@@ -471,12 +477,20 @@ export class LandingPageLogger {
    * Check system resources
    */
   private checkSystemResources(): void {
-    const totalMem = os.totalmem();
-    const freeMem = os.freemem();
-    const memUsage = process.memoryUsage();
-    
-    // This could be expanded to track more detailed metrics
-    // For now, it's a placeholder for future enhancements
+    try {
+      const totalMem = os.totalmem();
+      const freeMem = os.freemem();
+      const memUsage = process.memoryUsage();
+
+      // This could be expanded to track more detailed metrics
+      // For now, it's a placeholder for future enhancements
+      // Variables are intentionally calculated for future use
+      void totalMem;
+      void freeMem;
+      void memUsage;
+    } catch (error) {
+      // Silently handle system resource check errors
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════════
