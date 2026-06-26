@@ -7,7 +7,7 @@
 import express from 'express';
 import { config } from './config/index.js';
 import { logger } from './lib/logger.js';
-import { disconnectDatabase } from './lib/database.js';
+import { disconnectDatabase } from './lib/prisma.js';
 import {
   rateLimiter,
   requestId,
