@@ -4,15 +4,16 @@
 // Fortune 500 / Pentagon Grade Database Connection Verification
 // ============================================================================
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../generated/prisma';
 import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
-});
+const connectionString = process.env.DATABASE_URL!;
+const pool = new pg.Pool({ connectionString });
+const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter });
 

@@ -1,0 +1,155 @@
+// ============================================================================
+// ANNITA LANDING PAGE SERVER - PRISMA SCHEMA
+// ============================================================================
+// Fortune 500 / Pentagon Grade Database Schema
+// ============================================================================
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+// ============================================================================
+// LANDING PAGE MODELS
+// ============================================================================
+
+model ContactSubmission {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  subject   String?
+  ipAddress String?
+  userAgent String?
+  status    String   @default("new") // new, in_progress, resolved, closed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ContactSalesSubmission {
+  id                 Int      @id @default(autoincrement())
+  name               String
+  email              String
+  phone              String?
+  companyName        String
+  projectDescription String
+  budget             String
+  ipAddress          String?
+  userAgent          String?
+  status             String   @default("new") // new, contacted, qualified, closed, lost
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@index([companyName])
+}
+
+model SolutionsRequest {
+  // Step 1: About You
+  fullName         String
+  email            String
+  phone            String
+  organization     String
+  jobTitle         String
+  organizationType String
+  country          String
+  city             String?
+  contactMethod    String
+  howDidYouHear    String?
+  referrerName     String?
+
+  // Step 2: Your Project
+  projectName               String
+  projectSummary            String
+  solutionTypes             String[]
+  solutionTypeOther         String?
+  targetUsers               String
+  userCount                 String
+  geographicDeployment      String[]
+  geographicCountry         String?
+  languages                 String[]
+  offlineRequired           String
+  existingSystem            String?
+  existingSystemDescription String?
+
+  // Step 3: Requirements
+  coreFeatures           String?
+  importantFeatures      String[]
+  thirdPartyIntegrations String?
+  techStack              String[]
+  techStackOther         String?
+  brandIdentity          String?
+  brandAssets            Json?
+  wireframes             String?
+  wireframesFiles        Json?
+  wireframesUrl          String?
+  designStyle            String?
+  securityRequirements   String[]
+  additionalNotes        String?
+
+  // Step 4: Budget & Timeline
+  budget            String
+  fundingContext    String?
+  budgetFlexibility String?
+  timeline          String
+  specificDeadline  String?
+  projectStartDate  String?
+  engagementStyle   String?
+  maintenanceNeeded String?
+  finalThoughts     String?
+  agreement         Boolean
+
+  // Metadata
+  ipAddress String?
+  userAgent String?
+  status    String  @default("new") // new, reviewing, contacted, proposal, in_progress, completed, declined
+  priority  String  @default("medium") // low, medium, high, urgent
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([organization])
+}
+
+model NewsletterSubscription {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  status    String   @default("active") // active, unsubscribed, bounced
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+}
+
+model AnalyticsEvent {
+  id        Int      @id @default(autoincrement())
+  eventType String
+  eventData Json?
+  ipAddress String?
+  userAgent String?
+  referrer  String?
+  path      String?
+  createdAt DateTime @default(now())
+
+  @@index([eventType])
+  @@index([createdAt])
+}

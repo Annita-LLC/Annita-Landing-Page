@@ -1,0 +1,90 @@
+// ============================================================================
+// ANNITA LANDING PAGE SERVER - CONTACT FORM API
+// ============================================================================
+// Fortune 500 / Pentagon Grade Contact Submission Endpoint
+// ============================================================================
+
+import { Router } from 'express';
+import type { Request, Response } from 'express';
+import { prisma } from '../lib/prisma.js';
+import { logger } from '../lib/logger.js';
+import { z } from 'zod';
+
+const router = Router();
+
+// Validation schema
+const contactSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().optional(),
+  message: z.string().min(10, 'Message must be at least 10 characters'),
+  subject: z.string().optional(),
+});
+
+// POST /api/contact
+router.post('/', async (req: Request, res: Response) => {
+  const requestId = req.id;
+  
+  try {
+    const startTime = Date.now();
+    logger.info('Contact form submission received', { requestId });
+
+    // Validate input
+    const validatedData = contactSchema.parse(req.body);
+
+    // Create contact submission
+    const submission = await prisma.contactSubmission.create({
+      data: {
+        name: validatedData.name,
+        email: validatedData.email,
+        phone: validatedData.phone || null,
+        message: validatedData.message,
+        subject: validatedData.subject || null,
+        ipAddress: req.ip || null,
+        userAgent: req.get('user-agent') || null,
+      },
+    });
+
+    const latency = Date.now() - startTime;
+    logger.info('Contact submission created successfully', {
+      requestId,
+      submissionId: submission.id,
+      latency: `${latency}ms`,
+      endpoint: 'POST:/api/contact',
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Contact submission received successfully',
+      data: {
+        id: submission.id,
+        status: submission.status,
+      },
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      logger.warn('Contact form validation failed', {
+        requestId,
+        errors: error.issues,
+      });
+      res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: error.issues,
+      });
+      return;
+    }
+
+    logger.error('Contact submission error', {
+      requestId,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to process contact submission',
+    });
+  }
+});
+
+export default router;

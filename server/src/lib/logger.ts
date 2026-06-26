@@ -173,9 +173,10 @@ export class LandingPageLogger {
 
     const list = [
       { m: 'GET', p: '/health' },
-      { m: 'POST', p: '/api/landing/contact' },
-      { m: 'POST', p: '/api/landing/contact-sales' },
-      { m: 'POST', p: '/api/landing/solutions-request' }
+      { m: 'POST', p: '/api/contact' },
+      { m: 'POST', p: '/api/contact-sales' },
+      { m: 'POST', p: '/api/solutions-request' },
+      { m: 'POST', p: '/api/newsletter' }
     ];
 
     list.forEach(item => {

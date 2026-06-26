@@ -24,6 +24,10 @@ import {
   ipRateLimit,
   inputValidation,
 } from './middleware/security-enhanced.js';
+import contactRoutes from './routes/contact.js';
+import contactSalesRoutes from './routes/contact-sales.js';
+import solutionsRequestRoutes from './routes/solutions-request.js';
+import newsletterRoutes from './routes/newsletter.js';
 
 // ============================================================================
 // EXPRESS APPLICATION
@@ -73,6 +77,12 @@ app.use(rateLimiter);
 // ============================================================================
 // ROUTES
 // ============================================================================
+// API routes
+app.use('/api/contact', contactRoutes);
+app.use('/api/contact-sales', contactSalesRoutes);
+app.use('/api/solutions-request', solutionsRequestRoutes);
+app.use('/api/newsletter', newsletterRoutes);
+
 // Health check endpoint with telemetry
 app.get('/health', (_req, res) => {
   const health = logger.getSystemHealth();

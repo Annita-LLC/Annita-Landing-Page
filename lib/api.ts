@@ -45,7 +45,7 @@ export interface ApiResponse {
  */
 export async function submitContactForm(data: ContactUsFormData): Promise<ApiResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/landing/contact`, {
+    const response = await fetch(`${API_BASE_URL}/api/contact`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export async function submitContactForm(data: ContactUsFormData): Promise<ApiRes
  */
 export async function submitSalesForm(data: ContactSalesFormData): Promise<ApiResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/landing/contact-sales`, {
+    const response = await fetch(`${API_BASE_URL}/api/contact-sales`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ export async function submitSalesForm(data: ContactSalesFormData): Promise<ApiRe
  */
 export async function submitSolutionsRequestForm(data: SolutionsRequestFormData): Promise<ApiResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/landing/solutions-request`, {
+    const response = await fetch(`${API_BASE_URL}/api/solutions-request`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
