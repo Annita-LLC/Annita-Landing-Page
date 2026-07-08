@@ -26,7 +26,7 @@ const nextConfig = {
     const isDev = process.env.NODE_ENV === 'development';
     const ContentSecurityPolicy = `
       default-src 'self';
-      script-src 'self' ${isDev ? "'unsafe-inline' 'unsafe-eval'" : ""} https://cdn.jsdelivr.net https://va.vercel-scripts.com;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://va.vercel-scripts.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com;
       img-src 'self' data: https: blob:;
