@@ -40,6 +40,7 @@ build
 # Keep migration files for deployment
 # prisma/migrations/*.sql
 # !prisma/migrations
+generated/prisma
 
 # Railway
 .railway

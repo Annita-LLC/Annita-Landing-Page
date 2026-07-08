@@ -14,13 +14,10 @@ railpackVersion = "1.0.0"
 NPM_FLAGS = "--production=false"
 NODE_ENV = "production"
 
-# Build-time secrets for Prisma generation
-# DATABASE_URL will be provided by Railway Postgres service
-
 # Pre-deploy command for database migrations
+# Note: Migrations run in start command instead to ensure database connectivity
 [deploy]
-preDeployCommand = "npx prisma migrate deploy"
-startCommand = "npm start"
+startCommand = "npx prisma migrate deploy && npm start"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
@@ -36,6 +33,8 @@ NODE_ENV = "production"
 PORT = "8080"
 LOG_LEVEL = "INFO"
 LOG_FORMAT = "json"
+# DATABASE_URL should be set in Railway dashboard (Variables tab) for security
+# Do not commit secrets to railway.toml
 
 # Enterprise security headers
 CORS_ORIGIN = "https://www.an-nita.com,https://an-nita.com,https://*.railway.app"
@@ -71,8 +70,7 @@ builder = "RAILPACK"
 railpackVersion = "1.0.0"
 
 [environments.production.deploy]
-preDeployCommand = "npx prisma migrate deploy"
-startCommand = "npm start"
+startCommand = "npx prisma migrate deploy && npm start"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
@@ -83,15 +81,10 @@ restartPolicyMaxRetries = 10
 # ============================================================================
 # These should be configured in Railway's environment variables section
 
-# Database Configuration (Railway Postgres Service)
-# DATABASE_URL will be automatically set by Railway when you add a Postgres service
-# Format: postgresql://postgres:password@host:port/database
-# PGHOST = "..."
-# PGPORT = "5432"
-# PGUSER = "postgres"
-# PGPASSWORD = "..."
-# PGDATABASE = "postgres"
-# PGSSLMODE = "require"
+# Database Configuration (Prisma Postgres)
+# DATABASE_URL should be set in Railway environment variables with your Prisma Postgres connection string
+# Format: postgres://user:password@db.prisma.io:5432/postgres?sslmode=require
+# Get your connection string from: https://console.prisma.io
 
 # Security Configuration
 # JWT_SECRET = "your-production-jwt-secret-min-32-chars"
