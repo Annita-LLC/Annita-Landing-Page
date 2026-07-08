@@ -16,7 +16,7 @@ NODE_ENV = "production"
 # Pre-deploy command for database migrations
 # Note: Migrations run in start command instead to ensure database connectivity
 [deploy]
-startCommand = "npx prisma@7 migrate deploy && npm start"
+startCommand = "node --import=tsx src/index.ts"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
@@ -69,7 +69,7 @@ builder = "RAILPACK"
 railpackVersion = "1.0.0"
 
 [environments.production.deploy]
-startCommand = "npx prisma@7 migrate deploy && npm start"
+startCommand = "node --import=tsx src/index.ts"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
