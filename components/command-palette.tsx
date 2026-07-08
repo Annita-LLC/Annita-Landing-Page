@@ -66,7 +66,8 @@ export default function CommandPalette() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-50 backdrop-blur-sm"
+            style={{ backgroundColor: 'var(--color-surface-scrim)' }}
           />
 
           {/* Modal */}
@@ -74,35 +75,38 @@ export default function CommandPalette() {
             initial={{ opacity: 0, scale: 0.95, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            className="fixed top-[20%] left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl"
+            className="fixed top-[20%] left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-4"
           >
             <div
               className="rounded-xl overflow-hidden"
               style={{
-                backgroundColor: '#0F1729',
-                border: '1px solid #1A2640'
+                backgroundColor: 'var(--color-surface-card)',
+                border: '1px solid var(--color-border-card)',
+                boxShadow: 'var(--shadow-premium)'
               }}
             >
               {/* Search Input */}
-              <div className="flex items-center gap-3 px-4 py-4 border-b border-[#1A2640]">
-                <Search className="w-5 h-5" style={{ color: '#8A9BBB' }} />
+              <div className="flex items-center gap-3 px-4 py-4 border-b border-[var(--color-border-card)]">
+                <Search className="w-5 h-5 text-[var(--color-text-tertiary)]" />
                 <input
                   type="text"
                   placeholder="Search commands..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="flex-1 bg-transparent outline-none text-white placeholder-[#8A9BBB]"
+                  className="flex-1 bg-transparent outline-none text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]"
                   autoFocus
                 />
                 <div className="flex items-center gap-2">
-                  <kbd className="px-2 py-1 rounded text-xs" style={{ backgroundColor: '#1A2640', color: '#8A9BBB' }}>
+                  <kbd
+                    className="px-2 py-1 rounded text-xs text-[var(--color-text-tertiary)]"
+                    style={{ backgroundColor: 'var(--color-surface-elevated-2)' }}
+                  >
                     <Command className="w-3 h-3 inline mr-1" />
                     K
                   </kbd>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-1 hover:bg-[#1A2640]/50 rounded"
-                    style={{ color: '#8A9BBB' }}
+                    className="p-1 hover:bg-[var(--color-surface-elevated-2)] rounded text-[var(--color-text-tertiary)]"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -110,9 +114,9 @@ export default function CommandPalette() {
               </div>
 
               {/* Command List */}
-              <div className="max-h-96 overflow-y-auto">
+              <div className="max-h-96 overflow-y-auto custom-scrollbar">
                 {filteredCommands.length === 0 ? (
-                  <div className="px-4 py-8 text-center" style={{ color: '#8A9BBB' }}>
+                  <div className="px-4 py-8 text-center text-[var(--color-text-tertiary)]">
                     No commands found
                   </div>
                 ) : (
@@ -121,17 +125,20 @@ export default function CommandPalette() {
                       key={command.id}
                       href={command.href}
                       onClick={() => setIsOpen(false)}
-                      className="block px-4 py-3 hover:bg-[#1A2640]/50 transition-colors"
+                      className="block px-4 py-3 hover:bg-[var(--color-surface-raised)] transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="font-semibold text-white">{command.label}</div>
-                          <div className="text-sm" style={{ color: '#8A9BBB' }}>
+                          <div className="font-semibold text-[var(--color-text-primary)]">{command.label}</div>
+                          <div className="text-sm text-[var(--color-text-tertiary)]">
                             {command.description}
                           </div>
                         </div>
                         {command.shortcut && (
-                          <kbd className="px-2 py-1 rounded text-xs" style={{ backgroundColor: '#1A2640', color: '#8A9BBB' }}>
+                          <kbd
+                            className="px-2 py-1 rounded text-xs text-[var(--color-text-tertiary)]"
+                            style={{ backgroundColor: 'var(--color-surface-elevated-2)' }}
+                          >
                             {command.shortcut}
                           </kbd>
                         )}
@@ -142,14 +149,16 @@ export default function CommandPalette() {
               </div>
 
               {/* Footer */}
-              <div className="px-4 py-2 border-t border-[#1A2640] flex items-center justify-between text-xs" style={{ color: '#4A5775' }}>
+              <div
+                className="px-4 py-2 border-t border-[var(--color-border-card)] flex items-center justify-between text-xs text-[var(--color-text-muted)]"
+              >
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded" style={{ backgroundColor: '#1A2640' }}>↑↓</kbd>
+                    <kbd className="px-1.5 py-0.5 rounded text-[var(--color-text-tertiary)]" style={{ backgroundColor: 'var(--color-surface-elevated-2)' }}>↑↓</kbd>
                     Navigate
                   </span>
                   <span className="flex items-center gap-1">
-                    <kbd className="px-1.5 py-0.5 rounded" style={{ backgroundColor: '#1A2640' }}>↵</kbd>
+                    <kbd className="px-1.5 py-0.5 rounded text-[var(--color-text-tertiary)]" style={{ backgroundColor: 'var(--color-surface-elevated-2)' }}>↵</kbd>
                     Select
                   </span>
                 </div>

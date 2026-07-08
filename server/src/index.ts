@@ -8,6 +8,7 @@ import express from 'express';
 import { config } from './config/index.js';
 import { logger } from './lib/logger.js';
 import { disconnectDatabase } from './lib/prisma.js';
+import { initializeIpReputation } from './lib/ip-reputation.js';
 import {
   rateLimiter,
   requestId,
@@ -16,18 +17,26 @@ import {
 } from './middleware/security.js';
 import { corsMiddleware } from './middleware/cors.js';
 import {
-  sqlInjectionProtection,
   xssProtection,
-  csrfTokenMiddleware,
   requestSizeLimit,
   enhancedSecurityHeaders,
   ipRateLimit,
   inputValidation,
 } from './middleware/security-enhanced.js';
+import { botDetectionMiddleware } from './middleware/bot-detection.js';
+import { strictHoneypotValidation } from './middleware/honeypot.js';
+import { behavioralAnalysisMiddleware } from './middleware/behavioral-analysis.js';
 import contactRoutes from './routes/contact.js';
 import contactSalesRoutes from './routes/contact-sales.js';
 import solutionsRequestRoutes from './routes/solutions-request.js';
 import newsletterRoutes from './routes/newsletter.js';
+import betaSignupRoutes from './routes/beta-signup.js';
+import accountDeletionRoutes from './routes/account-deletion.js';
+import careersRoutes from './routes/careers.js';
+import partnershipsRoutes from './routes/partnerships.js';
+import adminRoutes from './routes/admin.js';
+import { setupSheetHeaders } from './lib/google-sheets.js';
+import { startScheduler } from './jobs/scheduler.js';
 
 // ============================================================================
 // EXPRESS APPLICATION
@@ -35,10 +44,44 @@ import newsletterRoutes from './routes/newsletter.js';
 const app = express();
 
 // ============================================================================
+// PROXY TRUST (must be set BEFORE any middleware that reads req.ip)
+// ============================================================================
+// We sit behind a reverse proxy (Railway / Envoy / Cloudflare). Without this,
+// `req.ip` returns the proxy's address, not the real client IP — silently
+// breaking every per-IP rate limiter, every IP-reputation record, and every
+// `req.ip` log line. The second argument is the number of hops to trust.
+// `1` is correct for a single-layer proxy (Railway). Increase only if you
+// chain multiple trusted proxies (e.g. Cloudflare → Railway).
+//   Reference: http://expressjs.com/en/guide/behind-proxies.html
+app.set('trust proxy', 1);
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+// Initialize IP reputation engine if enabled
+if (config.features.enableIpReputation) {
+  initializeIpReputation({
+    enabled: true,
+    suspiciousThreshold: config.ipReputation.suspiciousThreshold,
+    maliciousThreshold: config.ipReputation.maliciousThreshold,
+    blockThreshold: config.ipReputation.blockThreshold,
+    windowMs: config.ipReputation.windowMs,
+    decayRate: config.ipReputation.decayRate,
+  });
+  logger.info('IP reputation engine initialized', config.ipReputation);
+}
+
+// ============================================================================
 // MIDDLEWARE
 // ============================================================================
 // Enhanced security headers (Pentagon-grade)
 app.use(enhancedSecurityHeaders);
+
+// X-Frame-Options for older browsers (helmet deprecates this but CSP not supported everywhere)
+app.use((_req, res, next) => {
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+});
 
 // CORS
 app.use(corsMiddleware);
@@ -54,7 +97,10 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // SQL Injection Protection
-app.use(sqlInjectionProtection);
+// REMOVED (audit 2026-07): The regex-based SQLi scanner was false-positive-prone
+// (blocks legitimate messages like "I want to SELECT all products") and
+// unnecessary since Prisma parameterizes all queries. SQL injection via
+// Prisma is not possible.
 
 // XSS Protection
 app.use(xssProtection);
@@ -62,8 +108,8 @@ app.use(xssProtection);
 // Input Validation
 app.use(inputValidation);
 
-// CSRF Token Generation
-app.use(csrfTokenMiddleware);
+// Bot Detection (global)
+app.use(botDetectionMiddleware);
 
 // Request logging
 app.use(requestLogger);
@@ -77,11 +123,37 @@ app.use(rateLimiter);
 // ============================================================================
 // ROUTES
 // ============================================================================
-// API routes
-app.use('/api/contact', contactRoutes);
-app.use('/api/contact-sales', contactSalesRoutes);
-app.use('/api/solutions-request', solutionsRequestRoutes);
-app.use('/api/newsletter', newsletterRoutes);
+// API routes with enhanced protection
+if (config.features.enableBehavioralAnalysis) {
+  const behavioralConfig = {
+    minSecondsBetweenSubmissions: config.behavioralAnalysis.minSecondsBetweenSubmissions,
+    maxSubmissionsPerMinute: config.behavioralAnalysis.maxSubmissionsPerMinute,
+    maxFieldLength: config.behavioralAnalysis.maxFieldLength,
+    enableSuspiciousPatternDetection: true,
+  };
+
+  app.use('/api/contact', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), contactRoutes);
+  app.use('/api/contact-sales', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), contactSalesRoutes);
+  app.use('/api/solutions-request', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), solutionsRequestRoutes);
+  app.use('/api/newsletter', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), newsletterRoutes);
+  app.use('/api/beta-signup', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), betaSignupRoutes);
+  app.use('/api/account-deletion', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), accountDeletionRoutes);
+  app.use('/api/careers', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), careersRoutes);
+  app.use('/api/partnerships', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), partnershipsRoutes);
+} else {
+  // Apply honeypot validation even if behavioral analysis is disabled
+  app.use('/api/contact', strictHoneypotValidation, contactRoutes);
+  app.use('/api/contact-sales', strictHoneypotValidation, contactSalesRoutes);
+  app.use('/api/solutions-request', strictHoneypotValidation, solutionsRequestRoutes);
+  app.use('/api/newsletter', strictHoneypotValidation, newsletterRoutes);
+  app.use('/api/beta-signup', strictHoneypotValidation, betaSignupRoutes);
+  app.use('/api/account-deletion', strictHoneypotValidation, accountDeletionRoutes);
+  app.use('/api/careers', strictHoneypotValidation, careersRoutes);
+  app.use('/api/partnerships', strictHoneypotValidation, partnershipsRoutes);
+}
+
+// Admin routes (separate from public API, with token-based authentication)
+app.use('/admin', adminRoutes);
 
 // Health check endpoint with telemetry
 app.get('/health', (_req, res) => {
@@ -102,6 +174,16 @@ app.get('/health', (_req, res) => {
   });
 });
 
+// CSP violation reporting endpoint (DISA STIG V-214949)
+app.post('/api/security/csp-report', express.json({ type: 'application/csp-report' }), (req, res) => {
+  logger.warn('CSP violation reported', {
+    userAgent: req.get('user-agent'),
+    ip: req.ip,
+    report: req.body
+  });
+  res.status(204).send();
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
@@ -117,6 +199,11 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // ============================================================================
+// START SCHEDULED JOB SYSTEM
+// ============================================================================
+startScheduler();
+
+// ============================================================================
 // SERVER STARTUP
 // ============================================================================
 const server = app.listen(config.server.port, config.server.host, () => {
@@ -125,6 +212,13 @@ const server = app.listen(config.server.port, config.server.host, () => {
     host: config.server.host,
     environment: config.env.nodeEnv,
     pid: process.pid,
+  });
+
+  // Write column headers to each Google Sheet tab on startup (safe to re-run)
+  setupSheetHeaders().catch(err => {
+    logger.error('Failed to set up Google Sheet headers on startup', {
+      error: err instanceof Error ? err.message : String(err),
+    });
   });
 });
 

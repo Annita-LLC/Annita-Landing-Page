@@ -123,7 +123,7 @@ static_resources:
                       value: "DENY"
                   - header:
                       key: "X-XSS-Protection"
-                      value: "1; mode=block"
+                      value: "0"
                   - header:
                       key: "Referrer-Policy"
                       value: "strict-origin-when-cross-origin"
@@ -132,7 +132,7 @@ static_resources:
                       value: "geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
                   - header:
                       key: "Content-Security-Policy"
-                      value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob: https://images.unsplash.com https://fastly.picsum.photos; connect-src 'self' https://an-nita.com https://www.an-nita.com https://*.vercel.app https://www.google-analytics.com; frame-src 'self' https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
+                      value: "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob: https://images.unsplash.com https://fastly.picsum.photos; connect-src 'self' https://an-nita.com https://www.an-nita.com https://*.vercel.app https://www.google-analytics.com; frame-src 'self' https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
                   - header:
                       key: "X-Pentagon-Security"
                       value: "enabled"

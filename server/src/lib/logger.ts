@@ -176,7 +176,11 @@ export class LandingPageLogger {
       { m: 'POST', p: '/api/contact' },
       { m: 'POST', p: '/api/contact-sales' },
       { m: 'POST', p: '/api/solutions-request' },
-      { m: 'POST', p: '/api/newsletter' }
+      { m: 'POST', p: '/api/newsletter' },
+      { m: 'POST', p: '/api/beta-signup' },
+      { m: 'POST', p: '/api/careers' },
+      { m: 'POST', p: '/api/partnerships' },
+      { m: 'POST', p: '/api/account-deletion' }
     ];
 
     list.forEach(item => {
@@ -264,8 +268,14 @@ export class LandingPageLogger {
     if (obj instanceof Date) return obj;
 
     const sensitiveKeys = [
+      // Auth / cryptographic material
       'password', 'token', 'jwt', 'secret', 'key', 'apikey', 'authorization', 
-      'pin', 'cvv', 'creditcard', 'card', 'payload', 'session', 'hash', 'salt'
+      'pin', 'cvv', 'creditcard', 'card', 'payload', 'session', 'hash', 'salt',
+      // PII (audit 2026-07): previously email/phone/ipAddress were logged in
+      // cleartext by route success messages — bad for GDPR. Redact these by
+      // field name regardless of context. Callers that want to correlate can
+      // log an explicit `emailDomain` / `emailHash` field instead.
+      'email', 'phone', 'ipaddress', 'name', 'fullname', 'businessname', 'companyname'
     ];
     
     const sanitized = Array.isArray(obj) ? [...obj] : { ...obj };
@@ -541,6 +551,97 @@ export class LandingPageLogger {
       totalErrors: this.telemetry.system.totalErrors,
       database: this.telemetry.connections.database
     };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // 7. SECURITY EVENT TRACKING (FORTUNE 500 / PENTAGON GRADE)
+  // ═══════════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Log security event with structured data
+   */
+  public logSecurityEvent(eventType: string, context: any): void {
+    const securityEvent = {
+      eventType,
+      severity: this.getSeverityFromEventType(eventType),
+      ipHash: context.ip ? this.hashValue(context.ip) : undefined,
+      uaHash: context.userAgent ? this.hashValue(context.userAgent) : undefined,
+      action: context.action || eventType,
+      result: context.result || 'unknown',
+      context: this.sanitize(context)
+    };
+
+    this.info('Security Event', securityEvent);
+
+    // Store in database audit log (async, fire-and-forget)
+    this.storeAuditLog(securityEvent).catch(err => {
+      this.debug('Failed to store audit log', { error: err instanceof Error ? err.message : String(err) });
+    });
+  }
+
+  private getSeverityFromEventType(eventType: string): string {
+    const severityMap: Record<string, string> = {
+      'AUTH_SUCCESS': 'info',
+      'AUTH_FAILURE': 'warn',
+      'TOKEN_CREATED': 'info',
+      'TOKEN_USED': 'info',
+      'TOKEN_EXPIRED': 'info',
+      'TOKEN_REVOKED': 'warn',
+      'ADMIN_ACTION': 'info',
+      'SUSPICIOUS_ACTIVITY': 'error',
+      'CRITICAL_SECURITY': 'critical'
+    };
+    return severityMap[eventType] || 'info';
+  }
+
+  private hashValue(value: string): string {
+    return require('crypto').createHash('sha256').update(value).digest('hex').substring(0, 16);
+  }
+
+  private async storeAuditLog(securityEvent: any): Promise<void> {
+    try {
+      const { prisma } = await import('./prisma.js');
+      await prisma.auditLog.create({
+        data: {
+          eventType: securityEvent.eventType,
+          severity: securityEvent.severity,
+          ipHash: securityEvent.ipHash,
+          uaHash: securityEvent.uaHash,
+          action: securityEvent.action,
+          result: securityEvent.result,
+          context: securityEvent.context
+        }
+      });
+    } catch (error) {
+      // Silently fail - audit log storage should not break the app
+      this.debug('Audit log storage failed', { error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+
+  /**
+   * Trigger emergency alert for critical security events
+   */
+  public triggerEmergencyAlert(message: string, severity: string, context?: any): void {
+    this.fatal(`EMERGENCY ALERT: ${message}`, context);
+    
+    // Send emergency email (async, fire-and-forget)
+    this.sendEmergencyAlertEmail(message, severity, context).catch(err => {
+      this.debug('Failed to send emergency alert email', { error: err instanceof Error ? err.message : String(err) });
+    });
+  }
+
+  private async sendEmergencyAlertEmail(message: string, severity: string, context?: any): Promise<void> {
+    try {
+      const { sendEmergencyAlert } = await import('./email.js');
+      await sendEmergencyAlert({
+        message,
+        severity,
+        timestamp: new Date().toISOString(),
+        metrics: context
+      });
+    } catch (error) {
+      this.debug('Emergency alert email failed', { error: error instanceof Error ? error.message : String(error) });
+    }
   }
 }
 

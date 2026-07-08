@@ -26,7 +26,7 @@ const nextSteps = [
 
 export default function SubmittedPage() {
   return (
-    <div className="min-h-screen tech-grid" style={{ backgroundColor: '#080D1A', color: '#F0F4FF' }}>
+    <div className="min-h-screen tech-grid" style={{ backgroundColor: 'var(--color-background)', color: 'var(--color-text-primary)' }}>
       <Navigation />
 
       {/* Hero Section */}
@@ -38,17 +38,17 @@ export default function SubmittedPage() {
         }} />
         
         {/* Corner micro brackets */}
-        <span className="absolute top-8 left-8 w-6 h-6 border-t border-l border-[#00C28A]/20" />
-        <span className="absolute top-8 right-8 w-6 h-6 border-t border-r border-[#00C28A]/20" />
-        <span className="absolute bottom-8 left-8 w-6 h-6 border-b border-l border-[#00C28A]/20" />
-        <span className="absolute bottom-8 right-8 w-6 h-6 border-b border-r border-[#00C28A]/20" />
+        <span className="absolute top-8 left-8 w-6 h-6 border-t border-l border-[var(--color-accent)]/20" />
+        <span className="absolute top-8 right-8 w-6 h-6 border-t border-r border-[var(--color-accent)]/20" />
+        <span className="absolute bottom-8 left-8 w-6 h-6 border-b border-l border-[var(--color-accent)]/20" />
+        <span className="absolute bottom-8 right-8 w-6 h-6 border-b border-r border-[var(--color-accent)]/20" />
 
         {/* Floating System Telemetry Log */}
-        <div className="hidden lg:block absolute bottom-6 left-8 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 select-none pointer-events-none">
+        <div className="hidden lg:block absolute bottom-6 left-8 font-mono text-[9px] text-[var(--color-text-tertiary)]/25 space-y-1 select-none pointer-events-none">
           <div>[INBOUND_GATE: SUBMIT_RECEIPT]</div>
           <div>INDEX: INGESTED // TRANSACTION: LOGGED</div>
         </div>
-        <div className="hidden lg:block absolute bottom-6 right-8 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 text-right select-none pointer-events-none">
+        <div className="hidden lg:block absolute bottom-6 right-8 font-mono text-[9px] text-[var(--color-text-tertiary)]/25 space-y-1 text-right select-none pointer-events-none">
           <div>DATA_ISOLATION: SECURE</div>
           <div>TELEMETRY: registered_success</div>
         </div>
@@ -64,9 +64,9 @@ export default function SubmittedPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-8"
-            style={{ backgroundColor: 'rgba(0, 194, 138, 0.15)', border: '2px solid #00C28A' }}
+            style={{ backgroundColor: 'rgba(0, 194, 138, 0.15)', border: '2px solid var(--color-accent)' }}
           >
-            <CheckCircle2 className="w-10 h-10" style={{ color: '#00C28A' }} />
+            <CheckCircle2 className="w-10 h-10" style={{ color: 'var(--color-accent)' }} />
           </motion.div>
 
           <motion.p
@@ -74,7 +74,7 @@ export default function SubmittedPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             className="text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ color: '#00C28A', fontFamily: 'var(--font-syne)' }}
+            style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-syne)' }}
           >
             REQUEST RECEIVED
           </motion.p>
@@ -84,7 +84,7 @@ export default function SubmittedPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 word-break"
-            style={{ fontFamily: 'var(--font-syne)', fontWeight: 800, color: '#F0F4FF' }}
+            style={{ fontFamily: 'var(--font-syne)', fontWeight: 800, color: 'var(--color-text-primary)' }}
           >
             Your project brief is<br />in good hands.
           </motion.h1>
@@ -94,7 +94,7 @@ export default function SubmittedPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
             className="text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
-            style={{ color: '#8A9BBB' }}
+            style={{ color: 'var(--color-text-tertiary)' }}
           >
             Thank you! We have received your Custom Solutions request and our team will review it within 1–2 business days. Expect to hear from us soon.
           </motion.p>
@@ -108,14 +108,14 @@ export default function SubmittedPage() {
             <Link
               href="/"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold transition-all"
-              style={{ backgroundColor: '#00C28A', color: '#080D1A', borderRadius: '100px' }}
+              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-background)', borderRadius: '100px' }}
             >
               Back to Annita Home
             </Link>
             <Link
               href="/login"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold transition-all"
-              style={{ backgroundColor: 'transparent', color: '#00C28A', border: '2px solid #00C28A', borderRadius: '100px' }}
+              style={{ backgroundColor: 'transparent', color: 'var(--color-accent)', border: '2px solid var(--color-accent)', borderRadius: '100px' }}
             >
               Explore the Ecosystem
               <ArrowRight className="w-4 h-4" />
@@ -132,7 +132,7 @@ export default function SubmittedPage() {
           viewport={{ once: true }}
           className="mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>WHAT HAPPENS NEXT:</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-syne)' }}>WHAT HAPPENS NEXT:</h2>
         </motion.div>
 
         <div className="space-y-6">
@@ -145,10 +145,10 @@ export default function SubmittedPage() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="flex items-start gap-4"
             >
-              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold" style={{ backgroundColor: '#00C28A', color: '#080D1A' }}>
+              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold" style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-background)' }}>
                 {index + 1}
               </div>
-              <p className="text-lg leading-relaxed pt-1" style={{ color: '#8A9BBB' }}>
+              <p className="text-lg leading-relaxed pt-1" style={{ color: 'var(--color-text-tertiary)' }}>
                 {step.title}
               </p>
             </motion.div>
@@ -157,7 +157,7 @@ export default function SubmittedPage() {
       </section>
 
       {/* Techy Footer */}
-      <footer className="relative overflow-hidden" style={{ backgroundColor: '#080D1A', borderTop: '1px solid #1A2640' }}>
+      <footer className="relative overflow-hidden" style={{ backgroundColor: 'var(--color-background)', borderTop: '1px solid var(--color-border-card)' }}>
         {/* Animated Grid Background */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -171,7 +171,7 @@ export default function SubmittedPage() {
 
         {/* Scanline Effect */}
         <div className="absolute inset-0 pointer-events-none opacity-5">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00C28A]/5 to-transparent animate-scanline" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
         <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
@@ -188,83 +188,83 @@ export default function SubmittedPage() {
                   className="rounded-lg"
                 />
                 <div>
-                  <div className="font-bold text-white">Annita<span className="text-[#00C28A]">.</span></div>
-                  <div className="text-[10px] font-mono text-[#00C28A]">SYSTEM: ONLINE</div>
+                  <div className="font-bold text-white">Annita<span className="text-[var(--color-accent)]">.</span></div>
+                  <div className="text-[10px] font-mono text-[var(--color-accent)]">SYSTEM: ONLINE</div>
                 </div>
               </div>
-              <p className="text-xs text-[#8A9BBB] mb-4 leading-relaxed">
-                Building Africa's digital infrastructure with world-class technology solutions.
+              <p className="text-xs text-[var(--color-text-tertiary)] mb-4 leading-relaxed">
+                Annita is Africa's first all-in-one digital ecosystem, integrating e-commerce, fintech, AI, communication, marketing, logistics, and more into a single, connected system.
               </p>
-              <div className="flex items-center gap-2 text-[10px] font-mono text-[#4A5775]">
-                <span className="w-1.5 h-1.5 bg-[#00C28A] rounded-full animate-pulse" />
+              <div className="flex items-center gap-2 text-[10px] font-mono text-[var(--color-text-muted)]">
+                <span className="w-1.5 h-1.5 bg-[var(--color-accent)] rounded-full animate-pulse" />
                 <span>STATUS: OPERATIONAL</span>
               </div>
             </div>
 
             {/* Ecosystem Links */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" />
                 Ecosystem
               </div>
               <div className="space-y-2">
-                <Link href="/login" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Annita Ecosystem</Link>
-                <a href="https://www.an-nitapay.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">AnnitaPay</a>
-                <a href="https://www.an-nita-pulse.org" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Annita Pulse</a>
-                <a href="https://www.ezri-africa.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Ezri</a>
-                <a href="https://an-nitaimpactinnovationhub.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">AIIM Hub</a>
+                <Link href="/login" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
+                <a href="https://www.an-nitapay.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AnnitaPay</a>
+                <a href="https://www.an-nita-pulse.org" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Pulse</a>
+                <a href="https://www.ezri-africa.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Ezri</a>
+                <a href="https://an-nitaimpactinnovationhub.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AIIM Hub</a>
               </div>
             </div>
 
             {/* Company Links */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" />
                 Company
               </div>
               <div className="space-y-2">
-                <Link href="/solutions" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Custom Solutions</Link>
-                <Link href="/about" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">About Us</Link>
-                <Link href="/awards" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Awards</Link>
-                <Link href="/contact" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Contact Us</Link>
-                <Link href="/contact-sales" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Contact Sales</Link>
+                <Link href="/about" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">About Us</Link>
+                <Link href="/solutions" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Custom Solutions</Link>
+                <Link href="/careers" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Careers</Link>
+                <Link href="/partnerships" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Partnerships</Link>
+                <Link href="/awards" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Awards</Link>
               </div>
             </div>
 
-            {/* Tech Stats */}
+            {/* Legal Links */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
-                System Metrics
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" />
+                Legal
               </div>
-              <div className="space-y-2 text-[10px] font-mono">
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">LATENCY</span>
-                  <span className="text-[#00C28A]">18ms</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">UPTIME</span>
-                  <span className="text-[#00C28A]">99.9%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">REGIONS</span>
-                  <span className="text-[#00C28A]">6</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">VERSION</span>
-                  <span className="text-[#00C28A]">v2.0</span>
-                </div>
+              <div className="space-y-2">
+                <Link href="/privacy" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Terms & Conditions</Link>
+                <Link href="/cookies" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Cookie Policy</Link>
+              </div>
+            </div>
+
+            {/* Contact Links */}
+            <div>
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" />
+                Contact
+              </div>
+              <div className="space-y-2">
+                <Link href="/contact" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Contact Us</Link>
+                <Link href="/contact-sales" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Contact Sales</Link>
+                <Link href="/partnerships" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Partnership</Link>
               </div>
             </div>
           </div>
 
           {/* Bottom Section */}
-          <div className="pt-8 border-t border-[#1A2640]/50 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="pt-8 border-t border-[var(--color-border-card)]/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-center md:text-left">
-              <p className="text-[10px] font-mono text-[#4A5775]">© 2026 Annita LLC. All rights reserved.</p>
+              <p className="text-[10px] font-mono text-[var(--color-text-muted)]">© 2026 Annita LLC. All rights reserved.</p>
             </div>
             <div className="text-center md:text-right">
-              <p className="text-[10px] font-mono text-[#4A5775]">Built in Liberia. Built for the World.</p>
+              <p className="text-[10px] font-mono text-[var(--color-text-muted)]">Built in Liberia. Built for the World.</p>
             </div>
           </div>
         </div>

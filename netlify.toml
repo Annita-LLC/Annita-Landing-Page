@@ -1,0 +1,73 @@
+# ==============================================================================
+# FORTUNE 500 / PENTAGON-GRADE NETLIFY CONFIGURATION
+# PROJECT: ANNITA LANDING PAGE
+# ==============================================================================
+# This file is the single source of truth for Netlify deployments.
+# It mirrors the security posture enforced in next.config.js and the Dockerfile,
+# ensuring parity across Vercel, Docker, and Netlify targets.
+# ------------------------------------------------------------------------------
+
+[build]
+  # Next.js build command. Netlify's OpenNext adapter runs automatically.
+  command = "npm run build"
+  # Directory published by Next.js (adapter handles routing).
+  publish = ".next"
+  # Functions are auto-provisioned by the OpenNext adapter.
+  functions = ".netlify/functions"
+
+[build.environment]
+  # Pin Node.js to an LTS version matching the Dockerfile for parity.
+  NODE_VERSION = "20"
+  # Use npm matching the lockfile.
+  NPM_FLAGS = "--legacy-peer-deps"
+  # Disable Next.js telemetry in CI for reproducible, quiet builds.
+  NEXT_TELEMETRY_DISABLED = "1"
+  # Enable skew protection to avoid client/server version drift across deploys.
+  NETLIFY_NEXT_SKEW_PROTECTION = "true"
+
+# ------------------------------------------------------------------------------
+# Security headers (mirror next.config.js for Defense-in-Depth on the edge)
+# ------------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()"
+    Cross-Origin-Embedder-Policy = "require-corp"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+    X-DNS-Prefetch-Control = "on"
+
+# ------------------------------------------------------------------------------
+# Caching for immutable, hashed build assets (safe + fast)
+# ------------------------------------------------------------------------------
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ------------------------------------------------------------------------------
+# Long-cache for fonts and other static public assets
+# ------------------------------------------------------------------------------
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ------------------------------------------------------------------------------
+# Redirects (canonical host / trailing slash normalization)
+# ------------------------------------------------------------------------------
+# Force HTTPS and trim www. Uncomment and edit the domain when wired up.
+# [[redirects]]
+#   from = "https://www.an-nita.com/*"
+#   to = "https://an-nita.com/:splat"
+#   status = 301
+#   force = true
+
+# ------------------------------------------------------------------------------
+# SPA-style fallback is NOT needed for Next.js on Netlify (adapter handles it).
+# Keep this file minimal and let the OpenNext adapter own routing.
+# ------------------------------------------------------------------------------

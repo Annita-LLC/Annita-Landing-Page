@@ -17,7 +17,7 @@ const FILES: Record<TabId, FileConfig> = {
   'annita_pay.ts': {
     name: 'annita_pay.ts',
     lang: 'typescript',
-    accentColor: '#00C28A',
+    accentColor: 'var(--color-accent)',
     code: `import { AnnitaPay } from '@annita/pay';
 
 const gateway = new AnnitaPay({
@@ -48,7 +48,7 @@ console.log("Success: 24 local sales synced to central gateway");`,
   'ezri_ai.py': {
     name: 'ezri_ai.py',
     lang: 'python',
-    accentColor: '#F5A623',
+    accentColor: 'var(--color-brand-secondary)',
     code: `from ezri import AIIM_Matchmaker
 
 # Init recommender engine
@@ -79,7 +79,7 @@ for candidate in candidates[:3]:
   'pulse_health.go': {
     name: 'pulse_health.go',
     lang: 'go',
-    accentColor: '#38BDF8',
+    accentColor: 'var(--color-brand-info, #0284C7)',
     code: `package main
 
 import (
@@ -97,17 +97,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Consensus achieved. Sync complete.")
-}`,
+	fmt.Println("Consensus achieved. Sync complete.")`,
     logs: [
-      'Initializing Go runtime consensus environment...',
-      'Pulse ledger client dialing daemon http://localhost:8080...',
-      'Connected to local cluster node. Health: EXCELLENT.',
-      'Constructing encrypted transaction body for REC_9901...',
-      'Broadcasting record to validation network...',
-      'Validations received from nodes: (5/5 clinics matched).',
-      'Committing block hash: 0x9f32b881a... to chain.',
-      'Consensus achieved. Sync complete.'
+      'Dialing TLS ledger client for consensus protocol...',
+      'Verifying node signature: pulse-clinic-node-lib (active)...',
+      'Initiating double-encryption handshake (AES-256-GCM + Kyber)...',
+      'Transmitting secure health payload REC_9901 (Size: 14.8KB)...',
+      'Waiting for multi-sig validation from validator pool...',
+      'Consensus achieved on block height #48,102.',
+      '[OK] Consensus achieved. Sync complete.'
     ]
   }
 }
@@ -115,67 +113,68 @@ func main() {
 export default function LiveCodingTerminal() {
   const [activeTab, setActiveTab] = useState<TabId>('annita_pay.ts')
   const [typedCode, setTypedCode] = useState('')
-  const [consoleLogs, setConsoleLogs] = useState<string[]>([])
-  const [isTyping, setIsTyping] = useState(true)
+  const [isTyping, setIsTyping] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
   const [isFinished, setIsFinished] = useState(false)
-
-  const activeConfig = FILES[activeTab]
+  const [consoleLogs, setConsoleLogs] = useState<string[]>([])
+  
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const runIntervalsRef = useRef<NodeJS.Timeout[]>([])
+  const codeLinesRef = useRef<string[]>([])
+  const lineIndexRef = useRef(0)
 
-  // Typewriter effect
+  // Trigger auto-typing whenever tab changes
   useEffect(() => {
-    // Clear previous timers & state
-    if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
-    runIntervalsRef.current.forEach(t => clearTimeout(t))
-    runIntervalsRef.current = []
-    
+    // Reset state
+    if (typingTimerRef.current) clearInterval(typingTimerRef.current)
     setTypedCode('')
-    setConsoleLogs([])
     setIsTyping(true)
     setIsRunning(false)
     setIsFinished(false)
-
-    let charIndex = 0
-    const codeSnippet = activeConfig.code
-    const typeSpeed = 12 // Fast typing
-
-    const type = () => {
-      if (charIndex < codeSnippet.length) {
-        setTypedCode(codeSnippet.substring(0, charIndex + 1))
-        charIndex++
-        typingTimerRef.current = setTimeout(type, typeSpeed)
-      } else {
-        setIsTyping(false)
-      }
-    }
-    
-    type()
-
-    return () => {
-      if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
-      runIntervalsRef.current.forEach(t => clearTimeout(t))
-    }
-  }, [activeTab, activeConfig.code])
-
-  // Run script action
-  const handleRun = () => {
-    if (isTyping || isRunning || isFinished) return
-    setIsRunning(true)
     setConsoleLogs([])
 
-    const logsList = activeConfig.logs
-    logsList.forEach((line, index) => {
-      const timer = setTimeout(() => {
-        setConsoleLogs(prev => [...prev, line])
-        if (index === logsList.length - 1) {
-          setIsRunning(false)
-          setIsFinished(true)
-        }
-      }, (index + 1) * 450)
-      runIntervalsRef.current.push(timer)
-    })
+    const file = FILES[activeTab]
+    codeLinesRef.current = file.code.split('\n')
+    lineIndexRef.current = 0
+
+    // Typing speed simulator
+    typingTimerRef.current = setInterval(() => {
+      if (lineIndexRef.current < codeLinesRef.current.length) {
+        setTypedCode(prev => {
+          const nextLine = codeLinesRef.current[lineIndexRef.current]
+          lineIndexRef.current += 1
+          return prev ? prev + '\n' + nextLine : nextLine
+        })
+      } else {
+        if (typingTimerRef.current) clearInterval(typingTimerRef.current)
+        setIsTyping(false)
+      }
+    }, 150) // Fast typing simulation
+
+    return () => {
+      if (typingTimerRef.current) clearInterval(typingTimerRef.current)
+    }
+  }, [activeTab])
+
+  // Run script simulator
+  const handleRun = () => {
+    if (isTyping || isRunning || isFinished) return
+    
+    setIsRunning(true)
+    setConsoleLogs([])
+    
+    const logsToStream = FILES[activeTab].logs
+    let currentLogIndex = 0
+
+    const logStreamer = setInterval(() => {
+      if (currentLogIndex < logsToStream.length) {
+        setConsoleLogs(prev => [...prev, logsToStream[currentLogIndex]])
+        currentLogIndex++
+      } else {
+        clearInterval(logStreamer)
+        setIsRunning(false)
+        setIsFinished(true)
+      }
+    }, 450)
   }
 
   // Reset script action
@@ -189,17 +188,17 @@ export default function LiveCodingTerminal() {
   // Basic syntax highlighter helper
   const highlightCode = (line: string) => {
     let highlighted = line
-      .replace(/(import|from|const|new|await|typeof|console|log|package|func|main|struct|return|def|for|in|print|class)/g, '<span class="text-[#00C28A] font-bold">$1</span>')
-      .replace(/(AnnitaPay|ezriAI|AIIM_Matchmaker|pulse|ledger|NewClient|SyncRecord)/g, '<span class="text-[#F5A623] font-bold">$1</span>')
+      .replace(/(import|from|const|new|await|typeof|console|log|package|func|main|struct|return|def|for|in|print|class)/g, '<span class="text-[var(--color-accent)] font-bold">$1</span>')
+      .replace(/(AnnitaPay|ezriAI|AIIM_Matchmaker|pulse|ledger|NewClient|SyncRecord)/g, '<span class="text-[var(--color-brand-secondary)] font-bold">$1</span>')
       .replace(/("[^"]*")/g, '<span class="text-emerald-400">$1</span>')
-      .replace(/(\/\/.*|#.*)/g, '<span class="text-[#4A5775] font-light italic">$1</span>')
+      .replace(/(\/\/.*|#.*)/g, '<span class="text-[var(--color-text-muted)] font-light italic">$1</span>')
     return highlighted
   }
 
   return (
-    <div className="w-full bg-[#080D1A]/95 border border-[#1A2640]/80 rounded-xl overflow-hidden shadow-2xl relative flex flex-col font-mono text-xs text-left h-[420px] tech-glow-card transition-all duration-300">
+    <div className="w-full bg-[var(--color-surface-base)]/95 border border-[var(--color-border-card)]/80 rounded-xl overflow-hidden shadow-2xl relative flex flex-col font-mono text-xs text-left h-[420px] tech-glow-card transition-all duration-300">
       {/* OS Bar & Tabs */}
-      <div className="bg-[#0F1729] border-b border-[#1A2640] flex flex-col sm:flex-row sm:items-center justify-between px-3 py-1.5 gap-2 select-none">
+      <div className="bg-[var(--color-surface-card)] border-b border-[var(--color-border-card)] flex flex-col sm:flex-row sm:items-center justify-between px-3 py-1.5 gap-2 select-none">
         {/* Left: Window Circles & Files */}
         <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
           <div className="flex gap-1.5 mr-2 shrink-0">
@@ -219,8 +218,8 @@ export default function LiveCodingTerminal() {
                   onClick={() => setActiveTab(tabId)}
                   className={`flex items-center gap-1.5 px-2.5 py-1 rounded transition-colors text-[10px] ${
                     isSelected 
-                      ? 'bg-[#080D1A] text-white border border-[#1A2640]' 
-                      : 'text-[#8A9BBB] hover:text-white hover:bg-[#1A2640]/30'
+                      ? 'bg-[var(--color-surface-base)] text-[var(--color-text-primary)] border border-[var(--color-border-card)]' 
+                      : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-border-card)]/30'
                   }`}
                 >
                   <FileCode className="w-3 h-3" style={{ color: file.accentColor }} />
@@ -232,16 +231,16 @@ export default function LiveCodingTerminal() {
         </div>
 
         {/* Right: Operations status badge */}
-        <div className="flex items-center justify-between sm:justify-end gap-2 text-[10px] shrink-0 border-t sm:border-t-0 border-[#1A2640]/50 pt-1 sm:pt-0">
-          <span className="text-[#8A9BBB] flex items-center gap-1">
+        <div className="flex items-center justify-between sm:justify-end gap-2 text-[10px] shrink-0 border-t sm:border-t-0 border-[var(--color-border-card)]/50 pt-1 sm:pt-0">
+          <span className="text-[var(--color-text-secondary)] flex items-center gap-1">
             <Server className="w-3 h-3" />
             LBR_NODE_01
           </span>
           <span className={`px-2 py-0.5 rounded font-bold uppercase tracking-wider text-[8px] ${
             isTyping 
-              ? 'text-[#F5A623] bg-[#F5A623]/10' 
+              ? 'text-[var(--color-brand-secondary)] bg-[var(--color-brand-secondary)]/10' 
               : isRunning 
-                ? 'text-[#00C28A] bg-[#00C28A]/10 animate-pulse'
+                ? 'text-[var(--color-accent)] bg-[var(--color-accent-soft)] animate-pulse'
                 : isFinished 
                   ? 'text-emerald-400 bg-emerald-400/10'
                   : 'text-white bg-slate-800'
@@ -252,27 +251,27 @@ export default function LiveCodingTerminal() {
       </div>
 
       {/* Editor Panel */}
-      <div className="p-4 flex-1 overflow-y-auto min-h-0 bg-[#080D1A] flex flex-col justify-start select-text selection:bg-[#00C28A]/20">
-        <pre className="text-[10px] md:text-[11px] leading-relaxed text-[#F0F4FF] overflow-x-auto whitespace-pre-wrap">
-          <code className="text-[#8A9BBB]">
+      <div className="p-4 flex-1 overflow-y-auto min-h-0 bg-[var(--color-surface-base)] flex flex-col justify-start select-text selection:bg-[var(--color-accent)]/20">
+        <pre className="text-[10px] md:text-[11px] leading-relaxed text-[var(--color-text-primary)] overflow-x-auto whitespace-pre-wrap">
+          <code className="text-[var(--color-text-secondary)]">
             {typedCode.split('\n').map((line, i) => (
               <div key={i} className="flex gap-3">
-                <span className="w-4 text-right text-[#4A5775] select-none text-[9px]">{i + 1}</span>
+                <span className="w-4 text-right text-[var(--color-text-muted)] select-none text-[9px]">{i + 1}</span>
                 <span dangerouslySetInnerHTML={{ __html: highlightCode(line) }} />
               </div>
             ))}
             {isTyping && (
-              <span className="inline-block w-1.5 h-3.5 ml-0.5 bg-[#00C28A] animate-pulse" />
+              <span className="inline-block w-1.5 h-3.5 ml-0.5 bg-[var(--color-accent)] animate-pulse" />
             )}
           </code>
         </pre>
       </div>
 
       {/* Console Panel */}
-      <div className="h-[140px] bg-[#0F1729] border-t border-[#1A2640] p-3 flex flex-col font-mono text-[9px] shrink-0">
-        <div className="text-[#8A9BBB] font-bold uppercase tracking-wider border-b border-[#1A2640] pb-1.5 mb-1.5 flex items-center justify-between select-none">
+      <div className="h-[140px] bg-[var(--color-surface-card)] border-t border-[var(--color-border-card)] p-3 flex flex-col font-mono text-[9px] shrink-0">
+        <div className="text-[var(--color-text-secondary)] font-bold uppercase tracking-wider border-b border-[var(--color-border-card)] pb-1.5 mb-1.5 flex items-center justify-between select-none">
           <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00C28A] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
             Output Console
           </span>
           
@@ -283,8 +282,8 @@ export default function LiveCodingTerminal() {
               disabled={isTyping || isRunning || isFinished}
               className={`flex items-center gap-1 px-2.5 py-0.5 rounded transition-all text-[8px] font-bold uppercase tracking-wider ${
                 isTyping || isRunning || isFinished
-                  ? 'text-[#4A5775] bg-[#1A2640]/10 cursor-not-allowed'
-                  : 'text-[#080D1A] bg-[#00C28A] hover:bg-[#00A875]'
+                  ? 'text-[var(--color-text-muted)] bg-[var(--color-border-card)]/10 cursor-not-allowed'
+                  : 'text-[var(--color-accent-foreground)] bg-[var(--color-accent)] hover:brightness-110'
               }`}
             >
               {isFinished ? <Check className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
@@ -292,7 +291,7 @@ export default function LiveCodingTerminal() {
             </button>
             <button
               onClick={handleReset}
-              className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#1A2640] hover:bg-[#1A2640]/80 text-[#8A9BBB] hover:text-white transition-all text-[8px] font-bold uppercase tracking-wider"
+              className="flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--color-border-card)] hover:bg-[var(--color-border-card)]/85 text-[var(--color-text-secondary)] hover:text-white transition-all text-[8px] font-bold uppercase tracking-wider"
             >
               <RotateCcw className="w-2.5 h-2.5" />
               <span>Reset</span>
@@ -301,12 +300,12 @@ export default function LiveCodingTerminal() {
         </div>
 
         {/* Console Logs Stream */}
-        <div className="flex-1 overflow-y-auto space-y-1.5 select-text selection:bg-[#00C28A]/20 pr-1">
+        <div className="flex-1 overflow-y-auto space-y-1.5 select-text selection:bg-[var(--color-accent)]/20 pr-1">
           {consoleLogs.map((log, index) => {
             const isOk = log.startsWith('[OK]')
             const isDivider = log.startsWith('---')
-            let textClass = 'text-[#8A9BBB]'
-            if (isOk) textClass = 'text-[#00C28A] font-semibold'
+            let textClass = 'text-[var(--color-text-secondary)]'
+            if (isOk) textClass = 'text-[var(--color-accent)] font-semibold'
             else if (log.includes('Matched:')) textClass = 'text-amber-300'
             else if (log.includes('cryptographic') || log.includes('Consensus')) textClass = 'text-cyan-400 font-semibold'
             
@@ -318,14 +317,14 @@ export default function LiveCodingTerminal() {
           })}
           
           {isRunning && (
-            <div className="text-[#00C28A] font-bold animate-pulse flex items-center gap-1">
+            <div className="text-[var(--color-accent)] font-bold animate-pulse flex items-center gap-1">
               <span>Executing script payload</span>
               <span className="animate-ping text-[7px]">...</span>
             </div>
           )}
           
           {!isRunning && !isFinished && !isTyping && consoleLogs.length === 0 && (
-            <div className="text-[#4A5775] italic select-none">Ready. Click 'Run Script' to execute compiled code on LBR_NODE_01.</div>
+            <div className="text-[var(--color-text-muted)] italic select-none">Ready. Click 'Run Script' to execute compiled code on LBR_NODE_01.</div>
           )}
         </div>
       </div>

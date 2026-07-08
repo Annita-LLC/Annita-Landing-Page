@@ -8,48 +8,33 @@ import { useState, useEffect } from 'react'
 export default function CookiesBanner() {
   const [isVisible, setIsVisible] = useState(false)
   const [hasAccepted, setHasAccepted] = useState(false)
-  const [welcomeModalShown, setWelcomeModalShown] = useState(false)
 
   useEffect(() => {
-    // Check if user has already accepted cookies
     const accepted = localStorage.getItem('cookiesAccepted')
-    const welcomeSeen = localStorage.getItem('welcomeModalSeen')
 
     if (accepted) {
       setHasAccepted(true)
       return
     }
 
-    // Wait for welcome modal to be shown first
+    // Wait for welcome modal to be closed before showing cookies banner
     const checkWelcomeModal = () => {
-      const welcomeSeenNow = localStorage.getItem('welcomeModalSeen')
-      if (welcomeSeenNow) {
-        setWelcomeModalShown(true)
-        // Show cookies banner after welcome modal is closed (additional delay)
+      const welcomeSeen = localStorage.getItem('welcomeModalSeen')
+      if (welcomeSeen) {
+        // Welcome modal is closed, show cookies banner after a short delay
         const timer = setTimeout(() => {
           setIsVisible(true)
         }, 500)
         return () => clearTimeout(timer)
       } else {
-        // Check again in 100ms
-        const checkTimer = setTimeout(checkWelcomeModal, 100)
-        return () => clearTimeout(checkTimer)
+        // Welcome modal still open, check again
+        const timer = setTimeout(checkWelcomeModal, 100)
+        return () => clearTimeout(timer)
       }
     }
 
-    // Start checking after welcome modal would typically appear (2 seconds)
-    const initialTimer = setTimeout(() => {
-      if (welcomeSeen) {
-        setWelcomeModalShown(true)
-        const showTimer = setTimeout(() => {
-          setIsVisible(true)
-        }, 500)
-        return () => clearTimeout(showTimer)
-      } else {
-        checkWelcomeModal()
-      }
-    }, 2500)
-
+    // Start checking after initial delay
+    const initialTimer = setTimeout(checkWelcomeModal, 2500)
     return () => clearTimeout(initialTimer)
   }, [])
 
@@ -76,28 +61,28 @@ export default function CookiesBanner() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-          className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6"
-          style={{ backgroundColor: '#0F1729', borderTop: '1px solid #1A2640' }}
+          className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6 border-t border-[var(--color-border-card)]"
+          style={{ backgroundColor: 'var(--color-surface-card)', boxShadow: '0 -8px 32px rgba(0,0,0,0.12)' }}
         >
           {/* Scanline Effect */}
           <div className="absolute inset-0 pointer-events-none opacity-5">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00C28A]/5 to-transparent animate-scanline" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
           </div>
 
           <div className="max-w-[1400px] mx-auto relative z-10">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               {/* Icon and Text */}
               <div className="flex items-start gap-4 flex-1">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(0, 194, 138, 0.1)' }}>
-                  <Cookie className="w-6 h-6" style={{ color: '#00C28A' }} />
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 bg-[var(--color-accent-soft)]">
+                  <Cookie className="w-6 h-6 text-[var(--color-accent)]" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-base font-bold mb-2" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>
+                  <h3 className="text-base font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
                     Cookie Preferences
                   </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: '#8A9BBB' }}>
+                  <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">
                     We use cookies to enhance your experience. By continuing to visit this site, you agree to our use of cookies.
-                    <Link href="/cookies" className="text-[#00C28A] hover:underline ml-1">
+                    <Link href="/cookies" className="text-[var(--color-accent)] hover:underline ml-1">
                       Learn more
                     </Link>
                   </p>
@@ -108,22 +93,20 @@ export default function CookiesBanner() {
               <div className="flex items-center gap-3 flex-shrink-0">
                 <button
                   onClick={handleDecline}
-                  className="px-4 py-2 rounded-lg text-sm font-semibold transition-all border border-[#1A2640] hover:border-[#00C28A]/50"
-                  style={{ color: '#8A9BBB', backgroundColor: 'transparent' }}
+                  className="px-4 py-2 rounded-lg text-sm font-semibold transition-all border border-[var(--color-border-card)] hover:border-[var(--color-accent)]/50 text-[var(--color-text-secondary)] bg-transparent"
                 >
                   Decline
                 </button>
                 <button
                   onClick={handleAccept}
-                  className="px-6 py-2 rounded-lg text-sm font-semibold transition-all"
-                  style={{ color: '#080D1A', backgroundColor: '#00C28A' }}
+                  className="px-6 py-2 rounded-lg text-sm font-semibold transition-all hover:brightness-110"
+                  style={{ color: 'var(--color-accent-foreground)', backgroundColor: 'var(--color-accent)' }}
                 >
                   Accept
                 </button>
                 <button
                   onClick={handleClose}
-                  className="p-2 rounded-lg transition-all hover:bg-[#1A2640]/50"
-                  style={{ color: '#8A9BBB' }}
+                  className="p-2 rounded-lg transition-all hover:bg-[var(--color-surface-elevated-2)] text-[var(--color-text-tertiary)]"
                 >
                   <X className="w-5 h-5" />
                 </button>

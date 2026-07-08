@@ -68,7 +68,7 @@ export default function HolographicTilt({ children, className = '', intensity = 
         className="absolute inset-0 pointer-events-none rounded-xl"
         style={{
           background: isHovering
-            ? 'linear-gradient(135deg, rgba(0, 194, 138, 0.1) 0%, rgba(0, 194, 138, 0.05) 50%, rgba(0, 194, 138, 0.1) 100%)'
+            ? 'linear-gradient(135deg, var(--color-accent-soft) 0%, rgba(0, 194, 138, 0.05) 50%, var(--color-accent-soft) 100%)'
             : 'transparent',
           opacity: isHovering ? 1 : 0
         }}
@@ -89,7 +89,7 @@ export default function HolographicTilt({ children, className = '', intensity = 
         }}
         transition={{ duration: 0.3 }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00C28A]/10 to-transparent animate-scanline" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/10 to-transparent animate-scanline" />
       </motion.div>
 
       {/* Content with 3D transform */}

@@ -43,7 +43,7 @@ export default function TypingEffect({ text, className = '', speed = 50, delay =
       {displayText}
       <motion.span
         className="inline-block w-0.5 h-6 ml-1"
-        style={{ backgroundColor: '#00C28A' }}
+        style={{ backgroundColor: 'var(--color-accent)' }}
         animate={{
           opacity: isComplete ? [1, 0] : [1, 0, 1]
         }}

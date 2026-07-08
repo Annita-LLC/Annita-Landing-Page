@@ -1,35 +1,75 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #080D1A;
-  --color-foreground: #F0F4FF;
-  --color-muted: #8A9BBB;
-  --color-muted-foreground: #4A5775;
-  --color-border: #1A2640;
+  /* ============================================================================
+   FORTUNE 500 / PENTAGON-GRADE COLOR SYSTEM
+   Semantic token-based theming — dark is the default (SSR-safe)
+   ============================================================================ */
+
+  /* Core Brand Colors (Theme-Agnostic — never change) */
+  --color-brand-primary: #00C28A;
+  --color-brand-secondary: #F5A623;
+  --color-brand-error: #DC2626;
+  --color-brand-warning: #F59E0B;
+  --color-brand-success: #059669;
+  --color-brand-info: #0284C7;
+
+  /* === DEFAULT: DARK MODE TOKENS === */
+  --color-background: #0A0F1C;
+  --color-foreground: #F8FAFC;
+  --color-muted: #94A3B8;
+  --color-muted-foreground: #64748B;
+  --color-border: #1E293B;
   --color-accent: #00C28A;
-  --color-accent-foreground: #080D1A;
-  --color-accent-soft: rgba(0, 194, 138, 0.08);
-  --color-surface: #0F1729;
-  --color-surface-elevated: #162038;
-  --color-ring: rgba(0, 194, 138, 0.35);
-  
-  /* Annita Design System Colors */
-  --color-bg-deep: #080D1A;
-  --color-bg-surface: #0F1729;
-  --color-bg-elevated: #162038;
+  --color-accent-foreground: #0A0F1C;
+  --color-accent-soft: rgba(0, 194, 138, 0.1);
+  --color-surface: #111827;
+  --color-surface-elevated: #1F2937;
+  --color-ring: rgba(0, 194, 138, 0.4);
+
+  /* Semantic Surface Tokens - Dark */
+  --color-surface-base: #0A0F1C;
+  --color-surface-raised: #111827;
+  --color-surface-elevated-2: #1F2937;
+  --color-surface-overlay: rgba(10, 15, 28, 0.95);
+  --color-surface-scrim: rgba(0, 0, 0, 0.6);
+  --color-surface-modal: #0F1729;
+  --color-surface-card: #0F1729;
+
+  /* Semantic Text Tokens - Dark */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #CBD5E1;
+  --color-text-tertiary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-text-inverse: #0A0F1C;
+  --color-text-disabled: #475569;
+
+  /* Semantic Border Tokens - Dark */
+  --color-border-default: #1E293B;
+  --color-border-subtle: #334155;
+  --color-border-strong: #475569;
+  --color-border-accent: rgba(0, 194, 138, 0.3);
+  --color-border-card: #1A2640;
+
+  /* Legacy tokens mapped to semantic dark values */
+  --color-bg-deep: #0A0F1C;
+  --color-bg-surface: #111827;
+  --color-bg-elevated: #1F2937;
   --color-accent-green: #00C28A;
   --color-accent-gold: #F5A623;
-  --color-text-primary: #F0F4FF;
-  --color-text-secondary: #8A9BBB;
-  --color-text-muted: #4A5775;
-  --color-border-accent: #00C28A33;
-  --color-error: #FF4D6A;
-  --color-success: #00C28A;
-  --color-coming-soon: #F5A62333;
+  --color-error: #DC2626;
+  --color-success: #059669;
+  --color-coming-soon: rgba(245, 166, 35, 0.2);
+
+  /* Navigation overlay */
+  --color-nav-overlay: rgba(10, 15, 28, 0.92);
+  --color-nav-border: rgba(30, 41, 59, 1);
 }
 
+/* ============================================================================
+ ROOT — dark mode utility vars (applies when no .light or .dark class)
+ ============================================================================ */
 :root {
-  /* CSS variables for custom utilities */
   --hero-glow: radial-gradient(
     ellipse 100% 80% at 50% -20%,
     rgba(0, 194, 138, 0.14),
@@ -37,69 +77,241 @@
   );
   --gradient-primary: linear-gradient(135deg, #00C28A 0%, #00A875 100%);
   --gradient-secondary: linear-gradient(135deg, #F5A623 0%, #E8941A 100%);
-  --glass-bg: rgba(15, 23, 41, 0.8);
-  --glass-border: rgba(26, 38, 64, 0.5);
+  --glass-bg: rgba(17, 24, 39, 0.85);
+  --glass-border: rgba(30, 41, 59, 0.6);
   --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 40px rgba(0, 194, 138, 0.3);
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px #1A2640;
-  --shadow-card-hover: 0 8px 32px rgba(0,194,138,0.08), 0 0 0 1px #00C28A33;
-  --shadow-button-glow: 0 0 24px rgba(0,194,138,0.25);
+  --shadow-glow: 0 0 40px rgba(0, 194, 138, 0.25);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px #1E293B;
+  --shadow-card-hover: 0 8px 32px rgba(0,194,138,0.12), 0 0 0 1px rgba(0, 194, 138, 0.3);
+  --shadow-button-glow: 0 0 24px rgba(0,194,138,0.3);
 }
 
+/* ============================================================================
+ .dark — explicit dark mode (ThemeProvider adds this class to <html>)
+ Mirrors the @theme defaults so switching back to dark works correctly
+ ============================================================================ */
+.dark {
+  --color-background: #0A0F1C;
+  --color-foreground: #F8FAFC;
+  --color-muted: #94A3B8;
+  --color-muted-foreground: #64748B;
+  --color-border: #1E293B;
+  --color-accent: #00C28A;
+  --color-accent-foreground: #0A0F1C;
+  --color-accent-soft: rgba(0, 194, 138, 0.1);
+  --color-surface: #111827;
+  --color-surface-elevated: #1F2937;
+  --color-ring: rgba(0, 194, 138, 0.4);
+  --color-surface-base: #0A0F1C;
+  --color-surface-raised: #111827;
+  --color-surface-elevated-2: #1F2937;
+  --color-surface-overlay: rgba(10, 15, 28, 0.95);
+  --color-surface-scrim: rgba(0, 0, 0, 0.6);
+  --color-surface-modal: #0F1729;
+  --color-surface-card: #0F1729;
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #CBD5E1;
+  --color-text-tertiary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-text-inverse: #0A0F1C;
+  --color-text-disabled: #475569;
+  --color-border-default: #1E293B;
+  --color-border-subtle: #334155;
+  --color-border-strong: #475569;
+  --color-border-accent: rgba(0, 194, 138, 0.3);
+  --color-border-card: #1A2640;
+  --color-bg-deep: #0A0F1C;
+  --color-bg-surface: #111827;
+  --color-bg-elevated: #1F2937;
+  --color-coming-soon: rgba(245, 166, 35, 0.2);
+  --color-nav-overlay: rgba(10, 15, 28, 0.92);
+  --color-nav-border: rgba(30, 41, 59, 1);
+  --hero-glow: radial-gradient(ellipse 100% 80% at 50% -20%, rgba(0, 194, 138, 0.14), transparent 55%);
+  --glass-bg: rgba(17, 24, 39, 0.85);
+  --glass-border: rgba(30, 41, 59, 0.6);
+  --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 40px rgba(0, 194, 138, 0.25);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px #1E293B;
+  --shadow-card-hover: 0 8px 32px rgba(0,194,138,0.12), 0 0 0 1px rgba(0, 194, 138, 0.3);
+  --shadow-button-glow: 0 0 24px rgba(0,194,138,0.3);
+}
+
+/* ============================================================================
+ .light — Professional, high-contrast light palette
+ ============================================================================ */
+.light {
+  --color-background: #FFFFFF;
+  --color-foreground: #0F172A;
+  --color-muted: #64748B;
+  --color-muted-foreground: #94A3B8;
+  --color-border: #E2E8F0;
+  --color-accent: #009E70;
+  --color-accent-foreground: #FFFFFF;
+  --color-accent-soft: rgba(0, 158, 112, 0.1);
+  --color-surface: #F8FAFC;
+  --color-surface-elevated: #FFFFFF;
+  --color-ring: rgba(0, 158, 112, 0.5);
+
+  /* Semantic Surface Tokens - Light */
+  --color-surface-base: #F1F5F9;
+  --color-surface-raised: #FFFFFF;
+  --color-surface-elevated-2: #F8FAFC;
+  --color-surface-overlay: rgba(255, 255, 255, 0.97);
+  --color-surface-scrim: rgba(0, 0, 0, 0.3);
+  --color-surface-modal: #FFFFFF;
+  --color-surface-card: #FFFFFF;
+
+  /* Semantic Text Tokens - Light */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #1E293B;
+  --color-text-tertiary: #475569;
+  --color-text-muted: #64748B;
+  --color-text-inverse: #FFFFFF;
+  --color-text-disabled: #CBD5E1;
+
+  /* Semantic Border Tokens - Light */
+  --color-border-default: #E2E8F0;
+  --color-border-subtle: #F1F5F9;
+  --color-border-strong: #CBD5E1;
+  --color-border-accent: rgba(0, 158, 112, 0.35);
+  --color-border-card: #E2E8F0;
+
+  /* Legacy tokens - Light overrides */
+  --color-bg-deep: #F1F5F9;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-elevated: #F8FAFC;
+  --color-accent-green: #009E70;
+  --color-accent-gold: #D4900A;
+  --color-coming-soon: rgba(212, 144, 10, 0.15);
+  --color-nav-overlay: rgba(255, 255, 255, 0.95);
+  --color-nav-border: rgba(226, 232, 240, 1);
+
+  /* Light Mode Utilities */
+  --hero-glow: radial-gradient(ellipse 100% 80% at 50% -20%, rgba(0, 158, 112, 0.08), transparent 55%);
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(226, 232, 240, 0.9);
+  --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 40px rgba(0, 158, 112, 0.18);
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px #E2E8F0;
+  --shadow-card-hover: 0 8px 32px rgba(0,158,112,0.12), 0 0 0 1px rgba(0, 158, 112, 0.3);
+  --shadow-button-glow: 0 0 24px rgba(0,158,112,0.3);
+}
+
+/* ============================================================================
+ BODY — uses the correct semantic token names
+ ============================================================================ */
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-background);
+  color: var(--color-text-primary);
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ============================================================================
+ SEMANTIC UTILITY CLASSES — use these in components instead of inline styles
+ ============================================================================ */
+.theme-bg {
+  background-color: var(--color-surface-base);
+  color: var(--color-text-primary);
+}
+
+.theme-surface {
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-primary);
+}
+
+.theme-card {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border-card);
+  color: var(--color-text-primary);
+}
+
+.theme-modal {
+  background-color: var(--color-surface-modal);
+  border: 1px solid var(--color-border-card);
+  color: var(--color-text-primary);
+}
+
+.theme-text-primary {
+  color: var(--color-text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.theme-text-muted {
+  color: var(--color-text-muted);
+}
+
+.theme-border {
+  border-color: var(--color-border-default);
+}
+
+.theme-input {
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+}
+
+.theme-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.theme-input:focus {
+  border-color: var(--color-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-ring);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
   }
-  
+
   .gradient-text {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   .premium-shadow {
     box-shadow: var(--shadow-premium);
   }
-  
+
   .glow-effect {
     box-shadow: var(--shadow-glow);
   }
-  
+
   .card-shadow {
     box-shadow: var(--shadow-card);
   }
-  
+
   .card-shadow-hover {
     box-shadow: var(--shadow-card-hover);
   }
-  
+
   .button-glow {
     box-shadow: var(--shadow-button-glow);
   }
-  
+
   .mesh-gradient {
-    background-image: 
-      radial-gradient(at 40% 20%, rgba(0, 194, 138, 0.1) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, rgba(0, 194, 138, 0.08) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, rgba(245, 166, 35, 0.08) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, rgba(0, 194, 138, 0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(0, 194, 138, 0.08) 0px, transparent 50%);
+    background-image:
+      radial-gradient(at 40% 20%, var(--color-accent-soft) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, var(--color-accent-soft) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(245, 166, 35, 0.06) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, var(--color-accent-soft) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, var(--color-accent-soft) 0px, transparent 50%);
   }
-  
+
   /* Radial gradient pulse animation for hero */
   @keyframes radial-pulse {
     0%, 100% {
@@ -111,18 +323,18 @@ body {
       transform: scale(1.05);
     }
   }
-  
+
   .radial-pulse {
     animation: radial-pulse 8s ease-in-out infinite;
   }
-  
+
   /* Disable animations on mobile for performance */
   @media (max-width: 639px) {
     .radial-pulse {
       animation: none;
     }
   }
-  
+
   /* Respect prefers-reduced-motion */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -131,21 +343,21 @@ body {
       transition-duration: 0.01ms !important;
     }
   }
-  
+
   /* iOS safe area support */
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
   }
-  
+
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
-  
+
   /* Prevent horizontal scroll */
   .no-overflow-x {
     overflow-x: hidden;
   }
-  
+
   /* Word break for long content */
   .word-break {
     word-break: break-word;
@@ -155,16 +367,22 @@ body {
   /* Cyber & Tech utilities */
   .tech-grid {
     background-size: 40px 40px;
-    background-image: 
-      linear-gradient(to right, rgba(0, 194, 138, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 194, 138, 0.05) 1px, transparent 1px);
+    background-image:
+      linear-gradient(to right, rgba(0, 194, 138, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 194, 138, 0.04) 1px, transparent 1px);
   }
-  
+
+  .light .tech-grid {
+    background-image:
+      linear-gradient(to right, rgba(0, 158, 112, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 158, 112, 0.06) 1px, transparent 1px);
+  }
+
   .tech-scanline {
     position: relative;
     overflow: hidden;
   }
-  
+
   .tech-scanline::after {
     content: '';
     position: absolute;
@@ -172,11 +390,11 @@ body {
     left: 0;
     width: 100%;
     height: 10px;
-    background: linear-gradient(to bottom, transparent, rgba(0, 194, 138, 0.12), transparent);
+    background: linear-gradient(to bottom, transparent, rgba(0, 194, 138, 0.1), transparent);
     animation: tech-scan 6s linear infinite;
     pointer-events: none;
   }
-  
+
   @keyframes tech-scan {
     0% { top: -100%; }
     100% { top: 200%; }
@@ -184,7 +402,7 @@ body {
 
   .cyber-bracket-left::before {
     content: '[';
-    color: #00C28A;
+    color: var(--color-accent);
     margin-right: 0.35rem;
     font-family: monospace;
     opacity: 0.8;
@@ -192,7 +410,7 @@ body {
 
   .cyber-bracket-right::after {
     content: ']';
-    color: #00C28A;
+    color: var(--color-accent);
     margin-left: 0.35rem;
     font-family: monospace;
     opacity: 0.8;
@@ -202,7 +420,7 @@ body {
     position: relative;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
-  
+
   .tech-glow-card::before {
     content: '';
     position: absolute;
@@ -217,9 +435,9 @@ body {
     pointer-events: none;
     transition: opacity 0.3s ease;
   }
-  
+
   .tech-glow-card:hover::before {
-    background: linear-gradient(to bottom right, #00C28A, transparent, #F5A623);
+    background: linear-gradient(to bottom right, var(--color-accent), transparent, var(--color-accent-gold, #F5A623));
   }
 
   .glow-dot {
@@ -227,46 +445,46 @@ body {
     display: inline-flex;
     align-items: center;
   }
-  
+
   .glow-dot::before {
     content: '';
     display: inline-block;
     width: 8px;
     height: 8px;
-    background-color: #00C28A;
+    background-color: var(--color-accent);
     border-radius: 50%;
     margin-right: 8px;
     box-shadow: 0 0 8px rgba(0, 194, 138, 0.6);
     animation: dot-pulse 2s infinite alternate;
   }
-  
+
   @keyframes dot-pulse {
     0% { transform: scale(0.85); opacity: 0.6; box-shadow: 0 0 4px rgba(0, 194, 138, 0.4); }
     100% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 12px rgba(0, 194, 138, 0.9); }
   }
 
   .tech-glow-text {
-    text-shadow: 0 0 10px rgba(0, 194, 138, 0.4);
+    text-shadow: 0 0 10px rgba(0, 194, 138, 0.35);
   }
 
-  /* Custom scrollbar for high-tech panels */
+  /* Custom scrollbar for high-tech panels — dark */
   .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(8, 13, 26, 0.8);
+    background: var(--color-surface-base);
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 194, 138, 0.4);
+    background: rgba(0, 194, 138, 0.35);
     border-radius: 4px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 194, 138, 0.7);
+    background: rgba(0, 194, 138, 0.65);
   }
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 194, 138, 0.4) rgba(8, 13, 26, 0.8);
+    scrollbar-color: rgba(0, 194, 138, 0.35) var(--color-surface-base);
     -webkit-overflow-scrolling: touch;
   }
 
@@ -294,19 +512,19 @@ body {
     animation: marquee 20s linear infinite;
     will-change: transform;
   }
-  
+
   .animate-marquee2 {
     display: inline-block;
     white-space: nowrap;
     animation: marquee2 20s linear infinite;
     will-change: transform;
   }
-  
+
   @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-100%); }
   }
-  
+
   @keyframes marquee2 {
     0% { transform: translateX(100%); }
     100% { transform: translateX(0); }
@@ -325,5 +543,26 @@ body {
   .tech-marquee-container:hover .animate-marquee2 {
     animation-play-state: paused;
   }
-}
 
+  /* Page transition */
+  .page-enter {
+    animation: page-in 0.4s ease forwards;
+  }
+
+  @keyframes page-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Earth-like globe rotation — smooth Y-axis spin with 23.5deg axial tilt preserved */
+  @keyframes globe-spin {
+    from { transform: rotateX(23.5deg) rotateY(0deg); }
+    to   { transform: rotateX(23.5deg) rotateY(360deg); }
+  }
+
+  /* Cloud drift — slightly faster than globe for subtle parallax */
+  @keyframes cloud-spin {
+    from { transform: rotateZ(0deg); }
+    to   { transform: rotateZ(360deg); }
+  }
+}

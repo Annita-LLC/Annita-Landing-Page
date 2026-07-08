@@ -9,7 +9,8 @@ import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { z } from 'zod';
-import { sendNewsletterConfirmation } from '../lib/email.js';
+import { sendNewsletterConfirmation, sendNewsletterAdminNotice } from '../lib/email.js';
+import { appendToSheet } from '../lib/google-sheets.js';
 
 const router = Router();
 
@@ -41,6 +42,21 @@ router.post('/', async (req: Request, res: Response) => {
       },
     });
 
+    // Sync to Google Sheets (fire-and-forget)
+    appendToSheet('Newsletter', [
+      subscription.createdAt.toISOString(),
+      subscription.id,
+      subscription.email,
+      subscription.status,
+      subscription.ipAddress || '',
+      subscription.userAgent || '',
+    ]).catch(err => {
+      logger.error('Failed to trigger Google Sheets append for Newsletter Subscription', {
+        requestId,
+        error: err instanceof Error ? err.message : String(err),
+      });
+    });
+
     const latency = Date.now() - startTime;
     logger.info('Newsletter subscription successful', {
       requestId,
@@ -54,8 +70,12 @@ router.post('/', async (req: Request, res: Response) => {
     try {
       await sendNewsletterConfirmation(validatedData.email);
       logger.info('Newsletter confirmation email sent successfully', { requestId, email: validatedData.email });
+
+      // Send admin notification
+      await sendNewsletterAdminNotice(validatedData.email);
+      logger.info('Newsletter admin notification sent successfully', { requestId, email: validatedData.email });
     } catch (emailError) {
-      logger.error('Failed to send newsletter confirmation email', {
+      logger.error('Failed to send newsletter emails', {
         requestId,
         email: validatedData.email,
         error: emailError instanceof Error ? emailError.message : 'Unknown error',

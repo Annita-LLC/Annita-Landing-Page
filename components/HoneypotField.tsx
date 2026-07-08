@@ -9,17 +9,26 @@ import { useState } from 'react';
 
 interface HoneypotFieldProps {
   name?: string;
+  onChange?: (value: string) => void;
 }
 
-export function HoneypotField({ name = 'website_url' }: HoneypotFieldProps) {
+export function HoneypotField({ name = 'website_url', onChange }: HoneypotFieldProps) {
   const [value, setValue] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setValue(newValue);
+    if (onChange) {
+      onChange(newValue);
+    }
+  };
 
   return (
     <input
       type="text"
       name={name}
       value={value}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={handleChange}
       tabIndex={-1}
       autoComplete="off"
       style={{

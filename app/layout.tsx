@@ -7,7 +7,6 @@ import { Analytics } from '@vercel/analytics/next'
 import CookiesBanner from '@/components/cookies-banner'
 import ScrollProgress from '@/components/scroll-progress'
 import TechCursor from '@/components/tech-cursor'
-import TerminalWidget from '@/components/terminal-widget'
 import ParticleBackground from '@/components/particle-background'
 import CommandPalette from '@/components/command-palette'
 import SoundEffects from '@/components/sound-effects'
@@ -23,8 +22,8 @@ export const metadata: Metadata = {
   },
   description: 'Annita LLC is Africa\'s premier digital ecosystem, integrating secure payment infrastructure (AnnitaPay), AI recruiting solutions (Ezri AI), decentralized health ledgers (Pulse Health), e-commerce, and logistics automation.',
   keywords: [
-    'Annita', 'Annita LLC', 'AnnitaPay', 'Ezri AI', 'Pulse Health', 
-    'Africa Fintech', 'Digital Infrastructure Africa', 'MSME Digitization', 
+    'Annita', 'Annita LLC', 'AnnitaPay', 'Ezri AI', 'Pulse Health',
+    'Africa Fintech', 'Digital Infrastructure Africa', 'MSME Digitization',
     'African Tech Ecosystem', 'AI Recruitment Africa', 'Distributed Health Ledger'
   ],
   authors: [{ name: 'Annita LLC Engineering' }],
@@ -137,7 +136,6 @@ export default function RootLayout({
         <ParticleBackground />
         <TechCursor />
         <ScrollProgress />
-        <TerminalWidget />
         <CommandPalette />
         <CookiesBanner />
         <Analytics />

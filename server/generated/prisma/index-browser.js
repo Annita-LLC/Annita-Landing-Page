@@ -226,6 +226,165 @@ exports.Prisma.AnalyticsEventScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.BetaSignupScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  fullName: 'fullName',
+  email: 'email',
+  phone: 'phone',
+  country: 'country',
+  device: 'device',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  status: 'status',
+  queuePosition: 'queuePosition',
+  shopsFor: 'shopsFor',
+  payMethod: 'payMethod',
+  age: 'age',
+  businessName: 'businessName',
+  businessCategory: 'businessCategory',
+  needs: 'needs',
+  yearsInBusiness: 'yearsInBusiness',
+  justStarting: 'justStarting',
+  companyName: 'companyName',
+  serviceTypes: 'serviceTypes',
+  areasCovered: 'areasCovered',
+  fleetSize: 'fleetSize',
+  yearsLogistics: 'yearsLogistics',
+  logisticsType: 'logisticsType',
+  vehicleTypes: 'vehicleTypes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.JobPostingScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  requirements: 'requirements',
+  department: 'department',
+  location: 'location',
+  employmentType: 'employmentType',
+  salaryRange: 'salaryRange',
+  experienceLevel: 'experienceLevel',
+  status: 'status',
+  customFields: 'customFields',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CareerApplicationScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  applicantName: 'applicantName',
+  email: 'email',
+  phone: 'phone',
+  country: 'country',
+  address: 'address',
+  linkedInUrl: 'linkedInUrl',
+  portfolioUrl: 'portfolioUrl',
+  resumeUrl: 'resumeUrl',
+  coverLetter: 'coverLetter',
+  customResponses: 'customResponses',
+  status: 'status',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PartnershipSubmissionScalarFieldEnum = {
+  id: 'id',
+  companyName: 'companyName',
+  contactName: 'contactName',
+  email: 'email',
+  phone: 'phone',
+  partnershipType: 'partnershipType',
+  companyDescription: 'companyDescription',
+  partnershipGoals: 'partnershipGoals',
+  mouDocumentUrl: 'mouDocumentUrl',
+  proposedTerms: 'proposedTerms',
+  additionalNotes: 'additionalNotes',
+  status: 'status',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MaintenanceWindowScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  isActive: 'isActive',
+  isScheduled: 'isScheduled',
+  reason: 'reason',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SystemHealthReportScalarFieldEnum = {
+  id: 'id',
+  reportType: 'reportType',
+  reportDate: 'reportDate',
+  uptime: 'uptime',
+  totalRequests: 'totalRequests',
+  totalErrors: 'totalErrors',
+  errorRate: 'errorRate',
+  avgResponseTime: 'avgResponseTime',
+  dbStatus: 'dbStatus',
+  dbResponseTime: 'dbResponseTime',
+  endpointMetrics: 'endpointMetrics',
+  recentErrors: 'recentErrors',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AdminTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  email: 'email',
+  expiresAt: 'expiresAt',
+  used: 'used',
+  ipHash: 'ipHash',
+  uaHash: 'uaHash',
+  fingerprint: 'fingerprint',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  eventType: 'eventType',
+  severity: 'severity',
+  ipHash: 'ipHash',
+  uaHash: 'uaHash',
+  action: 'action',
+  result: 'result',
+  context: 'context',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AccountDeletionRequestScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  softwareProduct: 'softwareProduct',
+  reason: 'reason',
+  communicationChannel: 'communicationChannel',
+  alternativeContact: 'alternativeContact',
+  verificationToken: 'verificationToken',
+  verifiedAt: 'verifiedAt',
+  status: 'status',
+  processedAt: 'processedAt',
+  adminNotes: 'adminNotes',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -233,6 +392,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -258,7 +421,16 @@ exports.Prisma.ModelName = {
   ContactSalesSubmission: 'ContactSalesSubmission',
   SolutionsRequest: 'SolutionsRequest',
   NewsletterSubscription: 'NewsletterSubscription',
-  AnalyticsEvent: 'AnalyticsEvent'
+  AnalyticsEvent: 'AnalyticsEvent',
+  BetaSignup: 'BetaSignup',
+  JobPosting: 'JobPosting',
+  CareerApplication: 'CareerApplication',
+  PartnershipSubmission: 'PartnershipSubmission',
+  MaintenanceWindow: 'MaintenanceWindow',
+  SystemHealthReport: 'SystemHealthReport',
+  AdminToken: 'AdminToken',
+  AuditLog: 'AuditLog',
+  AccountDeletionRequest: 'AccountDeletionRequest'
 };
 
 /**

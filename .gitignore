@@ -75,15 +75,18 @@ npm-shrinkwrap.json
 # ------------------------------------------------------------------------------
 # 2. Scripts, Executables & Compiled Binaries (Never push scripts/programs)
 # ------------------------------------------------------------------------------
-# Shell / Command Scripts
+# Shell / Command Scripts (exclusions for deployment scripts below)
 *.sh
 *.bash
 *.zsh
 *.ksh
 *.csh
-*.tcsh
 *.bat
 *.cmd
+# Allow deployment build scripts (Netlify build.sh, etc.)
+!build.sh
+!scripts/*.sh
+!netlify/scripts/*.sh
 *.ps1
 *.psm1
 *.psd1
@@ -184,6 +187,11 @@ dist/
 .stylelintcache
 tsconfig.tsbuildinfo
 next-env.d.ts.bak
+
+# Netlify build artifacts (do not commit)
+.netlify/
+netlify/functions/
+netlify/deploy-preview/
 
 # Logs and Crash Reports
 logs/

@@ -10,6 +10,7 @@ import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { z } from 'zod';
 import { sendSalesInquiryEmail, sendSalesInquiryConfirmation } from '../lib/email.js';
+import { appendToSheet } from '../lib/google-sheets.js';
 
 const router = Router();
 
@@ -48,6 +49,26 @@ router.post('/', async (req: Request, res: Response) => {
       },
     });
 
+    // Sync to Google Sheets (fire-and-forget)
+    appendToSheet('Contact Sales', [
+      submission.createdAt.toISOString(),
+      submission.id,
+      submission.name,
+      submission.email,
+      submission.phone || '',
+      submission.companyName,
+      submission.projectDescription,
+      submission.budget,
+      submission.status,
+      submission.ipAddress || '',
+      submission.userAgent || '',
+    ]).catch(err => {
+      logger.error('Failed to trigger Google Sheets append for Contact Sales Submission', {
+        requestId,
+        error: err instanceof Error ? err.message : String(err),
+      });
+    });
+
     const latency = Date.now() - startTime;
     logger.info('Contact sales submission created successfully', {
       requestId,
@@ -63,8 +84,9 @@ router.post('/', async (req: Request, res: Response) => {
         name: validatedData.name,
         email: validatedData.email,
         phone: validatedData.phone,
-        company: validatedData.companyName,
-        message: validatedData.projectDescription,
+        companyName: validatedData.companyName,
+        projectDescription: validatedData.projectDescription,
+        budget: validatedData.budget,
       });
       logger.info('Sales inquiry email sent to admin successfully', { requestId, submissionId: submission.id });
 
@@ -72,7 +94,7 @@ router.post('/', async (req: Request, res: Response) => {
       await sendSalesInquiryConfirmation({
         name: validatedData.name,
         email: validatedData.email,
-        company: validatedData.companyName,
+        companyName: validatedData.companyName,
       });
       logger.info('Sales inquiry confirmation email sent to client successfully', { requestId, submissionId: submission.id });
     } catch (emailError) {

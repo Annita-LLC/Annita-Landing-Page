@@ -10,6 +10,7 @@ import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { z } from 'zod';
 import { sendContactFormEmail, sendContactFormConfirmation } from '../lib/email.js';
+import { appendToSheet } from '../lib/google-sheets.js';
 
 const router = Router();
 
@@ -44,6 +45,25 @@ router.post('/', async (req: Request, res: Response) => {
         ipAddress: req.ip || null,
         userAgent: req.get('user-agent') || null,
       },
+    });
+
+    // Sync to Google Sheets (fire-and-forget)
+    appendToSheet('Contact', [
+      submission.createdAt.toISOString(),
+      submission.id,
+      submission.name,
+      submission.email,
+      submission.phone || '',
+      submission.subject || '',
+      submission.message,
+      submission.status,
+      submission.ipAddress || '',
+      submission.userAgent || '',
+    ]).catch(err => {
+      logger.error('Failed to trigger Google Sheets append for Contact Submission', {
+        requestId,
+        error: err instanceof Error ? err.message : String(err),
+      });
     });
 
     const latency = Date.now() - startTime;

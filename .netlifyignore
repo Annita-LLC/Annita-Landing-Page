@@ -1,0 +1,19 @@
+# Ignore backend server directory for Netlify frontend build
+server/
+
+# Ignore Docker-only / platform-specific artifacts
+Dockerfile
+.dockerignore
+envoy/
+
+# Ignore Vercel-specific configs (Netlify has its own)
+.vercel/
+.vercelignore
+vercel.json
+
+# Ignore noise
+.git/
+node_modules/
+.next/cache/
+README.md
+SECURITY_AUDIT.md

@@ -20,23 +20,23 @@ const nextConfig = {
         hostname: '**.railway.app',
       },
     ],
-    unoptimized: true,
   },
   // Security headers (Pentagon-grade protection)
   async headers() {
+    const isDev = process.env.NODE_ENV === 'development';
     const ContentSecurityPolicy = `
       default-src 'self';
-      script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net;
+      script-src 'self' ${isDev ? "'unsafe-inline' 'unsafe-eval'" : ""} https://cdn.jsdelivr.net https://va.vercel-scripts.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com;
       img-src 'self' data: https: blob:;
-      connect-src 'self' https://api.an-nita.com https://annita-landing-page-production.up.railway.app;
+      connect-src 'self' https://api.an-nita.com https://annita-landing-page-production.up.railway.app https://va.vercel-scripts.com ${isDev ? "ws: localhost:* http://localhost:*" : ""};
       media-src 'self';
       object-src 'none';
       base-uri 'self';
       form-action 'self';
       frame-ancestors 'none';
-      upgrade-insecure-requests;
+      ${isDev ? "" : "upgrade-insecure-requests;"}
     `.replace(/\s{2,}/g, ' ').trim();
 
     return [
@@ -61,7 +61,7 @@ const nextConfig = {
           },
           {
             key: 'X-XSS-Protection',
-            value: '1; mode=block',
+            value: '0',
           },
           {
             key: 'Referrer-Policy',
@@ -87,7 +87,17 @@ const nextConfig = {
       },
     ];
   },
-  // Output configuration for Docker
+  // Redirect relative API calls to the express backend server
+  async rewrites() {
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
+      },
+    ];
+  },
+  // Output configuration for Docker & Netlify
   output: 'standalone',
   // Security optimizations
   poweredByHeader: false,

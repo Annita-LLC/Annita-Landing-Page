@@ -1,17 +1,26 @@
 /**
  * ╔═════════════════════════════════════════════════════════════════════════════════════════════╗
- * ║              ANNITA LANDING PAGE SERVER - PENTAGON-GRADE SECURITY MIDDLEWARE                ║
- * ║                   Fortune 500 Enterprise Security Protection Suite                             ║
+ * ║              ANNITA LANDING PAGE SERVER — SECURITY MIDDLEWARE                               ║
+ * ║                   Enterprise Security Protection Suite                                      ║
  * ╚═════════════════════════════════════════════════════════════════════════════════════════════╗
- * 
+ *
  * SECURITY FEATURES:
- * 1. SQL Injection Protection - Input sanitization and parameterized query enforcement
- * 2. XSS Protection - Content Security Policy and input sanitization
- * 3. CSRF Protection - Token-based request validation
- * 4. Request Size Limits - Prevent DoS attacks via large payloads
- * 5. Security Headers - Enhanced HTTP security headers
- * 6. IP-based Rate Limiting - Geographic and IP-based throttling
- * 7. Input Validation - Comprehensive schema validation
+ * 1. XSS Protection — Structural payload detection (non-false-positive patterns)
+ * 2. CSRF Protection — No-op (API is stateless JSON-only)
+ * 3. Request Size Limits — Prevent DoS via large payloads
+ * 4. Security Headers — DISA STIG compliant HTTP response headers
+ * 5. IP-based Rate Limiting — Geographic/IP-based throttling
+ * 6. Input Validation — Schema-driven field validation
+ *
+ * REMOVED (audit 2026-07):
+ *   - SQL Injection regex scanner — false-positive-producing (blocked messages
+ *     containing words like "select", "update", "insert"). Prisma already
+ *     parameterizes all queries; SQLi via Prisma is not possible.
+ *   - sanitizeSQLInput helper — destructively mutates strings (removes quotes,
+ *     backslashes, SQL keywords) — never called anywhere.
+ *
+ * This file no longer contains SQL_INJECTION patterns, detectSQLInjection,
+ * sanitizeSQLInput, or sqlInjectionProtection middleware.
  */
 
 import type { Request, Response, NextFunction } from 'express';
@@ -19,208 +28,37 @@ import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 import helmet from 'helmet';
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// 1. SQL INJECTION PROTECTION
-// ═══════════════════════════════════════════════════════════════════════════════
-
-/**
- * SQL Injection Patterns to Detect and Block
- */
-const SQL_INJECTION_PATTERNS = [
-  /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE|EXEC|UNION|EXECUTE)\b)/i,
-  /(--|;|\/\*|\*\/|xp_|sp_)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"])/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*--)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*--)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*#)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*#)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\/\*)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\/\*)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*--)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*--)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*;\s*)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*;\s*)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\/)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\/)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*%)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*%)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*_)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*_)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*-)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*-)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\+)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\+)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\*)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\*)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*~)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*~)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*!)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*!)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*@)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*@)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*#)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*#)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\$)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\$)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*&)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*&)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\|)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\|)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*<)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*<)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*>)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*>)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\?)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\?)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\[)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\[)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\])/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\])/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\{)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\{)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\})/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\})/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*`)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*`)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*')/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*')/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*")/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*")/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\x)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\x)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\u)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\u)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\n)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\n)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\r)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\r)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\t)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\t)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\b)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\b)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\f)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\f)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\v)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\v)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\0)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\0)/i,
-  /(\b(OR|AND)\s+\d+\s*=\s*\d+\s*\\)/i,
-  /(\b(OR|AND)\s+['"]\w+['"]\s*=\s*['"]\w+['"]\s*\\)/i,
-];
-
-/**
- * Check if input contains SQL injection patterns
- */
-export function detectSQLInjection(input: string): boolean {
-  if (!input || typeof input !== 'string') {
-    return false;
-  }
-  return SQL_INJECTION_PATTERNS.some(pattern => pattern.test(input));
-}
-
-/**
- * Sanitize input to prevent SQL injection
- */
-export function sanitizeSQLInput(input: string): string {
-  if (!input || typeof input !== 'string') {
-    return input;
-  }
-  // Remove dangerous SQL patterns
-  return input
-    .replace(/['";\\]/g, '') // Remove quotes and backslashes
-    .replace(/--/g, '') // Remove SQL comments
-    .replace(/\/\*/g, '') // Remove block comment start
-    .replace(/\*\//g, '') // Remove block comment end
-    .replace(/\b(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|TRUNCATE|EXEC|UNION|EXECUTE)\b/gi, '') // Remove SQL keywords
-    .trim();
-}
-
-/**
- * Middleware to detect and block SQL injection attempts
- */
-export const sqlInjectionProtection = (req: Request, res: Response, next: NextFunction): void => {
-  const checkInput = (value: any, path: string): boolean => {
-    if (typeof value === 'string') {
-      if (detectSQLInjection(value)) {
-        return true;
-      }
-    } else if (typeof value === 'object' && value !== null) {
-      for (const key in value) {
-        if (checkInput(value[key], `${path}.${key}`)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  // Check query parameters
-  if (checkInput(req.query, 'query')) {
-    res.status(400).json({
-      error: 'Security Violation',
-      message: 'SQL injection detected in query parameters',
-      requestId: req.id,
-    });
-    return;
-  }
-
-  // Check request body
-  if (checkInput(req.body, 'body')) {
-    res.status(400).json({
-      error: 'Security Violation',
-      message: 'SQL injection detected in request body',
-      requestId: req.id,
-    });
-    return;
-  }
-
-  // Check URL parameters
-  if (checkInput(req.params, 'params')) {
-    res.status(400).json({
-      error: 'Security Violation',
-      message: 'SQL injection detected in URL parameters',
-      requestId: req.id,
-    });
-    return;
-  }
-
-  next();
-};
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// 2. XSS PROTECTION
+// 1. XSS PROTECTION
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
  * XSS Patterns to Detect and Block
+ *
+ * NOTE: We intentionally do NOT block generic JS keywords like "eval",
+ * "document", "onclick" because these produce massive false positives in
+ * legitimate business text ("evaluation", "document workflow", "online
+ * form"). XSS payloads that USE these keywords are already caught by the
+ * structural patterns below (<script>, <iframe>, etc.). Email templates
+ * already escape all user input via escapeHtml().
+ *
+ * What remains: structural injection primitives that have NO legitimate
+ * use in form text.
  */
 const XSS_PATTERNS = [
   /<script[\s\S]*?>[\s\S]*?<\/script>/gi,
   /<iframe[\s\S]*?>[\s\S]*?<\/iframe>/gi,
   /javascript:/gi,
-  /on\w+\s*=/gi, // onclick=, onerror=, etc.
-  /<img[\s\S]*?src[\s\S]*?[\s\S]*?>/gi,
+  /<img[\s\S]*?src[\s\S]*?onerror/i,           // img-onerror XSS vector
+  /<svg[\s\S]*?>[\s\S]*?<\/svg>/gi,
   /<object[\s\S]*?>[\s\S]*?<\/object>/gi,
   /<embed[\s\S]*?>[\s\S]*?<\/embed>/gi,
   /<applet[\s\S]*?>[\s\S]*?<\/applet>/gi,
   /<meta[\s\S]*?>/gi,
   /<link[\s\S]*?>/gi,
   /<style[\s\S]*?>[\s\S]*?<\/style>/gi,
-  /expression\(/gi,
-  /vbscript:/gi,
   /data:text\/html/gi,
   /data:image\/svg/gi,
-  /fromCharCode/gi,
-  /eval\(/gi,
-  /document\./gi,
-  /window\./gi,
-  /alert\(/gi,
-  /prompt\(/gi,
-  /confirm\(/gi,
+  /vbscript:/gi,
 ];
 
 /**
@@ -301,69 +139,40 @@ export const xssProtection = (req: Request, res: Response, next: NextFunction): 
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// 3. CSRF PROTECTION
+// 2. CSRF PROTECTION  (intentionally disabled — see note below)
 // ═══════════════════════════════════════════════════════════════════════════════
+//
+// SECURITY NOTE (audit 2026-07):
+// A prior version of this file shipped a `csrfTokenMiddleware` and
+// `csrfProtection` pair that was non-functional security theater:
+//   - The token was `base64(Date.now() + Math.random())` — predictable.
+//   - The validator compared two client-supplied headers, so any attacker
+//     could pass matching arbitrary values.
+//   - The validator was never wired into any route in `index.ts`.
+//   - The frontend in `lib/api.ts` never sent a CSRF token.
+//
+// The API is stateless JSON-only with `Authorization` header auth (no
+// cookies, no sessions). The CORS policy denies cross-origin requests with
+// credentials by default (see `config/index.ts` and `cors.ts`). Under that
+// model, CSRF protection is unnecessary: a cross-site form cannot attach
+// an `Authorization` header, and a same-origin request is by definition
+// trusted. If cookies/session auth are ever introduced, a real
+// double-submit-token CSRF middleware MUST be wired before any state
+// mutation route, and the frontend must send the token via `lib/api.ts`.
+//
+// For now, the previous dead code has been removed rather than left as
+// false reassurance.
 
 /**
- * Generate CSRF token
+ * No-op middleware kept for backward compatibility with `index.ts` imports.
+ * Does nothing. See the note above for why CSRF is intentionally disabled.
  */
-export function generateCSRFToken(): string {
-  return Buffer.from(Date.now().toString() + Math.random().toString()).toString('base64');
-}
-
-/**
- * Validate CSRF token
- */
-export function validateCSRFToken(token: string, sessionToken: string): boolean {
-  return token === sessionToken && token.length > 20;
-}
-
-/**
- * Middleware to add CSRF token to response
- */
-export const csrfTokenMiddleware = (_req: Request, res: Response, next: NextFunction): void => {
-  const token = generateCSRFToken();
-  res.setHeader('X-CSRF-Token', token);
-  res.locals.csrfToken = token;
-  next();
-};
-
-/**
- * Middleware to validate CSRF token
- */
-export const csrfProtection = (req: Request, res: Response, next: NextFunction): void => {
-  // Skip for GET, HEAD, OPTIONS requests (safe methods)
-  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
-    next();
-    return;
-  }
-
-  const token = req.headers['x-csrf-token'] as string;
-  const sessionToken = req.headers['x-session-token'] as string;
-
-  if (!token || !sessionToken) {
-    res.status(403).json({
-      error: 'Forbidden',
-      message: 'CSRF token missing',
-      requestId: req.id,
-    });
-    return;
-  }
-
-  if (!validateCSRFToken(token, sessionToken)) {
-    res.status(403).json({
-      error: 'Forbidden',
-      message: 'Invalid CSRF token',
-      requestId: req.id,
-    });
-    return;
-  }
-
+export const csrfTokenMiddleware = (_req: Request, _res: Response, next: NextFunction): void => {
   next();
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// 4. REQUEST SIZE LIMITS
+// 3. REQUEST SIZE LIMITS
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
@@ -409,17 +218,14 @@ function parseSize(size: string): number {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// 5. ENHANCED SECURITY HEADERS
+// 4. ENHANCED SECURITY HEADERS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-/**
- * Enhanced security headers middleware
- */
-export const enhancedSecurityHeaders = helmet({
+const helmetMiddleware = helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'"], // Removed unsafe-inline per DISA STIG V-214948
       scriptSrc: ["'self'"],
       imgSrc: ["'self'", "data:", "https:"],
       connectSrc: ["'self'", "https:"],
@@ -430,7 +236,7 @@ export const enhancedSecurityHeaders = helmet({
       baseUri: ["'self'"],
       formAction: ["'self'"],
       frameAncestors: ["'none'"],
-      reportUri: '/api/security/csp-report',
+      reportUri: '/api/security/csp-report', // CSP violation reporting endpoint
     },
   },
   hsts: {
@@ -440,15 +246,35 @@ export const enhancedSecurityHeaders = helmet({
   },
   noSniff: true,
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-  xssFilter: true,
+  xssFilter: false, // Modern guidance: set to 0, rely on CSP
   crossOriginEmbedderPolicy: { policy: 'require-corp' },
   crossOriginOpenerPolicy: { policy: 'same-origin' },
   crossOriginResourcePolicy: { policy: 'same-origin' },
   originAgentCluster: true,
+  // DISA STIG V-214950: X-Frame-Options header
+  frameguard: {
+    action: 'deny',
+  },
 });
 
+/**
+ * Enhanced security headers middleware
+ */
+export const enhancedSecurityHeaders = (req: Request, res: Response, next: NextFunction) => {
+  helmetMiddleware(req, res, (err) => {
+    if (err) return next(err);
+    // DISA STIG V-214951: Permissions-Policy header
+    res.setHeader(
+      'Permissions-Policy',
+      'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()'
+    );
+    next();
+  });
+};
+
+
 // ═══════════════════════════════════════════════════════════════════════════════
-// 6. IP-BASED RATE LIMITING
+// 5. IP-BASED RATE LIMITING
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
@@ -486,7 +312,7 @@ export const strictRateLimit = rateLimit({
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// 7. INPUT VALIDATION
+// 6. INPUT VALIDATION
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
@@ -563,7 +389,7 @@ export const inputValidation = (req: Request, res: Response, next: NextFunction)
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// 8. SECURITY LOGGING
+// 7. SECURITY LOGGING
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**

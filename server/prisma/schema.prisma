@@ -153,3 +153,222 @@ model AnalyticsEvent {
   @@index([eventType])
   @@index([createdAt])
 }
+
+model BetaSignup {
+  id        Int      @id @default(autoincrement())
+  role      String   // buyer, seller, logistics
+  fullName  String
+  email     String
+  phone     String?
+  country   String
+  device    String?
+  ipAddress String?
+  userAgent String?
+  status    String   @default("pending") // pending, approved, rejected
+  queuePosition Int?
+  
+  // Buyer-specific fields
+  shopsFor      String[]
+  payMethod     String?
+  age           String?
+  
+  // Seller-specific fields
+  businessName      String?
+  businessCategory  String?
+  needs             String[]
+  yearsInBusiness   String?
+  justStarting      String?
+  
+  // Logistics-specific fields
+  companyName   String?
+  serviceTypes  String[]
+  areasCovered  String?
+  fleetSize     String?
+  yearsLogistics String?
+  logisticsType String?
+  vehicleTypes  String[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@index([queuePosition])
+}
+
+// ============================================================================
+// CAREER & PARTNERSHIP MODELS
+// ============================================================================
+
+model JobPosting {
+  id              Int      @id @default(autoincrement())
+  title           String
+  description     String
+  requirements    String
+  department      String
+  location        String
+  employmentType  String   // full-time, part-time, contract, remote
+  salaryRange     String?
+  experienceLevel String   // entry, mid, senior, executive
+  status          String   @default("draft") // draft, open, closed
+  customFields    Json?    // Role-specific questions
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  applications    CareerApplication[]
+
+  @@index([status])
+  @@index([department])
+  @@index([employmentType])
+  @@index([createdAt])
+}
+
+model CareerApplication {
+  id                Int      @id @default(autoincrement())
+  jobId             Int?
+  applicantName     String
+  email             String
+  phone             String?
+  country           String
+  address           String?
+  linkedInUrl       String?
+  portfolioUrl      String?
+  resumeUrl         String?
+  coverLetter       String?
+  customResponses   Json?    // Role-specific answers
+  status            String   @default("submitted") // submitted, reviewed, interview, hired, rejected
+  ipAddress         String?
+  userAgent         String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  job               JobPosting? @relation(fields: [jobId], references: [id])
+
+  @@index([email])
+  @@index([jobId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model PartnershipSubmission {
+  id                  Int      @id @default(autoincrement())
+  companyName         String
+  contactName         String
+  email               String
+  phone               String?
+  partnershipType     String   // technology, distribution, investment, other
+  companyDescription  String
+  partnershipGoals    String
+  mouDocumentUrl      String?
+  proposedTerms       String?
+  additionalNotes     String?
+  status              String   @default("submitted") // submitted, reviewing, approved, rejected
+  ipAddress           String?
+  userAgent           String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([email])
+  @@index([partnershipType])
+  @@index([status])
+  @@index([createdAt])
+  @@index([companyName])
+}
+
+// ============================================================================
+// MAINTENANCE & ADMIN MONITORING MODELS
+// ============================================================================
+
+model MaintenanceWindow {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  isActive    Boolean  @default(false)
+  isScheduled Boolean  @default(true)
+  reason      String?
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([startTime])
+}
+
+model SystemHealthReport {
+  id              Int      @id @default(autoincrement())
+  reportType      String // daily, weekly, emergency
+  reportDate      DateTime
+  uptime          Float
+  totalRequests   Int
+  totalErrors     Int
+  errorRate       Float
+  avgResponseTime Float
+  dbStatus        String
+  dbResponseTime  Float?
+  endpointMetrics Json
+  recentErrors    Json?
+  sentAt          DateTime?
+  createdAt       DateTime @default(now())
+
+  @@index([reportType])
+  @@index([reportDate])
+}
+
+model AdminToken {
+  id          Int      @id @default(autoincrement())
+  token       String   @unique
+  email       String
+  expiresAt   DateTime
+  used        Boolean  @default(false)
+  ipHash      String?
+  uaHash      String?
+  fingerprint String?
+  createdAt   DateTime @default(now())
+
+  @@index([token])
+  @@index([email])
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  eventType  String
+  severity   String   @default("info") // info, warn, error, critical
+  ipHash     String?
+  uaHash     String?
+  action     String
+  result     String
+  context    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([eventType])
+  @@index([severity])
+  @@index([createdAt])
+}
+
+model AccountDeletionRequest {
+  id                  Int      @id @default(autoincrement())
+  email               String
+  softwareProduct     String   // annita-ecosystem, annita-pay, annita-pulse, ezri, aiim-hub
+  reason              String
+  communicationChannel String   // email, phone, in-app
+  alternativeContact  String?
+  verificationToken    String?  @unique // Token sent via email to confirm ownership
+  verifiedAt          DateTime? // When the email was verified
+  status              String   @default("pending_verification") // pending_verification, pending, processing, completed, rejected
+  processedAt         DateTime?
+  adminNotes          String?
+  ipAddress           String?
+  userAgent           String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([email])
+  @@index([softwareProduct])
+  @@index([status])
+  @@index([createdAt])
+  @@index([verificationToken])
+}

@@ -5,6 +5,7 @@ import { ArrowRight, Target, Heart, Shield, Globe, Users, Zap, Award } from 'luc
 import Link from 'next/link'
 import NextImage from 'next/image'
 import Navigation from '@/components/navigation'
+import NewsletterSection from '@/components/newsletter-section'
 
 const values = [
   {
@@ -50,7 +51,7 @@ const stats = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen tech-grid" style={{ backgroundColor: '#080D1A', color: '#F0F4FF' }}>
+    <div className="min-h-screen tech-grid theme-bg">
       <Navigation />
 
       {/* Hero Section */}
@@ -62,10 +63,10 @@ export default function AboutPage() {
         }} />
         
         {/* Corner micro brackets */}
-        <span className="absolute top-8 left-8 w-6 h-6 border-t border-l border-[#00C28A]/20" />
-        <span className="absolute top-8 right-8 w-6 h-6 border-t border-r border-[#00C28A]/20" />
-        <span className="absolute bottom-8 left-8 w-6 h-6 border-b border-l border-[#00C28A]/20" />
-        <span className="absolute bottom-8 right-8 w-6 h-6 border-b border-r border-[#00C28A]/20" />
+        <span className="absolute top-8 left-8 w-6 h-6 border-t border-l border-[var(--color-accent)]/20" />
+        <span className="absolute top-8 right-8 w-6 h-6 border-t border-r border-[var(--color-accent)]/20" />
+        <span className="absolute bottom-8 left-8 w-6 h-6 border-b border-l border-[var(--color-accent)]/20" />
+        <span className="absolute bottom-8 right-8 w-6 h-6 border-b border-r border-[var(--color-accent)]/20" />
 
         {/* Floating System Telemetry Log */}
         <div className="hidden lg:block absolute bottom-6 left-8 font-mono text-[9px] text-[#8A9BBB]/25 space-y-1 select-none pointer-events-none">
@@ -87,13 +88,13 @@ export default function AboutPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-4 px-3 py-1.5 rounded-md mb-8 border border-[#00C28A]/20 bg-[#0F1729]/60 backdrop-blur-md relative overflow-hidden group"
+            className="inline-flex items-center gap-4 px-3 py-1.5 rounded-md mb-8 border border-[var(--color-accent)]/20 bg-[var(--color-surface-card)]/60 backdrop-blur-md relative overflow-hidden group"
           >
-            <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[#00C28A]/50" />
-            <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[#00C28A]/50" />
-            <span className="w-2 h-2 rounded-full bg-[#00C28A] animate-ping" />
-            <span className="text-[10px] font-mono tracking-widest text-[#8A9BBB] uppercase">
-              SYS_NODE // <span className="text-[#00C28A] font-bold">ABOUT_MANIFEST</span>
+            <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[var(--color-accent)]/50" />
+            <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[var(--color-accent)]/50" />
+            <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-ping" />
+            <span className="text-[10px] font-mono tracking-widest text-[var(--color-text-tertiary)] uppercase">
+              SYS_NODE // <span className="text-[var(--color-accent)] font-bold">ABOUT_MANIFEST</span>
             </span>
           </motion.div>
           
@@ -104,16 +105,15 @@ export default function AboutPage() {
             className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6 word-break"
             style={{ fontFamily: 'var(--font-syne)', fontWeight: 800 }}
           >
-            <span style={{ color: '#F0F4FF' }}>Africa's</span><br />
-            <span style={{ color: '#F0F4FF' }}>Digital Heartbeat.</span>
+            <span className="text-[var(--color-text-primary)]">Africa's</span><br />
+            <span className="text-[var(--color-text-primary)]">Digital Heartbeat.</span>
           </motion.h1>
           
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-sm sm:text-base md:text-lg lg:text-xl mb-8 max-w-2xl mx-auto leading-relaxed"
-            style={{ color: '#8A9BBB' }}
+            className="text-sm sm:text-base md:text-lg lg:text-xl mb-8 max-w-2xl mx-auto leading-relaxed text-[var(--color-text-secondary)]"
           >
             Annita is building Africa's first all-in-one digital ecosystem — integrating e-commerce, fintech, AI, communication, marketing, logistics, and more into a single, connected system.
           </motion.p>
@@ -127,14 +127,13 @@ export default function AboutPage() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="rounded-2xl p-8 tech-glow-card"
-            style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640' }}
+            className="rounded-2xl p-8 tech-glow-card theme-card"
           >
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: 'rgba(0, 194, 138, 0.1)' }}>
-              <Target className="w-8 h-8" style={{ color: '#00C28A' }} />
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-[var(--color-accent-soft)]">
+              <Target className="w-8 h-8 text-[var(--color-accent)]" />
             </div>
-            <h2 className="text-3xl font-bold mb-4" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>Our Mission</h2>
-            <p className="text-base leading-relaxed" style={{ color: '#8A9BBB' }}>
+            <h2 className="text-3xl font-bold mb-4 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Our Mission</h2>
+            <p className="text-base leading-relaxed text-[var(--color-text-secondary)]">
               To democratize access to digital infrastructure across Africa by providing MSMEs, governments, and strategic partners with affordable, scalable, and integrated technology solutions that drive economic growth and social impact.
             </p>
           </motion.div>
@@ -144,14 +143,13 @@ export default function AboutPage() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="rounded-2xl p-8 tech-glow-card"
-            style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640' }}
+            className="rounded-2xl p-8 tech-glow-card theme-card"
           >
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: 'rgba(0, 194, 138, 0.1)' }}>
-              <Award className="w-8 h-8" style={{ color: '#00C28A' }} />
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-[var(--color-accent-soft)]">
+              <Award className="w-8 h-8 text-[var(--color-accent)]" />
             </div>
-            <h2 className="text-3xl font-bold mb-4" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>Our Vision</h2>
-            <p className="text-base leading-relaxed" style={{ color: '#8A9BBB' }}>
+            <h2 className="text-3xl font-bold mb-4 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Our Vision</h2>
+            <p className="text-base leading-relaxed text-[var(--color-text-secondary)]">
               To become Africa's leading digital ecosystem, powering the continent's transformation into a globally competitive digital economy where every business and individual has access to world-class technology.
             </p>
           </motion.div>
@@ -174,17 +172,17 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative p-6 rounded-xl border border-[#1A2640] bg-[#0F1729]/40 hover:bg-[#0F1729]/80 transition-all duration-300 group overflow-hidden tech-glow-card"
+              className="relative p-6 rounded-xl border border-[var(--color-border-card)] bg-[var(--color-surface-card)]/40 hover:bg-[var(--color-surface-card)]/80 transition-all duration-300 group overflow-hidden tech-glow-card"
             >
               {/* Corner tech accents */}
-              <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[#00C28A]/30 group-hover:border-[#00C28A] transition-colors" />
-              <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[#00C28A]/30 group-hover:border-[#00C28A] transition-colors" />
+              <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
               
               <div className="relative z-10">
                 {/* Micro tech header */}
-                <div className="flex items-center justify-between text-[8px] font-mono text-[#4A5775] mb-2 select-none">
+                <div className="flex items-center justify-between text-[8px] font-mono text-[var(--color-text-muted)] mb-2 select-none">
                   <span className="flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-[#00C28A] animate-pulse" />
+                    <span className="w-1 h-1 rounded-full bg-[var(--color-accent)] animate-pulse" />
                     {stat.status}
                   </span>
                   <span>NODE_LBR</span>
@@ -194,17 +192,17 @@ export default function AboutPage() {
                   <div className="text-2xl md:text-3xl font-bold mb-2 font-syne gradient-text">
                     {stat.value}
                   </div>
-                  <p className="text-xs uppercase tracking-wider font-mono text-[#8A9BBB] mt-3 group-hover:text-white transition-colors">{stat.label}</p>
+                  <p className="text-xs uppercase tracking-wider font-mono text-[var(--color-text-tertiary)] mt-3 group-hover:text-[var(--color-text-primary)] transition-colors">{stat.label}</p>
                 </div>
 
                 {/* Pulsing micro progress line */}
-                <div className="w-full h-[2px] bg-[#1A2640] mt-4 rounded-full overflow-hidden relative">
+                <div className="w-full h-[2px] bg-[var(--color-border-default)] mt-4 rounded-full overflow-hidden relative">
                   <motion.div 
                     initial={{ width: 0 }}
                     whileInView={{ width: '100%' }}
                     viewport={{ once: true }}
                     transition={{ duration: 1.5, delay: index * 0.1 }}
-                    className="h-full bg-gradient-to-r from-[#00C28A]/30 to-[#00C28A]" 
+                    className="h-full bg-gradient-to-r from-[var(--color-accent)]/30 to-[var(--color-accent)]" 
                   />
                 </div>
               </div>
@@ -221,9 +219,9 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#00C28A' }}>Our Values</p>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>What Drives Us</h2>
-          <p className="text-base max-w-2xl mx-auto" style={{ color: '#8A9BBB' }}>
+          <p className="text-xs font-bold uppercase tracking-widest mb-4 text-[var(--color-accent)]">Our Values</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>What Drives Us</h2>
+          <p className="text-base max-w-2xl mx-auto text-[var(--color-text-secondary)]">
             Our core values are the foundation of everything we do, guiding our decisions and shaping our culture.
           </p>
         </motion.div>
@@ -236,14 +234,13 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="rounded-2xl p-8 tech-glow-card"
-              style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640' }}
+              className="rounded-2xl p-8 tech-glow-card theme-card"
             >
-              <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(0, 194, 138, 0.1)' }}>
-                <div style={{ color: '#00C28A' }}>{value.icon}</div>
+              <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-[var(--color-accent-soft)]">
+                <div className="text-[var(--color-accent)]">{value.icon}</div>
               </div>
-              <h3 className="text-xl font-bold mb-3" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>{value.title}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: '#8A9BBB' }}>{value.description}</p>
+              <h3 className="text-xl font-bold mb-3 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>{value.title}</h3>
+              <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">{value.description}</p>
             </motion.div>
           ))}
         </div>
@@ -258,12 +255,12 @@ export default function AboutPage() {
           className="max-w-4xl mx-auto"
         >
           <div className="text-center mb-12">
-            <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#00C28A' }}>Our Story</p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>From Liberia to the World</h2>
+            <p className="text-xs font-bold uppercase tracking-widest mb-4 text-[var(--color-accent)]">Our Story</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>From Liberia to the World</h2>
           </div>
 
-          <div className="rounded-2xl p-8 md:p-12 tech-glow-card" style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640' }}>
-            <div className="space-y-6 text-base leading-relaxed" style={{ color: '#8A9BBB' }}>
+          <div className="rounded-2xl p-8 md:p-12 tech-glow-card theme-card">
+            <div className="space-y-6 text-base leading-relaxed text-[var(--color-text-secondary)]">
               <p>
                 Founded in Liberia, Annita LLC emerged from a simple yet powerful observation: while the world was rapidly digitizing, Africa's MSMEs and communities lacked access to integrated, affordable digital infrastructure.
               </p>
@@ -289,25 +286,25 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="max-w-2xl mx-auto"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
             Join Our Mission
           </h2>
-          <p className="text-lg mb-8" style={{ color: '#8A9BBB' }}>
+          <p className="text-lg mb-8 text-[var(--color-text-secondary)]">
             Be part of Africa's digital transformation. Whether you're a business, government, or individual — there's a place for you in our ecosystem.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               href="/solutions" 
-              className="group px-8 py-4 rounded-full font-semibold transition-all flex items-center justify-center gap-2"
-              style={{ backgroundColor: '#00C28A', color: '#080D1A', borderRadius: '100px' }}
+              className="group px-8 py-4 rounded-full font-semibold transition-all flex items-center justify-center gap-2 hover:brightness-110 button-glow"
+              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-foreground)', borderRadius: '100px' }}
             >
               Build With Us
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link 
               href="/contact" 
-              className="group px-8 py-4 rounded-full font-semibold transition-all flex items-center justify-center gap-2 border-2 hover:bg-[#00C28A] hover:text-[#080D1A] hover:border-[#00C28A]"
-              style={{ borderColor: '#00C28A', color: '#00C28A', borderRadius: '100px' }}
+              className="group px-8 py-4 rounded-full font-semibold transition-all flex items-center justify-center gap-2 border-2 hover:bg-[var(--color-accent)] hover:text-[var(--color-accent-foreground)] hover:border-[var(--color-accent)] text-[var(--color-accent)] border-[var(--color-accent)]"
+              style={{ borderRadius: '100px' }}
             >
               Get in Touch
             </Link>
@@ -315,116 +312,86 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* Techy Footer */}
-      <footer className="relative overflow-hidden" style={{ backgroundColor: '#080D1A', borderTop: '1px solid #1A2640' }}>
-        {/* Animated Grid Background */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `
-              linear-gradient(rgba(0, 194, 138, 0.3) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(0, 194, 138, 0.3) 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px'
-          }} />
-        </div>
+      {/* Newsletter Section */}
+      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <NewsletterSection
+          title="Follow Africa's Innovation Story"
+          subtitle="Ecosystem milestones, award announcements, and insider updates from Annita — delivered directly to your inbox."
+        />
+      </section>
 
-        {/* Scanline Effect */}
+      {/* Techy Footer */}
+      <footer className="relative overflow-hidden border-t border-[var(--color-border-card)]" style={{ backgroundColor: 'var(--color-surface-base)' }}>
+        {/* Animated Background */}
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none tech-grid" />
         <div className="absolute inset-0 pointer-events-none opacity-5">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00C28A]/5 to-transparent animate-scanline" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
         <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
-          {/* Top Section */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            {/* Brand Section */}
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-4">
-                <NextImage
-                  src="/annita-real-logo.png"
-                  alt="Annita Logo"
-                  width={40}
-                  height={40}
-                  className="rounded-lg"
-                />
+                <NextImage src="/annita-real-logo.png" alt="Annita Logo" width={40} height={40} className="rounded-lg" />
                 <div>
-                  <div className="font-bold text-white">Annita<span className="text-[#00C28A]">.</span></div>
-                  <div className="text-[10px] font-mono text-[#00C28A]">SYSTEM: ONLINE</div>
+                  <div className="font-bold text-[var(--color-text-primary)]">Annita<span className="text-[var(--color-accent)]">.</span></div>
+                  <div className="text-[10px] font-mono text-[var(--color-accent)]">SYSTEM: ONLINE</div>
                 </div>
               </div>
-              <p className="text-xs text-[#8A9BBB] mb-4 leading-relaxed">
-                Building Africa's digital infrastructure with world-class technology solutions.
-              </p>
-              <div className="flex items-center gap-2 text-[10px] font-mono text-[#4A5775]">
-                <span className="w-1.5 h-1.5 bg-[#00C28A] rounded-full animate-pulse" />
+              <p className="text-xs text-[var(--color-text-tertiary)] mb-4 leading-relaxed">Annita is Africa's first all-in-one digital ecosystem, integrating e-commerce, fintech, AI, communication, marketing, logistics, and more into a single, connected system.</p>
+              <div className="flex items-center gap-2 text-[10px] font-mono text-[var(--color-text-muted)]">
+                <span className="w-1.5 h-1.5 bg-[var(--color-accent)] rounded-full animate-pulse" />
                 <span>STATUS: OPERATIONAL</span>
               </div>
             </div>
-
-            {/* Ecosystem Links */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
-                Ecosystem
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" /> Ecosystem
               </div>
               <div className="space-y-2">
-                <Link href="/login" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Annita Ecosystem</Link>
-                <a href="https://www.an-nitapay.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">AnnitaPay</a>
-                <a href="https://www.an-nita-pulse.org" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Annita Pulse</a>
-                <a href="https://www.ezri-africa.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Ezri</a>
-                <a href="https://an-nitaimpactinnovationhub.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">AIIM Hub</a>
+                <Link href="/login" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
+                <a href="https://www.an-nitapay.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AnnitaPay</a>
+                <a href="https://www.an-nita-pulse.org" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Pulse</a>
+                <a href="https://www.ezri-africa.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Ezri</a>
+                <a href="https://an-nitaimpactinnovationhub.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AIIM Hub</a>
               </div>
             </div>
-
-            {/* Company Links */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
-                Company
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" /> Company
               </div>
               <div className="space-y-2">
-                <Link href="/solutions" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Custom Solutions</Link>
-                <Link href="/about" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">About Us</Link>
-                <Link href="/awards" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Awards</Link>
-                <Link href="/contact" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Contact Us</Link>
-                <Link href="/contact-sales" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Contact Sales</Link>
+                <Link href="/about" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">About Us</Link>
+                <Link href="/solutions" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Custom Solutions</Link>
+                <Link href="/careers" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Careers</Link>
+                <Link href="/partnerships" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Partnerships</Link>
+                <Link href="/awards" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Awards</Link>
               </div>
             </div>
-
-            {/* Tech Stats */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
-                System Metrics
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" /> Legal
               </div>
-              <div className="space-y-2 text-[10px] font-mono">
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">LATENCY</span>
-                  <span className="text-[#00C28A]">18ms</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">UPTIME</span>
-                  <span className="text-[#00C28A]">99.9%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">REGIONS</span>
-                  <span className="text-[#00C28A]">6</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">VERSION</span>
-                  <span className="text-[#00C28A]">v2.0</span>
-                </div>
+              <div className="space-y-2">
+                <Link href="/privacy" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Terms & Conditions</Link>
+                <Link href="/cookies" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Cookie Policy</Link>
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" /> Contact
+              </div>
+              <div className="space-y-2">
+                <Link href="/contact" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Contact Us</Link>
+                <Link href="/contact-sales" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Contact Sales</Link>
+                <Link href="/partnerships" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Partnership</Link>
               </div>
             </div>
           </div>
-
-          {/* Bottom Section */}
-          <div className="pt-8 border-t border-[#1A2640]/50 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-center md:text-left">
-              <p className="text-[10px] font-mono text-[#4A5775]">© 2026 Annita LLC. All rights reserved.</p>
-            </div>
-            <div className="text-center md:text-right">
-              <p className="text-[10px] font-mono text-[#4A5775]">Built in Liberia. Built for the World.</p>
-            </div>
+          <div className="pt-8 border-t border-[var(--color-border-card)]/50 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-[10px] font-mono text-[var(--color-text-muted)]">© 2026 Annita LLC. All rights reserved.</p>
+            <p className="text-[10px] font-mono text-[var(--color-text-muted)]">Built in Liberia. Built for the World.</p>
           </div>
         </div>
       </footer>

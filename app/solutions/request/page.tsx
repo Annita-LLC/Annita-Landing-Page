@@ -1,8 +1,32 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useEffect } from 'react'
-import { ArrowLeft, ArrowRight, CheckCircle2, Upload, X, Loader2 } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Upload,
+  X,
+  Loader2,
+  Smartphone,
+  Monitor,
+  Building2,
+  Globe,
+  Cloud,
+  ShoppingCart,
+  BarChart3,
+  CreditCard,
+  Bot,
+  TrendingUp,
+  HeartPulse,
+  Link as LinkIcon,
+  FileText,
+  Plug,
+  Settings,
+  HelpCircle,
+  type LucideIcon,
+} from 'lucide-react'
 import Link from 'next/link'
 import NextImage from 'next/image'
 import Navigation from '@/components/navigation'
@@ -11,23 +35,23 @@ import { FormFeedbackModal } from '@/components/FormFeedbackModal'
 import { checkServerHealthWithRetry } from '@/lib/health-check'
 import { HoneypotField } from '@/components/HoneypotField'
 
-const solutionTypes = [
-  { id: 'mobile', name: 'Mobile Application', icon: '📱' },
-  { id: 'web', name: 'Web Application', icon: '💻' },
-  { id: 'portal', name: 'Business or Government Portal', icon: '🏢' },
-  { id: 'website', name: 'Website / Landing Page', icon: '🌐' },
-  { id: 'saas', name: 'SaaS Platform', icon: '☁️' },
-  { id: 'marketplace', name: 'Marketplace or E-commerce System', icon: '🛒' },
-  { id: 'erp', name: 'ERP / Business Management System', icon: '📊' },
-  { id: 'fintech', name: 'Fintech or Payment Infrastructure', icon: '💳' },
-  { id: 'ai', name: 'AI-Powered Tool or Automation', icon: '🤖' },
-  { id: 'dashboard', name: 'Data Dashboard or Analytics System', icon: '📈' },
-  { id: 'health', name: 'Digital Health Platform', icon: '❤️' },
-  { id: 'api', name: 'API Development or Third-Party Integration', icon: '🔗' },
-  { id: 'cms', name: 'CMS / Content Management System', icon: '📝' },
-  { id: 'iot', name: 'IoT / Hardware-Connected System', icon: '🔌' },
-  { id: 'devops', name: 'DevOps / Infrastructure Setup', icon: '⚙️' },
-  { id: 'unsure', name: "I'm not sure — I will describe it below", icon: '❓' },
+const solutionTypes: { id: string; name: string; icon: LucideIcon }[] = [
+  { id: 'mobile', name: 'Mobile Application', icon: Smartphone },
+  { id: 'web', name: 'Web Application', icon: Monitor },
+  { id: 'portal', name: 'Business or Government Portal', icon: Building2 },
+  { id: 'website', name: 'Website / Landing Page', icon: Globe },
+  { id: 'saas', name: 'SaaS Platform', icon: Cloud },
+  { id: 'marketplace', name: 'Marketplace or E-commerce System', icon: ShoppingCart },
+  { id: 'erp', name: 'ERP / Business Management System', icon: BarChart3 },
+  { id: 'fintech', name: 'Fintech or Payment Infrastructure', icon: CreditCard },
+  { id: 'ai', name: 'AI-Powered Tool or Automation', icon: Bot },
+  { id: 'dashboard', name: 'Data Dashboard or Analytics System', icon: TrendingUp },
+  { id: 'health', name: 'Digital Health Platform', icon: HeartPulse },
+  { id: 'api', name: 'API Development or Third-Party Integration', icon: LinkIcon },
+  { id: 'cms', name: 'CMS / Content Management System', icon: FileText },
+  { id: 'iot', name: 'IoT / Hardware-Connected System', icon: Plug },
+  { id: 'devops', name: 'DevOps / Infrastructure Setup', icon: Settings },
+  { id: 'unsure', name: "I'm not sure — I will describe it below", icon: HelpCircle },
 ]
 
 const importantFeatures = [
@@ -85,6 +109,28 @@ const securityRequirements = [
 ]
 
 export default function RequestPage() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [glowOpacity, setGlowOpacity] = useState(0)
+  const [isWiderDevice, setIsWiderDevice] = useState(false)
+
+  useEffect(() => {
+    const checkDevice = () => {
+      setIsWiderDevice(window.innerWidth >= 768)
+    }
+    checkDevice()
+    window.addEventListener('resize', checkDevice)
+    return () => window.removeEventListener('resize', checkDevice)
+  }, [])
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current || !isWiderDevice) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    containerRef.current.style.setProperty('--mouse-x', `${x}px`)
+    containerRef.current.style.setProperty('--mouse-y', `${y}px`)
+  }
+
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -134,6 +180,8 @@ export default function RequestPage() {
     budgetFlexibility: '',
     timeline: '',
     specificDeadline: '',
+    // Honeypot
+    website_url: '',
     projectStartDate: '',
     engagementStyle: '',
     maintenanceNeeded: '',
@@ -266,11 +314,29 @@ export default function RequestPage() {
   }
 
   return (
-    <div className="min-h-screen tech-grid" style={{ backgroundColor: '#080D1A', color: '#F0F4FF' }}>
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => isWiderDevice && setGlowOpacity(0.6)}
+      onMouseLeave={() => isWiderDevice && setGlowOpacity(0)}
+      className="min-h-screen text-foreground mesh-gradient relative overflow-hidden tech-grid"
+      style={{ color: 'var(--color-text-primary)' }}
+    >
+      {/* Interactive Radial Laser Glow Spotlight - Only on wider devices */}
+      {isWiderDevice && (
+        <div
+          className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-500"
+          style={{
+            opacity: glowOpacity,
+            background: `radial-gradient(800px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), var(--color-accent-soft), transparent 80%)`
+          }}
+        />
+      )}
+
       <Navigation />
 
       {/* Progress Bar */}
-      <div className="sticky top-[56px] md:top-16 z-40 px-4 md:px-8 py-4" style={{ backgroundColor: '#080D1A', borderBottom: '1px solid #1A2640' }}>
+      <div className="sticky top-[56px] md:top-16 z-40 px-4 md:px-8 py-4 backdrop-blur-md border-b border-[var(--color-border-card)]/50" style={{ backgroundColor: 'transparent' }}>
         <div className="max-w-[720px] mx-auto">
           <div className="flex items-center justify-between mb-4">
             {steps.map((step) => (
@@ -278,18 +344,18 @@ export default function RequestPage() {
                 <div className="flex flex-col items-center flex-1">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
                     currentStep >= step.number 
-                      ? 'bg-[#00C28A] text-[#080D1A]' 
-                      : 'bg-[#1A2640] text-[#8A9BBB]'
+                      ? 'bg-[var(--color-accent)] text-[var(--color-background)]' 
+                      : 'bg-[var(--color-border-card)] text-[var(--color-text-tertiary)]'
                   }`}>
                     {currentStep > step.number ? <CheckCircle2 className="w-4 h-4" /> : step.number}
                   </div>
                   <span className={`text-xs mt-2 hidden md:block transition-all ${
-                    currentStep >= step.number ? 'text-[#00C28A]' : 'text-[#8A9BBB]'
+                    currentStep >= step.number ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-tertiary)]'
                   }`}>{step.title}</span>
                 </div>
                 {step.number < 4 && (
                   <div className={`flex-1 h-0.5 mx-2 transition-all ${
-                    currentStep > step.number ? 'bg-[#00C28A]' : 'bg-[#1A2640]'
+                    currentStep > step.number ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-border-card)]'
                   }`} />
                 )}
               </div>
@@ -300,15 +366,68 @@ export default function RequestPage() {
 
       {/* Form Section */}
       <section className="py-12 px-4 md:px-8">
-        <div className="max-w-[720px] mx-auto">
-          <Link href="/solutions" className="inline-flex items-center gap-2 mb-8 transition-colors" style={{ color: '#8A9BBB' }}>
-            <ArrowLeft className="w-4 h-4" />
-            Back to Solutions
-          </Link>
+        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative z-10">
+          
+          {/* Left Column - Dynamic Step Telemetry & Context */}
+          <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-36">
+            <Link href="/solutions" className="inline-flex items-center gap-2 mb-2 transition-colors text-sm font-semibold" style={{ color: 'var(--color-text-tertiary)' }}>
+              <ArrowLeft className="w-4 h-4" />
+              Back to Solutions
+            </Link>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <HoneypotField />
-            <AnimatePresence mode="wait">
+            <div className="p-6 rounded-2xl border border-[var(--color-border-card)] bg-[var(--color-surface-card)]/50 backdrop-blur-md relative overflow-hidden group">
+              <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-accent)]/40" />
+              <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-accent)]/40" />
+              
+              <div className="flex items-center gap-2 mb-4 text-[10px] font-mono tracking-widest text-[var(--color-accent)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
+                <span>STEP_NODE // 0{currentStep}_OF_04</span>
+              </div>
+
+              <h3 className="text-xl font-bold font-syne mb-2 text-white">
+                {currentStep === 1 && 'Let\'s Get Acquainted'}
+                {currentStep === 2 && 'Tell Us Your Vision'}
+                {currentStep === 3 && 'Define Requirements'}
+                {currentStep === 4 && 'Budget & Timeline'}
+              </h3>
+              
+              <p className="text-xs text-[var(--color-text-tertiary)] leading-relaxed mb-6">
+                {currentStep === 1 && 'Introduce yourself and your organization. We use this context to customize our design frameworks and engineering teams to fit your industry standards.'}
+                {currentStep === 2 && 'Describe what you are building. Be as specific as you like — detail target users, offline storage requirements, or hardware/software platforms you plan to run.'}
+                {currentStep === 3 && 'Identify necessary integrations, security protocols (such as GDPR or HIPAA compliance), and preferred technology stacks for your custom ecosystem.'}
+                {currentStep === 4 && 'Confirm your timeline parameters, target budget windows, and launch schedule requirements to formalize a production roadmap.'}
+              </p>
+
+              {/* Progress Checklist */}
+              <div className="space-y-3 pt-4 border-t border-[var(--color-border-card)]/60 text-xs font-mono">
+                {steps.map(step => (
+                  <div key={step.number} className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center text-[8px] ${
+                      currentStep > step.number ? 'bg-[var(--color-accent)] border-[var(--color-accent)] text-[var(--color-background)]' :
+                      currentStep === step.number ? 'border-[var(--color-accent)] text-[var(--color-accent)]' :
+                      'border-[var(--color-border-card)] text-[var(--color-text-muted)]'
+                    }`}>
+                      {currentStep > step.number ? '✓' : step.number}
+                    </div>
+                    <span className={currentStep === step.number ? 'text-white font-bold' : 'text-[var(--color-text-muted)]'}>
+                      {step.title}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="hidden lg:block p-4 font-mono text-[9px] text-[var(--color-text-tertiary)]/20 space-y-1 select-none pointer-events-none">
+              <div>[TRANSACTION_INGEST: ACTIVE]</div>
+              <div>ENCRYPTION: AES_256_GCM</div>
+            </div>
+          </div>
+
+          {/* Right Column - Form */}
+          <div className="lg:col-span-7">
+            <form onSubmit={handleSubmit} className="space-y-8 p-6 lg:p-8 rounded-2xl border border-[var(--color-border-card)] bg-[var(--color-surface-card)]/30 backdrop-blur-md">
+              <HoneypotField onChange={(value) => setFormData(prev => ({ ...prev, website_url: value }))} />
+              <AnimatePresence mode="wait">
               {currentStep === 1 && (
                 <motion.div
                   key="step1"
@@ -319,55 +438,55 @@ export default function RequestPage() {
                   className="space-y-6"
                 >
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#00C28A', fontFamily: 'var(--font-syne)' }}>WHO ARE YOU?</p>
-                    <h2 className="text-2xl font-bold mb-6" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>Tell us about yourself</h2>
+                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-syne)' }}>WHO ARE YOU?</p>
+                    <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-syne)' }}>Tell us about yourself</h2>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Full Name *</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Full Name *</label>
                       <input
                         type="text"
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Your full name"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Organization / Company Name *</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Organization / Company Name *</label>
                       <input
                         type="text"
                         value={formData.organization}
                         onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Your business or institution name"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Job Title / Role *</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Job Title / Role *</label>
                       <input
                         type="text"
                         value={formData.jobTitle}
                         onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="e.g. CEO, CTO, Director of Digital Services"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Email Address *</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Email Address *</label>
                       <input
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="your@email.com"
                         required
                       />
@@ -375,12 +494,12 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Organization Type *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Organization Type *</label>
                     <select
                       value={formData.organizationType}
                       onChange={(e) => setFormData({ ...formData, organizationType: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       required
                     >
                       <option value="">Select organization type</option>
@@ -398,25 +517,25 @@ export default function RequestPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Country *</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Country *</label>
                       <input
                         type="text"
                         value={formData.country}
                         onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Your country"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>City / Region</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>City / Region</label>
                       <input
                         type="text"
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Your city or region"
                       />
                     </div>
@@ -424,24 +543,24 @@ export default function RequestPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Phone Number *</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Phone Number *</label>
                       <input
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="+231 XXX XXX XXXX"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Preferred Contact Method *</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Preferred Contact Method *</label>
                       <select
                         value={formData.contactMethod}
                         onChange={(e) => setFormData({ ...formData, contactMethod: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         required
                       >
                         <option value="">Select contact method</option>
@@ -454,12 +573,12 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>How did you hear about Annita Custom Solutions?</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>How did you hear about Annita Custom Solutions?</label>
                     <select
                       value={formData.howDidYouHear}
                       onChange={(e) => setFormData({ ...formData, howDidYouHear: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                     >
                       <option value="">Select an option</option>
                       <option value="ecosystem">Annita Ecosystem (an-nita.com)</option>
@@ -475,13 +594,13 @@ export default function RequestPage() {
 
                   {formData.howDidYouHear === 'referral' && (
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Referrer's name</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Referrer's name</label>
                       <input
                         type="text"
                         value={formData.referrerName}
                         onChange={(e) => setFormData({ ...formData, referrerName: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Who referred you?"
                       />
                     </div>
@@ -499,41 +618,41 @@ export default function RequestPage() {
                   className="space-y-6"
                 >
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#00C28A', fontFamily: 'var(--font-syne)' }}>TELL US ABOUT YOUR PROJECT</p>
-                    <h2 className="text-2xl font-bold mb-6" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>Describe your project</h2>
+                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-syne)' }}>TELL US ABOUT YOUR PROJECT</p>
+                    <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-syne)' }}>Describe your project</h2>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Project Name / Working Title *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Project Name / Working Title *</label>
                     <input
                       type="text"
                       value={formData.projectName}
                       onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       placeholder="Give your project a name, even a working one"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Project Summary *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Project Summary *</label>
                     <textarea
                       value={formData.projectSummary}
                       onChange={(e) => setFormData({ ...formData, projectSummary: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all min-h-[120px]"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       placeholder="Describe your project in plain language. What does it do? Who is it for? What problem does it solve? Write freely — we will ask follow-up questions in our discovery call."
                       required
                       minLength={80}
                     />
-                    <p className="text-xs mt-1" style={{ color: formData.projectSummary.length >= 80 ? '#00C28A' : '#8A9BBB' }}>
+                    <p className="text-xs mt-1" style={{ color: formData.projectSummary.length >= 80 ? 'var(--color-accent)' : 'var(--color-text-tertiary)' }}>
                       {formData.projectSummary.length}/80 characters minimum
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>What type of solution do you need? *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>What type of solution do you need? *</label>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {solutionTypes.map((type) => (
                         <button
@@ -542,12 +661,12 @@ export default function RequestPage() {
                           onClick={() => toggleArrayItem('solutionType', type.id)}
                           className={`p-4 rounded-lg border-2 text-left transition-all ${
                             formData.solutionType.includes(type.id)
-                              ? 'border-[#00C28A] bg-[#00C28A]/10'
-                              : 'border-[#1A2640] hover:border-[#00C28A]/50'
+                              ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/10'
+                              : 'border-[var(--color-border-card)] hover:border-[var(--color-accent)]/50'
                           }`}
                         >
-                          <span className="text-2xl mb-2 block">{type.icon}</span>
-                          <span className="text-sm font-medium" style={{ color: '#F0F4FF' }}>{type.name}</span>
+                          <type.icon className="w-7 h-7 mb-2 text-[var(--color-accent)]" />
+                          <span className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>{type.name}</span>
                         </button>
                       ))}
                     </div>
@@ -555,33 +674,33 @@ export default function RequestPage() {
 
                   {(formData.solutionType.includes('unsure') || formData.solutionType.length > 0) && (
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>
                         {formData.solutionType.includes('unsure') ? 'Tell us more about the kind of system you have in mind' : 'Tell us more about the kind of system you have in mind'}
                       </label>
                       <textarea
                         value={formData.solutionTypeOther}
                         onChange={(e) => setFormData({ ...formData, solutionTypeOther: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all min-h-[80px]"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Describe even loosely what you are imagining. You do not need a technical name for it."
                       />
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Who will use this solution? (Target Users) *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Who will use this solution? (Target Users) *</label>
                     <textarea
                       value={formData.targetUsers}
                       onChange={(e) => setFormData({ ...formData, targetUsers: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all min-h-[80px]"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       placeholder="Who are the end users? e.g. small business owners in rural Liberia, hospital staff, government procurement officers"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Expected Number of Users at Launch *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Expected Number of Users at Launch *</label>
                     <div className="flex flex-wrap gap-3">
                       {['Under 100', '100 – 1,000', '1,000 – 10,000', '10,000 – 100,000', '100,000+', 'Not sure yet'].map((option) => (
                         <button
@@ -590,8 +709,8 @@ export default function RequestPage() {
                           onClick={() => setFormData({ ...formData, userCount: option })}
                           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             formData.userCount === option
-                              ? 'bg-[#00C28A] text-[#080D1A]'
-                              : 'bg-[#0F1729] text-[#8A9BBB] border border-[#1A2640] hover:border-[#00C28A]'
+                              ? 'bg-[var(--color-accent)] text-[var(--color-background)]'
+                              : 'bg-[var(--color-surface-card)] text-[var(--color-text-tertiary)] border border-[var(--color-border-card)] hover:border-[var(--color-accent)]'
                           }`}
                         >
                           {option}
@@ -601,7 +720,7 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Geographic Deployment</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Geographic Deployment</label>
                     <div className="space-y-2">
                       {['Single city or region', 'One country', 'Multiple African countries', 'Pan-African', 'Global', 'Not yet decided'].map((option) => (
                         <label key={option} className="flex items-center gap-3 cursor-pointer">
@@ -610,9 +729,9 @@ export default function RequestPage() {
                             checked={formData.geographicDeployment.includes(option)}
                             onChange={(e) => toggleArrayItem('geographicDeployment', option)}
                             className="w-4 h-4 rounded"
-                            style={{ accentColor: '#00C28A' }}
+                            style={{ accentColor: 'var(--color-accent)' }}
                           />
-                          <span className="text-sm" style={{ color: '#8A9BBB' }}>{option}</span>
+                          <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{option}</span>
                         </label>
                       ))}
                     </div>
@@ -620,20 +739,20 @@ export default function RequestPage() {
 
                   {formData.geographicDeployment.includes('One country') && (
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Which country?</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Which country?</label>
                       <input
                         type="text"
                         value={formData.geographicCountry}
                         onChange={(e) => setFormData({ ...formData, geographicCountry: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Country name"
                       />
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Languages the solution must support</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Languages the solution must support</label>
                     <div className="flex flex-wrap gap-2 mb-2">
                       {['English', 'French', 'Arabic', 'Swahili', 'Portuguese', 'Hausa', 'Amharic'].map((lang) => (
                         <button
@@ -642,8 +761,8 @@ export default function RequestPage() {
                           onClick={() => toggleArrayItem('languages', lang)}
                           className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                             formData.languages.includes(lang)
-                              ? 'bg-[#00C28A] text-[#080D1A]'
-                              : 'bg-[#0F1729] text-[#8A9BBB] border border-[#1A2640]'
+                              ? 'bg-[var(--color-accent)] text-[var(--color-background)]'
+                              : 'bg-[var(--color-surface-card)] text-[var(--color-text-tertiary)] border border-[var(--color-border-card)]'
                           }`}
                         >
                           {lang}
@@ -661,13 +780,13 @@ export default function RequestPage() {
                         })
                       }}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       placeholder="Type additional languages separated by commas"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Must work offline or in low-connectivity environments? *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Must work offline or in low-connectivity environments? *</label>
                     <div className="flex flex-wrap gap-3">
                       {['Yes, critical', 'Partially', 'No', 'Not sure'].map((option) => (
                         <button
@@ -676,8 +795,8 @@ export default function RequestPage() {
                           onClick={() => setFormData({ ...formData, offlineRequired: option })}
                           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             formData.offlineRequired === option
-                              ? 'bg-[#00C28A] text-[#080D1A]'
-                              : 'bg-[#0F1729] text-[#8A9BBB] border border-[#1A2640] hover:border-[#00C28A]'
+                              ? 'bg-[var(--color-accent)] text-[var(--color-background)]'
+                              : 'bg-[var(--color-surface-card)] text-[var(--color-text-tertiary)] border border-[var(--color-border-card)] hover:border-[var(--color-accent)]'
                           }`}
                         >
                           {option}
@@ -687,12 +806,12 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Does a version of this solution already exist?</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Does a version of this solution already exist?</label>
                     <select
                       value={formData.existingSystem}
                       onChange={(e) => setFormData({ ...formData, existingSystem: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                     >
                       <option value="">Select an option</option>
                       <option value="no">No, this is brand new</option>
@@ -703,12 +822,12 @@ export default function RequestPage() {
 
                   {(formData.existingSystem === 'replace' || formData.existingSystem === 'extend') && (
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Describe the existing system briefly</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Describe the existing system briefly</label>
                       <textarea
                         value={formData.existingSystemDescription}
                         onChange={(e) => setFormData({ ...formData, existingSystemDescription: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all min-h-[80px]"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Briefly describe the existing system"
                       />
                     </div>
@@ -726,24 +845,24 @@ export default function RequestPage() {
                   className="space-y-6"
                 >
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#00C28A', fontFamily: 'var(--font-syne)' }}>WHAT DO YOU NEED IT TO DO?</p>
-                    <h2 className="text-2xl font-bold mb-6" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>Core requirements</h2>
+                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-syne)' }}>WHAT DO YOU NEED IT TO DO?</p>
+                    <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-syne)' }}>Core requirements</h2>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Core Features Required *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Core Features Required *</label>
                     <textarea
                       value={formData.coreFeatures}
                       onChange={(e) => setFormData({ ...formData, coreFeatures: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all min-h-[150px]"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       placeholder="List the features your solution must have. Be specific. You can use bullet points. Examples: 'User login with phone OTP', 'Product catalog with search and filter', 'Admin dashboard with analytics', 'Offline data sync when reconnected'."
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Are any of these features important to you?</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Are any of these features important to you?</label>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {importantFeatures.map((feature) => (
                         <button
@@ -752,8 +871,8 @@ export default function RequestPage() {
                           onClick={() => toggleArrayItem('importantFeatures', feature)}
                           className={`p-3 rounded-lg border-2 text-left text-sm transition-all ${
                             formData.importantFeatures.includes(feature)
-                              ? 'border-[#00C28A] bg-[#00C28A]/10'
-                              : 'border-[#1A2640] hover:border-[#00C28A]/50'
+                              ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/10'
+                              : 'border-[var(--color-border-card)] hover:border-[var(--color-accent)]/50'
                           }`}
                         >
                           {feature}
@@ -763,19 +882,19 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Specific third-party systems this must integrate with</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Specific third-party systems this must integrate with</label>
                     <input
                       type="text"
                       value={formData.thirdPartyIntegrations}
                       onChange={(e) => setFormData({ ...formData, thirdPartyIntegrations: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       placeholder="e.g. QuickBooks, Flutterwave, Salesforce, an existing government database, WhatsApp Business API"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Technology stack preference (optional)</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Technology stack preference (optional)</label>
                     <div className="flex flex-wrap gap-2 mb-2">
                       {techStackOptions.map((stack) => (
                         <button
@@ -784,8 +903,8 @@ export default function RequestPage() {
                           onClick={() => toggleArrayItem('techStack', stack)}
                           className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                             formData.techStack.includes(stack)
-                              ? 'bg-[#00C28A] text-[#080D1A]'
-                              : 'bg-[#0F1729] text-[#8A9BBB] border border-[#1A2640]'
+                              ? 'bg-[var(--color-accent)] text-[var(--color-background)]'
+                              : 'bg-[var(--color-surface-card)] text-[var(--color-text-tertiary)] border border-[var(--color-border-card)]'
                           }`}
                         >
                           {stack}
@@ -798,14 +917,14 @@ export default function RequestPage() {
                         value={formData.techStackOther}
                         onChange={(e) => setFormData({ ...formData, techStackOther: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Specify other technology"
                       />
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Do you have an existing brand identity?</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Do you have an existing brand identity?</label>
                     <div className="flex flex-wrap gap-3">
                       {['Yes, full brand guidelines available', 'Yes, partial (logo only or basic colors)', 'No, Annita should design from scratch', 'No preference'].map((option) => (
                         <button
@@ -814,8 +933,8 @@ export default function RequestPage() {
                           onClick={() => setFormData({ ...formData, brandIdentity: option })}
                           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             formData.brandIdentity === option
-                              ? 'bg-[#00C28A] text-[#080D1A]'
-                              : 'bg-[#0F1729] text-[#8A9BBB] border border-[#1A2640] hover:border-[#00C28A]'
+                              ? 'bg-[var(--color-accent)] text-[var(--color-background)]'
+                              : 'bg-[var(--color-surface-card)] text-[var(--color-text-tertiary)] border border-[var(--color-border-card)] hover:border-[var(--color-accent)]'
                           }`}
                         >
                           {option}
@@ -826,8 +945,8 @@ export default function RequestPage() {
 
                   {(formData.brandIdentity === 'Yes, full brand guidelines available' || formData.brandIdentity === 'Yes, partial (logo only or basic colors)') && (
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Upload brand assets (logo, brand guide, references)</label>
-                      <div className="border-2 border-dashed rounded-lg p-6 text-center" style={{ borderColor: '#1A2640' }}>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Upload brand assets (logo, brand guide, references)</label>
+                      <div className="border-2 border-dashed rounded-lg p-6 text-center" style={{ borderColor: 'var(--color-border-card)' }}>
                         <input
                           type="file"
                           multiple
@@ -837,16 +956,16 @@ export default function RequestPage() {
                           id="brand-upload"
                         />
                         <label htmlFor="brand-upload" className="cursor-pointer">
-                          <Upload className="w-8 h-8 mx-auto mb-2" style={{ color: '#00C28A' }} />
-                          <p className="text-sm mb-1" style={{ color: '#8A9BBB' }}>Click to upload or drag and drop</p>
-                          <p className="text-xs" style={{ color: '#8A9BBB' }}>PDF, ZIP, PNG, JPG, AI (max 20MB, max 3 files)</p>
+                          <Upload className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--color-accent)' }} />
+                          <p className="text-sm mb-1" style={{ color: 'var(--color-text-tertiary)' }}>Click to upload or drag and drop</p>
+                          <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>PDF, ZIP, PNG, JPG, AI (max 20MB, max 3 files)</p>
                         </label>
                       </div>
                       {formData.brandAssets.length > 0 && (
                         <div className="mt-2 space-y-2">
                           {formData.brandAssets.map((file, index) => (
-                            <div key={index} className="flex items-center justify-between p-2 rounded" style={{ backgroundColor: '#0F1729' }}>
-                              <span className="text-sm truncate" style={{ color: '#8A9BBB' }}>{file.name}</span>
+                            <div key={index} className="flex items-center justify-between p-2 rounded" style={{ backgroundColor: 'var(--color-surface-card)' }}>
+                              <span className="text-sm truncate" style={{ color: 'var(--color-text-tertiary)' }}>{file.name}</span>
                               <button
                                 type="button"
                                 onClick={() => removeFile('brandAssets', index)}
@@ -862,12 +981,12 @@ export default function RequestPage() {
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Do you have wireframes, mockups, or design references?</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Do you have wireframes, mockups, or design references?</label>
                     <select
                       value={formData.wireframes}
                       onChange={(e) => setFormData({ ...formData, wireframes: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                     >
                       <option value="">Select an option</option>
                       <option value="yes">Yes</option>
@@ -879,8 +998,8 @@ export default function RequestPage() {
                   {formData.wireframes === 'yes' && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Upload wireframes or mockups</label>
-                        <div className="border-2 border-dashed rounded-lg p-6 text-center" style={{ borderColor: '#1A2640' }}>
+                        <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Upload wireframes or mockups</label>
+                        <div className="border-2 border-dashed rounded-lg p-6 text-center" style={{ borderColor: 'var(--color-border-card)' }}>
                           <input
                             type="file"
                             multiple
@@ -890,16 +1009,16 @@ export default function RequestPage() {
                             id="wireframes-upload"
                           />
                           <label htmlFor="wireframes-upload" className="cursor-pointer">
-                            <Upload className="w-8 h-8 mx-auto mb-2" style={{ color: '#00C28A' }} />
-                            <p className="text-sm mb-1" style={{ color: '#8A9BBB' }}>Click to upload or drag and drop</p>
-                            <p className="text-xs" style={{ color: '#8A9BBB' }}>PDF, ZIP, PNG, JPG, FIG (max 20MB, max 3 files)</p>
+                            <Upload className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--color-accent)' }} />
+                            <p className="text-sm mb-1" style={{ color: 'var(--color-text-tertiary)' }}>Click to upload or drag and drop</p>
+                            <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>PDF, ZIP, PNG, JPG, FIG (max 20MB, max 3 files)</p>
                           </label>
                         </div>
                         {formData.wireframesFiles.length > 0 && (
                           <div className="mt-2 space-y-2">
                             {formData.wireframesFiles.map((file, index) => (
-                              <div key={index} className="flex items-center justify-between p-2 rounded" style={{ backgroundColor: '#0F1729' }}>
-                                <span className="text-sm truncate" style={{ color: '#8A9BBB' }}>{file.name}</span>
+                              <div key={index} className="flex items-center justify-between p-2 rounded" style={{ backgroundColor: 'var(--color-surface-card)' }}>
+                                <span className="text-sm truncate" style={{ color: 'var(--color-text-tertiary)' }}>{file.name}</span>
                                 <button
                                   type="button"
                                   onClick={() => removeFile('wireframesFiles', index)}
@@ -913,13 +1032,13 @@ export default function RequestPage() {
                         )}
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Figma or hosted references URL (optional)</label>
+                        <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Figma or hosted references URL (optional)</label>
                         <input
                           type="url"
                           value={formData.wireframesUrl}
                           onChange={(e) => setFormData({ ...formData, wireframesUrl: e.target.value })}
                           className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                          style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                          style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                           placeholder="https://figma.com/..."
                         />
                       </div>
@@ -927,7 +1046,7 @@ export default function RequestPage() {
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Design style preference *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Design style preference *</label>
                     <div className="flex flex-wrap gap-3">
                       {['Minimal & Clean', 'Bold & Expressive', 'Corporate & Formal', 'Friendly & Approachable', 'Technical / Data-Heavy', 'No strong preference'].map((option) => (
                         <button
@@ -936,8 +1055,8 @@ export default function RequestPage() {
                           onClick={() => setFormData({ ...formData, designStyle: option })}
                           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             formData.designStyle === option
-                              ? 'bg-[#00C28A] text-[#080D1A]'
-                              : 'bg-[#0F1729] text-[#8A9BBB] border border-[#1A2640] hover:border-[#00C28A]'
+                              ? 'bg-[var(--color-accent)] text-[var(--color-background)]'
+                              : 'bg-[var(--color-surface-card)] text-[var(--color-text-tertiary)] border border-[var(--color-border-card)] hover:border-[var(--color-accent)]'
                           }`}
                         >
                           {option}
@@ -947,7 +1066,7 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Security and compliance requirements</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Security and compliance requirements</label>
                     <div className="flex flex-wrap gap-2">
                       {securityRequirements.map((req) => (
                         <button
@@ -956,8 +1075,8 @@ export default function RequestPage() {
                           onClick={() => toggleArrayItem('securityRequirements', req)}
                           className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                             formData.securityRequirements.includes(req)
-                              ? 'bg-[#00C28A] text-[#080D1A]'
-                              : 'bg-[#0F1729] text-[#8A9BBB] border border-[#1A2640]'
+                              ? 'bg-[var(--color-accent)] text-[var(--color-background)]'
+                              : 'bg-[var(--color-surface-card)] text-[var(--color-text-tertiary)] border border-[var(--color-border-card)]'
                           }`}
                         >
                           {req}
@@ -967,12 +1086,12 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Anything else we should know?</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Anything else we should know?</label>
                     <textarea
                       value={formData.additionalNotes}
                       onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all min-h-[100px]"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       placeholder="Regulatory context, cultural considerations, previous failed attempts, specific concerns, or anything else on your mind."
                     />
                   </div>
@@ -989,12 +1108,12 @@ export default function RequestPage() {
                   className="space-y-6"
                 >
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#00C28A', fontFamily: 'var(--font-syne)' }}>INVESTMENT & TIMING</p>
-                    <h2 className="text-2xl font-bold mb-6" style={{ color: '#F0F4FF', fontFamily: 'var(--font-syne)' }}>Budget and timeline</h2>
+                    <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-syne)' }}>INVESTMENT & TIMING</p>
+                    <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-syne)' }}>Budget and timeline</h2>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Estimated budget for this project *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Estimated budget for this project *</label>
                     <div className="space-y-3">
                       {[
                         { value: 'under-5k', label: 'Under $5,000 USD', desc: 'Suitable for simple websites, basic apps, or MVPs.' },
@@ -1011,12 +1130,12 @@ export default function RequestPage() {
                           onClick={() => setFormData({ ...formData, budget: option.value })}
                           className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
                             formData.budget === option.value
-                              ? 'border-[#00C28A] bg-[#00C28A]/10'
-                              : 'border-[#1A2640] hover:border-[#00C28A]/50'
+                              ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/10'
+                              : 'border-[var(--color-border-card)] hover:border-[var(--color-accent)]/50'
                           }`}
                         >
-                          <div className="font-semibold mb-1" style={{ color: '#F0F4FF' }}>{option.label}</div>
-                          {option.desc && <p className="text-sm" style={{ color: '#8A9BBB' }}>{option.desc}</p>}
+                          <div className="font-semibold mb-1" style={{ color: 'var(--color-text-primary)' }}>{option.label}</div>
+                          {option.desc && <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{option.desc}</p>}
                         </button>
                       ))}
                     </div>
@@ -1024,19 +1143,19 @@ export default function RequestPage() {
 
                   {formData.budget === 'funded' && (
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Describe the funding context briefly</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Describe the funding context briefly</label>
                       <textarea
                         value={formData.fundingContext}
                         onChange={(e) => setFormData({ ...formData, fundingContext: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all min-h-[80px]"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                         placeholder="Describe the funding context briefly"
                       />
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Is your budget fixed or flexible?</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Is your budget fixed or flexible?</label>
                     <div className="flex flex-wrap gap-3">
                       {['Fixed', 'Flexible', 'Dependent on proposal'].map((option) => (
                         <button
@@ -1045,8 +1164,8 @@ export default function RequestPage() {
                           onClick={() => setFormData({ ...formData, budgetFlexibility: option })}
                           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             formData.budgetFlexibility === option
-                              ? 'bg-[#00C28A] text-[#080D1A]'
-                              : 'bg-[#0F1729] text-[#8A9BBB] border border-[#1A2640] hover:border-[#00C28A]'
+                              ? 'bg-[var(--color-accent)] text-[var(--color-background)]'
+                              : 'bg-[var(--color-surface-card)] text-[var(--color-text-tertiary)] border border-[var(--color-border-card)] hover:border-[var(--color-accent)]'
                           }`}
                         >
                           {option}
@@ -1056,7 +1175,7 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>When do you need this solution to launch? *</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>When do you need this solution to launch? *</label>
                     <div className="space-y-3">
                       {[
                         { value: 'asap', label: 'As soon as possible (within 1–2 months)' },
@@ -1072,11 +1191,11 @@ export default function RequestPage() {
                           onClick={() => setFormData({ ...formData, timeline: option.value })}
                           className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
                             formData.timeline === option.value
-                              ? 'border-[#00C28A] bg-[#00C28A]/10'
-                              : 'border-[#1A2640] hover:border-[#00C28A]/50'
+                              ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/10'
+                              : 'border-[var(--color-border-card)] hover:border-[var(--color-accent)]/50'
                           }`}
                         >
-                          <div className="font-semibold" style={{ color: '#F0F4FF' }}>{option.label}</div>
+                          <div className="font-semibold" style={{ color: 'var(--color-text-primary)' }}>{option.label}</div>
                         </button>
                       ))}
                     </div>
@@ -1084,31 +1203,31 @@ export default function RequestPage() {
 
                   {formData.timeline === 'deadline' && (
                     <div>
-                      <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Specific deadline</label>
+                      <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Specific deadline</label>
                       <input
                         type="date"
                         value={formData.specificDeadline}
                         onChange={(e) => setFormData({ ...formData, specificDeadline: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                        style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                        style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       />
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Preferred project start date (optional)</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Preferred project start date (optional)</label>
                     <input
                       type="date"
                       value={formData.projectStartDate}
                       onChange={(e) => setFormData({ ...formData, projectStartDate: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                     />
-                    <p className="text-xs mt-1" style={{ color: '#8A9BBB' }}>If you have a grant deadline, event launch, or board milestone, tell us when.</p>
+                    <p className="text-xs mt-1" style={{ color: 'var(--color-text-tertiary)' }}>If you have a grant deadline, event launch, or board milestone, tell us when.</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>How would you prefer to manage this engagement?</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>How would you prefer to manage this engagement?</label>
                     <div className="flex flex-wrap gap-3">
                       {['Fully managed by Annita (hands-off on my end)', 'Collaborative (regular check-ins, I will be involved)', 'I have an in-house team — Annita to lead or augment'].map((option) => (
                         <button
@@ -1117,8 +1236,8 @@ export default function RequestPage() {
                           onClick={() => setFormData({ ...formData, engagementStyle: option })}
                           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             formData.engagementStyle === option
-                              ? 'bg-[#00C28A] text-[#080D1A]'
-                              : 'bg-[#0F1729] text-[#8A9BBB] border border-[#1A2640] hover:border-[#00C28A]'
+                              ? 'bg-[var(--color-accent)] text-[var(--color-background)]'
+                              : 'bg-[var(--color-surface-card)] text-[var(--color-text-tertiary)] border border-[var(--color-border-card)] hover:border-[var(--color-accent)]'
                           }`}
                         >
                           {option}
@@ -1128,12 +1247,12 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Do you need ongoing maintenance and support after launch?</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Do you need ongoing maintenance and support after launch?</label>
                     <select
                       value={formData.maintenanceNeeded}
                       onChange={(e) => setFormData({ ...formData, maintenanceNeeded: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                     >
                       <option value="">Select an option</option>
                       <option value="yes-scope">Yes, include it in scope</option>
@@ -1144,12 +1263,12 @@ export default function RequestPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#8A9BBB' }}>Final thoughts before we review your brief</label>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text-tertiary)' }}>Final thoughts before we review your brief</label>
                     <textarea
                       value={formData.finalThoughts}
                       onChange={(e) => setFormData({ ...formData, finalThoughts: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg focus:outline-none transition-all min-h-[80px]"
-                      style={{ backgroundColor: '#0F1729', border: '1px solid #1A2640', color: '#F0F4FF' }}
+                      style={{ backgroundColor: 'var(--color-surface-card)', border: '1px solid var(--color-border-card)', color: 'var(--color-text-primary)' }}
                       placeholder="Any final questions, concerns, or things you want the Annita team to know before your consultation."
                     />
                   </div>
@@ -1161,10 +1280,10 @@ export default function RequestPage() {
                       checked={formData.agreement}
                       onChange={(e) => setFormData({ ...formData, agreement: e.target.checked })}
                       className="mt-1 w-5 h-5 rounded"
-                      style={{ accentColor: '#00C28A' }}
+                      style={{ accentColor: 'var(--color-accent)' }}
                       required
                     />
-                    <label htmlFor="agreement" className="text-sm" style={{ color: '#8A9BBB' }}>
+                    <label htmlFor="agreement" className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
                       I agree to be contacted by Annita regarding my project request. (Your information is never shared with third parties.) *
                     </label>
                   </div>
@@ -1179,14 +1298,14 @@ export default function RequestPage() {
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between pt-6" style={{ borderTop: '1px solid #1A2640' }}>
+            <div className="flex items-center justify-between pt-6" style={{ borderTop: '1px solid var(--color-border-card)' }}>
               {currentStep > 1 ? (
                 <button
                   type="button"
                   onClick={handleBack}
                   disabled={isSubmitting}
                   className="px-6 py-3 rounded-lg font-semibold transition-all"
-                  style={{ backgroundColor: '#0F1729', color: '#8A9BBB', border: '1px solid #1A2640', opacity: isSubmitting ? 0.5 : 1 }}
+                  style={{ backgroundColor: 'var(--color-surface-card)', color: 'var(--color-text-tertiary)', border: '1px solid var(--color-border-card)', opacity: isSubmitting ? 0.5 : 1 }}
                 >
                   Back
                 </button>
@@ -1199,7 +1318,7 @@ export default function RequestPage() {
                   type="button"
                   onClick={handleNext}
                   className="px-8 py-3 rounded-full font-semibold transition-all flex items-center gap-2"
-                  style={{ backgroundColor: '#00C28A', color: '#080D1A' }}
+                  style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-background)' }}
                 >
                   Next
                   <ArrowRight className="w-4 h-4" />
@@ -1209,7 +1328,7 @@ export default function RequestPage() {
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full px-8 py-3 rounded-full font-semibold transition-all flex items-center justify-center gap-2"
-                  style={{ backgroundColor: '#00C28A', color: '#080D1A', opacity: isSubmitting ? 0.7 : 1 }}
+                  style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-background)', opacity: isSubmitting ? 0.7 : 1 }}
                 >
                   {isSubmitting ? (
                     <>
@@ -1222,12 +1341,13 @@ export default function RequestPage() {
                 </button>
               )}
             </div>
-          </form>
+            </form>
+          </div>
         </div>
       </section>
 
       {/* Techy Footer */}
-      <footer className="relative overflow-hidden" style={{ backgroundColor: '#080D1A', borderTop: '1px solid #1A2640' }}>
+      <footer className="relative overflow-hidden" style={{ backgroundColor: 'var(--color-background)', borderTop: '1px solid var(--color-border-card)' }}>
         {/* Animated Grid Background */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -1241,7 +1361,7 @@ export default function RequestPage() {
 
         {/* Scanline Effect */}
         <div className="absolute inset-0 pointer-events-none opacity-5">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00C28A]/5 to-transparent animate-scanline" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
         <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
@@ -1258,83 +1378,83 @@ export default function RequestPage() {
                   className="rounded-lg"
                 />
                 <div>
-                  <div className="font-bold text-white">Annita<span className="text-[#00C28A]">.</span></div>
-                  <div className="text-[10px] font-mono text-[#00C28A]">SYSTEM: ONLINE</div>
+                  <div className="font-bold text-white">Annita<span className="text-[var(--color-accent)]">.</span></div>
+                  <div className="text-[10px] font-mono text-[var(--color-accent)]">SYSTEM: ONLINE</div>
                 </div>
               </div>
-              <p className="text-xs text-[#8A9BBB] mb-4 leading-relaxed">
-                Building Africa's digital infrastructure with world-class technology solutions.
+              <p className="text-xs text-[var(--color-text-tertiary)] mb-4 leading-relaxed">
+                Annita is Africa's first all-in-one digital ecosystem, integrating e-commerce, fintech, AI, communication, marketing, logistics, and more into a single, connected system.
               </p>
-              <div className="flex items-center gap-2 text-[10px] font-mono text-[#4A5775]">
-                <span className="w-1.5 h-1.5 bg-[#00C28A] rounded-full animate-pulse" />
+              <div className="flex items-center gap-2 text-[10px] font-mono text-[var(--color-text-muted)]">
+                <span className="w-1.5 h-1.5 bg-[var(--color-accent)] rounded-full animate-pulse" />
                 <span>STATUS: OPERATIONAL</span>
               </div>
             </div>
 
             {/* Ecosystem Links */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" />
                 Ecosystem
               </div>
               <div className="space-y-2">
-                <Link href="/login" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Annita Ecosystem</Link>
-                <a href="https://www.an-nitapay.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">AnnitaPay</a>
-                <a href="https://www.an-nita-pulse.org" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Annita Pulse</a>
-                <a href="https://www.ezri-africa.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Ezri</a>
-                <a href="https://an-nitaimpactinnovationhub.com" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">AIIM Hub</a>
+                <Link href="/login" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
+                <a href="https://www.an-nitapay.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AnnitaPay</a>
+                <a href="https://www.an-nita-pulse.org" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Pulse</a>
+                <a href="https://www.ezri-africa.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Ezri</a>
+                <a href="https://an-nitaimpactinnovationhub.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AIIM Hub</a>
               </div>
             </div>
 
             {/* Company Links */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" />
                 Company
               </div>
               <div className="space-y-2">
-                <Link href="/solutions" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Custom Solutions</Link>
-                <Link href="/about" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">About Us</Link>
-                <Link href="/awards" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Awards</Link>
-                <Link href="/contact" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Contact Us</Link>
-                <Link href="/contact-sales" className="block text-sm text-[#8A9BBB] hover:text-[#00C28A] transition-colors">Contact Sales</Link>
+                <Link href="/about" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">About Us</Link>
+                <Link href="/solutions" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Custom Solutions</Link>
+                <Link href="/careers" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Careers</Link>
+                <Link href="/partnerships" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Partnerships</Link>
+                <Link href="/awards" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Awards</Link>
               </div>
             </div>
 
-            {/* Tech Stats */}
+            {/* Legal Links */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#4A5775] mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 bg-[#00C28A] rounded-full" />
-                System Metrics
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" />
+                Legal
               </div>
-              <div className="space-y-2 text-[10px] font-mono">
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">LATENCY</span>
-                  <span className="text-[#00C28A]">18ms</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">UPTIME</span>
-                  <span className="text-[#00C28A]">99.9%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">REGIONS</span>
-                  <span className="text-[#00C28A]">6</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#8A9BBB]">VERSION</span>
-                  <span className="text-[#00C28A]">v2.0</span>
-                </div>
+              <div className="space-y-2">
+                <Link href="/privacy" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Terms & Conditions</Link>
+                <Link href="/cookies" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Cookie Policy</Link>
+              </div>
+            </div>
+
+            {/* Contact Links */}
+            <div>
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" />
+                Contact
+              </div>
+              <div className="space-y-2">
+                <Link href="/contact" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Contact Us</Link>
+                <Link href="/contact-sales" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Contact Sales</Link>
+                <Link href="/partnerships" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Partnership</Link>
               </div>
             </div>
           </div>
 
           {/* Bottom Section */}
-          <div className="pt-8 border-t border-[#1A2640]/50 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="pt-8 border-t border-[var(--color-border-card)]/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-center md:text-left">
-              <p className="text-[10px] font-mono text-[#4A5775]">© 2026 Annita LLC. All rights reserved.</p>
+              <p className="text-[10px] font-mono text-[var(--color-text-muted)]">© 2026 Annita LLC. All rights reserved.</p>
             </div>
             <div className="text-center md:text-right">
-              <p className="text-[10px] font-mono text-[#4A5775]">Built in Liberia. Built for the World.</p>
+              <p className="text-[10px] font-mono text-[var(--color-text-muted)]">Built in Liberia. Built for the World.</p>
             </div>
           </div>
         </div>

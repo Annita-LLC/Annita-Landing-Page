@@ -40,7 +40,7 @@ export default function GlitchEffect({ children, className = '' }: GlitchEffectP
           <motion.div
             className="absolute inset-0"
             style={{
-              color: '#00C28A',
+              color: 'var(--color-accent)',
               mixBlendMode: 'screen'
             }}
             animate={{
@@ -58,7 +58,7 @@ export default function GlitchEffect({ children, className = '' }: GlitchEffectP
           <motion.div
             className="absolute inset-0"
             style={{
-              color: '#EF4444',
+              color: 'var(--color-brand-error, #DC2626)',
               mixBlendMode: 'screen'
             }}
             animate={{

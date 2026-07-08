@@ -9,7 +9,8 @@ import type { Request, Response } from 'express';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { z } from 'zod';
-import { sendCustomEmail, sendSolutionsRequestConfirmation } from '../lib/email.js';
+import { sendSolutionsRequestAdminEmail, sendSolutionsRequestConfirmation } from '../lib/email.js';
+import { appendToSheet } from '../lib/google-sheets.js';
 
 const router = Router();
 
@@ -144,6 +145,38 @@ router.post('/', async (req: Request, res: Response) => {
       },
     });
 
+    // Sync to Google Sheets (fire-and-forget)
+    appendToSheet('Custom Solutions', [
+      submission.createdAt.toISOString(),
+      submission.id,
+      submission.fullName,
+      submission.email,
+      submission.phone,
+      submission.organization,
+      submission.jobTitle,
+      submission.organizationType,
+      submission.country,
+      submission.projectName,
+      submission.projectSummary,
+      submission.solutionTypes ? submission.solutionTypes.join(', ') : '',
+      submission.targetUsers,
+      submission.userCount,
+      submission.geographicDeployment ? submission.geographicDeployment.join(', ') : '',
+      submission.geographicCountry || '',
+      submission.languages ? submission.languages.join(', ') : '',
+      submission.offlineRequired,
+      submission.budget,
+      submission.timeline,
+      submission.status,
+      submission.ipAddress || '',
+      submission.userAgent || '',
+    ]).catch(err => {
+      logger.error('Failed to trigger Google Sheets append for Custom Solutions Request', {
+        requestId,
+        error: err instanceof Error ? err.message : String(err),
+      });
+    });
+
     const latency = Date.now() - startTime;
     logger.info('Solutions request created successfully', {
       requestId,
@@ -155,76 +188,16 @@ router.post('/', async (req: Request, res: Response) => {
     // Send email notifications
     try {
       // Send to admin
-      const emailHtml = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>New Solutions Request</title>
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-            .content { background: #f9f9f9; padding: 30px; border-radius: 5px; }
-            .field { margin-bottom: 15px; }
-            .label { font-weight: bold; color: #667eea; }
-            .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>🚀 New Solutions Request</h1>
-              <p>Annita LLC - Custom Solutions</p>
-            </div>
-            <div class="content">
-              <div class="field">
-                <span class="label">Name:</span>
-                <span>${validatedData.fullName}</span>
-              </div>
-              <div class="field">
-                <span class="label">Email:</span>
-                <span>${validatedData.email}</span>
-              </div>
-              <div class="field">
-                <span class="label">Phone:</span>
-                <span>${validatedData.phone}</span>
-              </div>
-              <div class="field">
-                <span class="label">Organization:</span>
-                <span>${validatedData.organization}</span>
-              </div>
-              <div class="field">
-                <span class="label">Project Name:</span>
-                <span>${validatedData.projectName}</span>
-              </div>
-              <div class="field">
-                <span class="label">Project Summary:</span>
-                <p>${validatedData.projectSummary}</p>
-              </div>
-              <div class="field">
-                <span class="label">Budget:</span>
-                <span>${validatedData.budget}</span>
-              </div>
-              <div class="field">
-                <span class="label">Timeline:</span>
-                <span>${validatedData.timeline}</span>
-              </div>
-            </div>
-            <div class="footer">
-              <p>© ${new Date().getFullYear()} Annita LLC - Custom Solutions</p>
-              <p>solutions@an-nita.com</p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-
-      await sendCustomEmail({
-        to: process.env.ADMIN_EMAIL || 'info@an-nita.com',
-        subject: `New Solutions Request from ${validatedData.fullName}`,
-        html: emailHtml,
+      await sendSolutionsRequestAdminEmail({
+        fullName: validatedData.fullName,
+        email: validatedData.email,
+        phone: validatedData.phone,
+        organization: validatedData.organization,
+        projectName: validatedData.projectName,
+        projectSummary: validatedData.projectSummary,
+        solutionTypes: validatedData.solutionTypes,
+        budget: validatedData.budget,
+        timeline: validatedData.timeline,
       });
       logger.info('Solutions request email sent to admin successfully', { requestId, submissionId: submission.id });
 
