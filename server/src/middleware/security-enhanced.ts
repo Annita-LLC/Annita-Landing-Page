@@ -24,7 +24,7 @@
  */
 
 import type { Request, Response, NextFunction } from 'express';
-import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
+import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -289,7 +289,7 @@ export const ipRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req: Request) => ipKeyGenerator(req.ip || req.connection.remoteAddress || 'unknown'),
+  keyGenerator: (req: Request) => req.ip || req.connection.remoteAddress || 'unknown',
   skip: (req: Request) => {
     // Skip rate limiting for health checks
     return req.path === '/health';
@@ -308,7 +308,7 @@ export const strictRateLimit = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req: Request) => ipKeyGenerator(req.ip || req.connection.remoteAddress || 'unknown'),
+  keyGenerator: (req: Request) => req.ip || req.connection.remoteAddress || 'unknown',
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
