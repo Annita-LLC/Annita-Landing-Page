@@ -15,6 +15,7 @@
 import os from 'os';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // 1. TELEMETRY TYPE DEFINITIONS & SCHEMAS
@@ -595,7 +596,7 @@ export class LandingPageLogger {
   }
 
   private hashValue(value: string): string {
-    return require('crypto').createHash('sha256').update(value).digest('hex').substring(0, 16);
+    return crypto.createHash('sha256').update(value).digest('hex').substring(0, 16);
   }
 
   private async storeAuditLog(securityEvent: any): Promise<void> {

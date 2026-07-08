@@ -5,6 +5,7 @@
 // ============================================================================
 
 import type { Request, Response, NextFunction } from 'express';
+import os from 'os';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { validationResult } from 'express-validator';
@@ -116,8 +117,7 @@ export const errorHandler = (
   _next: NextFunction
 ): void => {
   const errorTimestamp = new Date().toISOString();
-  const os = require('os');
-  
+
   // Deep system context capture
   const systemContext = {
     timestamp: errorTimestamp,

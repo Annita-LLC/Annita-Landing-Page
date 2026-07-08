@@ -24,6 +24,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/prisma ./prisma
 COPY --from=deps /app/prisma.config.ts ./
+COPY --from=deps /app/generated ./generated
 COPY . .
 
 # Build TypeScript (optional - we use tsx in prod, but could compile)
@@ -41,8 +42,12 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/prisma ./prisma
 COPY --from=deps /app/prisma.config.ts ./
+COPY --from=deps /app/generated ./generated
 COPY --from=builder /app/src ./src
 COPY --from=builder /app/package*.json ./
+
+# Ensure generated dir is writable by nextjs (prisma generate in startCommand may re-run)
+RUN chown -R nextjs:nodejs /app/generated
 
 # Set environment to production
 ENV NODE_ENV=production
@@ -50,12 +55,12 @@ ENV NODE_ENV=production
 # Switch to non-root user
 USER nextjs
 
-# Expose port
-EXPOSE 3001
+# Expose port (Railway provides PORT env var, but expose for documentation)
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}/health || exit 1
 
 # Start server
 CMD ["node", "--import=tsx", "src/index.ts"]

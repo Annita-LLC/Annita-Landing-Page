@@ -20,11 +20,11 @@ const envSchema = z.object({
   HOST: z.string().default('0.0.0.0'),
 
   // Database Configuration
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.string().url().default('postgresql://localhost:5432/postgres'),
   PRISMA_ACCELERATE_URL: z.string().optional(),
 
   // Security Configuration
-  JWT_SECRET: z.string().min(32),
+  JWT_SECRET: z.string().min(32).default('insecure-default-jwt-secret-change-me-please-32chars'),
   JWT_EXPIRES_IN: z.string().default('7d'),
   // CORS defaults are restrictive. The API is stateless JSON-only with no
   // cookies/sessions, so credentials should remain `false` unless cookie
@@ -80,7 +80,7 @@ const envSchema = z.object({
   ADMIN_REPORT_TIMEZONE: z.string().default('UTC'),
   ADMIN_ALLOWED_EMAILS: z.string().default('info@an-nita.com'),
   ADMIN_IP_WHITELIST: z.string().default(''),
-  ADMIN_TOKEN_SECRET: z.string().min(16),
+  ADMIN_TOKEN_SECRET: z.string().min(16).default('insecure-default-token-secret-change'),
   ADMIN_TOKEN_ENCRYPTION_KEY: z.string().default(''),
   ADMIN_TOKEN_TTL_MINUTES: z.string().default('15'),
   ADMIN_MAX_FAILED_ATTEMPTS: z.string().default('5'),
@@ -135,6 +135,14 @@ const env = envSchema.parse({
   ADMIN_MAX_FAILED_ATTEMPTS: process.env.ADMIN_MAX_FAILED_ATTEMPTS,
   ADMIN_EMERGENCY_SHUTDOWN: process.env.ADMIN_EMERGENCY_SHUTDOWN,
 });
+
+// Warn about insecure defaults
+const requiredSecrets = ['JWT_SECRET', 'ADMIN_TOKEN_SECRET', 'DATABASE_URL'] as const;
+for (const key of requiredSecrets) {
+  if (!process.env[key]) {
+    console.warn(`[CONFIG] WARNING: ${key} not set in environment — using insecure default. Set it in Railway dashboard.`);
+  }
+}
 
 // ============================================================================
 // EXPORTED CONFIGURATION

@@ -5,6 +5,7 @@
 // ============================================================================
 
 import express from 'express';
+import os from 'os';
 import { config } from './config/index.js';
 import { logger } from './lib/logger.js';
 import { disconnectDatabase } from './lib/prisma.js';
@@ -193,14 +194,13 @@ app.get('/health', async (req, res) => {
     // Comprehensive memory analysis
     const memoryUsage = process.memoryUsage();
     const memoryPercent = (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
-    const osMemory = require('os');
-    const totalSystemMemory = osMemory.totalmem();
-    const freeSystemMemory = osMemory.freemem();
+    const totalSystemMemory = os.totalmem();
+    const freeSystemMemory = os.freemem();
     const systemMemoryPercent = ((totalSystemMemory - freeSystemMemory) / totalSystemMemory) * 100;
 
     // Detailed CPU metrics
     const cpuLoad = process.cpuUsage();
-    const cpuCores = osMemory.cpus().length;
+    const cpuCores = os.cpus().length;
     const cpuUsagePercent = (cpuLoad.user + cpuLoad.system) / 1000000; // Convert to seconds
 
     // Event loop lag detection
@@ -281,7 +281,7 @@ app.get('/health', async (req, res) => {
           systemCpuTime: `${(cpuLoad.system / 1000000).toFixed(2)}s`,
           cores: cpuCores,
           estimatedUsage: `${cpuUsagePercent.toFixed(2)}%`,
-          loadAverage: osMemory.loadavg ? osMemory.loadavg().map((l: number) => l.toFixed(2)) : 'N/A'
+          loadAverage: os.loadavg ? os.loadavg().map((l: number) => l.toFixed(2)) : 'N/A'
         },
         eventLoop: {
           lagMs: eventLoopLag.toFixed(2),
