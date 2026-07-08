@@ -1,66 +1,83 @@
 # ============================================================================
 # ANNITA LANDING PAGE SERVER - DOCKERFILE
 # ============================================================================
-# Multi-stage build for production deployment
+# Fortune 500 / Pentagon Grade Production Dockerfile
+# Based on OWASP Node.js Docker Cheat Sheet & Snyk Best Practices
 # ============================================================================
 
-# Stage 1: Dependencies
-FROM node:22-alpine AS deps
+# Use explicit image digest for deterministic builds (CIS Benchmark)
+FROM node:22.12.0-alpine@sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2 AS deps
+
+# Set working directory
 WORKDIR /app
 
-# Copy package files
+# Security: Install dumb-init for proper signal handling (CIS Benchmark)
+RUN apk add --no-cache dumb-init
+
+# Copy package files with checksum for cache busting
 COPY package*.json ./
 COPY prisma ./prisma/
 COPY prisma.config.ts ./
 
-# Install dependencies
-RUN npm ci --only=production && \
+# Install only production dependencies (OWASP/Snyk)
+# Use --omit=dev instead of deprecated --only=production
+RUN npm ci --omit=dev && \
     npx prisma generate
 
 # Stage 2: Builder
-FROM node:22-alpine AS builder
+FROM node:22.12.0-alpine@sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2 AS builder
 WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/prisma ./prisma
-COPY --from=deps /app/prisma.config.ts ./
-COPY --from=deps /app/generated ./generated
-COPY . .
-
-# Build TypeScript (optional - we use tsx in prod, but could compile)
-# For now, we'll just copy source since we use tsx runtime
-
-# Stage 3: Runner
-FROM node:22-alpine AS runner
-WORKDIR /app
-
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
 
 # Copy dependencies and generated Prisma client
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/prisma ./prisma
 COPY --from=deps /app/prisma.config.ts ./
 COPY --from=deps /app/generated ./generated
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/package*.json ./
 
-# Ensure generated dir is writable by nextjs (prisma generate in startCommand may re-run)
-RUN chown -R nextjs:nodejs /app/generated
+# Copy application source
+COPY --chown=appuser:nodejs src ./src
+COPY --chown=appuser:nodejs package*.json ./
 
-# Set environment to production
-ENV NODE_ENV=production
+# Stage 3: Runner - Minimal runtime image
+FROM node:22.12.0-alpine@sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2 AS runner
 
-# Switch to non-root user
-USER nextjs
+WORKDIR /app
 
-# Expose port (Railway provides PORT env var, but expose for documentation)
+# Security: Install dumb-init for proper signal handling (CIS Benchmark)
+RUN apk add --no-cache dumb-init
+
+# Security: Create non-root user with specific UID/GID (OWASP)
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 --ingroup nodejs --shell /sbin/nologin appuser
+
+# Security: Set ownership for all copied files (OWASP)
+COPY --from=deps --chown=appuser:nodejs /app/node_modules ./node_modules
+COPY --from=deps --chown=appuser:nodejs /app/prisma ./prisma
+COPY --from=deps --chown=appuser:nodejs /app/prisma.config.ts ./
+COPY --from=deps --chown=appuser:nodejs /app/generated ./generated
+COPY --from=builder --chown=appuser:nodejs /app/src ./src
+COPY --from=builder --chown=appuser:nodejs /app/package*.json ./
+
+# Security: Ensure proper permissions on writable directories
+RUN chown -R appuser:nodejs /app/generated /app/node_modules/.prisma
+
+# Security: Set environment variables (OWASP/Snyk)
+ENV NODE_ENV=production \
+    NODE_OPTIONS=--max-old-space-size=512 \
+    TZ=UTC
+
+# Security: Switch to non-root user (OWASP/CIS)
+USER appuser
+
+# Expose port
 EXPOSE 8080
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+# Security: Health check with proper timeout and retries (CIS Benchmark)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}/health || exit 1
+
+# Security: Use dumb-init for proper signal handling (OWASP/CIS)
+ENTRYPOINT ["dumb-init", "--"]
 
 # Start server
 CMD ["node", "--import=tsx", "src/index.ts"]

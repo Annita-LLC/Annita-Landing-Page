@@ -1,0 +1,75 @@
+# ============================================================================
+# ANNITA LANDING PAGE SERVER - DOCKERIGNORE
+# ============================================================================
+# Fortune 500 / Pentagon Grade Docker Build Context Optimization
+# ============================================================================
+
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage
+.nyc_output
+*.test.ts
+*.spec.ts
+__tests__
+__mocks__
+
+# Documentation
+README.md
+*.md
+docs
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Build artifacts
+dist
+build
+*.tsbuildinfo
+
+# Prisma (migrations are needed, but not the dev tools)
+prisma/migrations/**/migration.sql
+!prisma/migrations
+
+# Logs
+logs
+*.log
+
+# Temporary files
+tmp
+temp
+*.tmp
+
+# Railway
+railway.toml

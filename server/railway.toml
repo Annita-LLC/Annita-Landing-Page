@@ -5,9 +5,8 @@
 # ============================================================================
 
 [build]
-builder = "RAILPACK"
-# Pin Railpack version for reproducible builds
-railpackVersion = "1.0.0"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [build.env]
 # Enterprise-grade build configuration
