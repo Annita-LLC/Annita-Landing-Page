@@ -155,24 +155,213 @@ if (config.features.enableBehavioralAnalysis) {
 // Admin routes (separate from public API, with token-based authentication)
 app.use('/admin', adminRoutes);
 
-// Health check endpoint with telemetry
-app.get('/health', (_req, res) => {
-  const health = logger.getSystemHealth();
-  res.status(200).json({
-    status: health.status,
-    timestamp: new Date().toISOString(),
-    uptime: health.uptime,
-    environment: process.env.NODE_ENV,
-    requestsProcessed: health.requestsProcessed,
-    totalErrors: health.totalErrors,
-    database: {
-      status: health.database.status,
-      circuitBreakerState: health.database.circuitBreakerState,
-      failureCount: health.database.failureCount,
-      lastCheck: health.database.lastCheck
+// Health check endpoint with Fortune 500 Pentagon-grade debugging
+app.get('/health', async (req, res) => {
+  const startTime = Date.now();
+  const requestId = req.id || 'unknown';
+  const checkTimestamp = new Date().toISOString();
+  
+  logger.debug('Health check initiated', { requestId, path: req.path, timestamp: checkTimestamp });
+
+  try {
+    const health = logger.getSystemHealth();
+    const telemetry = logger.getTelemetry();
+    
+    // Perform active database connection check with detailed metrics
+    let dbCheckResult = { connected: false, responseTime: 0, error: null as string | null, queryCount: 0 };
+    try {
+      const dbStart = Date.now();
+      const { prisma } = await import('./lib/prisma.js');
+      await prisma.$queryRaw`SELECT 1 as health_check`;
+      dbCheckResult.responseTime = Date.now() - dbStart;
+      dbCheckResult.connected = true;
+      
+      // Get connection pool stats if available
+      try {
+        const poolStats = await prisma.$queryRaw`SELECT count(*) as active_connections FROM pg_stat_activity WHERE state = 'active'`;
+        dbCheckResult.queryCount = Array.isArray(poolStats) && poolStats[0] ? Number(poolStats[0].active_connections) : 0;
+      } catch {
+        // Pool stats query failed, continue without it
+      }
+      
+      logger.debug('Database health check passed', { requestId, responseTime: dbCheckResult.responseTime, activeConnections: dbCheckResult.queryCount });
+    } catch (dbError) {
+      dbCheckResult.error = dbError instanceof Error ? dbError.message : String(dbError);
+      logger.error('Database health check failed', { requestId, error: dbCheckResult.error, errorType: dbError instanceof Error ? dbError.constructor.name : 'Unknown' });
     }
-  });
+
+    // Comprehensive memory analysis
+    const memoryUsage = process.memoryUsage();
+    const memoryPercent = (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
+    const osMemory = require('os');
+    const totalSystemMemory = osMemory.totalmem();
+    const freeSystemMemory = osMemory.freemem();
+    const systemMemoryPercent = ((totalSystemMemory - freeSystemMemory) / totalSystemMemory) * 100;
+
+    // Detailed CPU metrics
+    const cpuLoad = process.cpuUsage();
+    const cpuCores = osMemory.cpus().length;
+    const cpuUsagePercent = (cpuLoad.user + cpuLoad.system) / 1000000; // Convert to seconds
+
+    // Event loop lag detection
+    let eventLoopLag = 0;
+    const eventLoopStart = process.hrtime();
+    await new Promise(resolve => setImmediate(resolve));
+    const eventLoopEnd = process.hrtime(eventLoopStart);
+    eventLoopLag = eventLoopEnd[0] * 1000 + eventLoopEnd[1] / 1000000;
+
+    // Environment configuration validation
+    const configValidation = {
+      nodeEnv: process.env.NODE_ENV || 'NOT_SET',
+      port: process.env.PORT || 'NOT_SET',
+      databaseUrlSet: !!process.env.DATABASE_URL,
+      databaseUrlLength: process.env.DATABASE_URL?.length || 0,
+      logLevel: process.env.LOG_LEVEL || 'NOT_SET',
+      corsOrigin: process.env.CORS_ORIGIN || 'NOT_SET',
+    };
+
+    // Dependency health checks
+    const dependencyChecks = {
+      prisma: { status: 'UNKNOWN', version: '7.8.0' },
+      express: { status: 'UNKNOWN', version: '4.21.2' },
+    };
+
+    try {
+      const { prisma } = await import('./lib/prisma.js');
+      dependencyChecks.prisma.status = 'OK';
+    } catch {
+      dependencyChecks.prisma.status = 'ERROR';
+    }
+
+    // Endpoint performance metrics
+    const endpointMetrics = telemetry.endpoints.map(ep => ({
+      path: ep.path,
+      method: ep.method,
+      hits: ep.hits,
+      errors: ep.errors,
+      successRate: ep.successRate.toFixed(2) + '%',
+      avgLatency: ep.avgLatency.toFixed(2) + 'ms',
+      p95Latency: ep.p95Latency.toFixed(2) + 'ms',
+      lastAccessed: ep.lastAccessed.toISOString(),
+    }));
+
+    const healthResponse = {
+      status: dbCheckResult.connected ? health.status : 'UNHEALTHY',
+      timestamp: checkTimestamp,
+      uptime: health.uptime,
+      uptimeFormatted: formatUptime(health.uptime),
+      environment: process.env.NODE_ENV,
+      requestId,
+      checks: {
+        database: {
+          status: dbCheckResult.connected ? 'UP' : 'DOWN',
+          responseTime: dbCheckResult.responseTime,
+          responseTimeFormatted: `${dbCheckResult.responseTime}ms`,
+          circuitBreakerState: health.database.circuitBreakerState,
+          failureCount: health.database.failureCount,
+          reconnectAttempts: health.database.reconnectAttempts,
+          lastCheck: health.database.lastCheck,
+          activeConnections: dbCheckResult.queryCount,
+          error: dbCheckResult.error
+        },
+        memory: {
+          heapUsed: `${(memoryUsage.heapUsed / 1024 / 1024).toFixed(2)} MB`,
+          heapTotal: `${(memoryUsage.heapTotal / 1024 / 1024).toFixed(2)} MB`,
+          rss: `${(memoryUsage.rss / 1024 / 1024).toFixed(2)} MB`,
+          heapPercent: `${memoryPercent.toFixed(2)}%`,
+          external: `${(memoryUsage.external / 1024 / 1024).toFixed(2)} MB`,
+          arrayBuffers: `${(memoryUsage.arrayBuffers / 1024 / 1024).toFixed(2)} MB`,
+          systemTotal: `${(totalSystemMemory / 1024 / 1024 / 1024).toFixed(2)} GB`,
+          systemFree: `${(freeSystemMemory / 1024 / 1024 / 1024).toFixed(2)} GB`,
+          systemUsedPercent: `${systemMemoryPercent.toFixed(2)}%`,
+          memoryPressure: systemMemoryPercent > 80 ? 'HIGH' : systemMemoryPercent > 60 ? 'MEDIUM' : 'LOW'
+        },
+        cpu: {
+          userCpuTime: `${(cpuLoad.user / 1000000).toFixed(2)}s`,
+          systemCpuTime: `${(cpuLoad.system / 1000000).toFixed(2)}s`,
+          cores: cpuCores,
+          estimatedUsage: `${cpuUsagePercent.toFixed(2)}%`,
+          loadAverage: osMemory.loadavg ? osMemory.loadavg().map((l: number) => l.toFixed(2)) : 'N/A'
+        },
+        eventLoop: {
+          lagMs: eventLoopLag.toFixed(2),
+          status: eventLoopLag > 100 ? 'SLOW' : eventLoopLag > 50 ? 'DEGRADED' : 'HEALTHY'
+        },
+        dependencies: dependencyChecks,
+        configuration: configValidation
+      },
+      metrics: {
+        requestsProcessed: health.requestsProcessed,
+        totalErrors: health.totalErrors,
+        errorRate: health.requestsProcessed > 0 ? ((health.totalErrors / health.requestsProcessed) * 100).toFixed(2) + '%' : '0%',
+        recentLogs: telemetry.recentLogs.slice(0, 5).map(log => ({
+          timestamp: log.timestamp,
+          level: log.level,
+          message: log.message.substring(0, 100)
+        }))
+      },
+      endpoints: endpointMetrics,
+      responseTime: Date.now() - startTime,
+      responseTimeFormatted: `${Date.now() - startTime}ms`
+    };
+
+    const statusCode = dbCheckResult.connected ? 200 : 503;
+    res.status(statusCode).json(healthResponse);
+    
+    logger.debug('Health check completed', { 
+      requestId, 
+      statusCode, 
+      responseTime: healthResponse.responseTime,
+      dbStatus: healthResponse.checks.database.status,
+      memoryPressure: healthResponse.checks.memory.memoryPressure,
+      eventLoopStatus: healthResponse.checks.eventLoop.status
+    });
+
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    const errorName = error instanceof Error ? error.constructor.name : 'Unknown';
+    
+    logger.error('Health check catastrophic failure', { 
+      requestId, 
+      error: errorMsg, 
+      errorName,
+      stack: errorStack,
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      memory: process.memoryUsage()
+    });
+    
+    res.status(500).json({
+      status: 'CRITICAL_FAILURE',
+      timestamp: new Date().toISOString(),
+      requestId,
+      error: errorMsg,
+      errorName,
+      responseTime: Date.now() - startTime,
+      system: {
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        platform: process.platform,
+        nodeVersion: process.version,
+        pid: process.pid
+      }
+    });
+  }
 });
+
+function formatUptime(seconds: number): string {
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor((seconds % 86400) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  const parts: string[] = [];
+  if (d > 0) parts.push(`${d}d`);
+  if (h > 0) parts.push(`${h}h`);
+  if (m > 0) parts.push(`${m}m`);
+  parts.push(`${s}s`);
+  return parts.join(' ');
+}
 
 // CSP violation reporting endpoint (DISA STIG V-214949)
 app.post('/api/security/csp-report', express.json({ type: 'application/csp-report' }), (req, res) => {

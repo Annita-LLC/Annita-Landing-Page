@@ -107,7 +107,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 };
 
 // ============================================================================
-// ERROR HANDLING MIDDLEWARE
+// ERROR HANDLING MIDDLEWARE - FORTUNE 500 PENTAGON-GRADE
 // ============================================================================
 export const errorHandler = (
   err: Error,
@@ -115,30 +115,192 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ): void => {
-  // Log full error details for debugging
-  console.error('[ERROR HANDLER] Unhandled error:', {
+  const errorTimestamp = new Date().toISOString();
+  const os = require('os');
+  
+  // Deep system context capture
+  const systemContext = {
+    timestamp: errorTimestamp,
+    uptime: process.uptime(),
+    uptimeFormatted: formatProcessUptime(process.uptime()),
+    platform: process.platform,
+    arch: process.arch,
+    nodeVersion: process.version,
+    pid: process.pid,
+    memory: process.memoryUsage(),
+    cpu: os.cpus().length,
+    loadAverage: os.loadavg(),
+    environment: process.env.NODE_ENV || 'NOT_SET'
+  };
+
+  // Deep request context capture
+  const requestContext = {
+    requestId: req.id,
+    path: req.path,
+    method: req.method,
+    url: req.url,
+    ip: req.ip,
+    ips: req.ips,
+    protocol: req.protocol,
+    secure: req.secure,
+    headers: {
+      'user-agent': req.get('user-agent'),
+      'referer': req.get('referer'),
+      'origin': req.get('origin'),
+      'accept': req.get('accept'),
+      'accept-language': req.get('accept-language'),
+      'accept-encoding': req.get('accept-encoding'),
+      'content-type': req.get('content-type'),
+      'content-length': req.get('content-length'),
+      'authorization': req.get('authorization') ? '[REDACTED]' : undefined,
+      'x-request-id': req.get('x-request-id'),
+      'x-forwarded-for': req.get('x-forwarded-for'),
+      'x-real-ip': req.get('x-real-ip'),
+      'cf-connecting-ip': req.get('cf-connecting-ip'),
+    },
+    query: Object.keys(req.query).length > 0 ? req.query : undefined,
+    bodySize: req.body ? JSON.stringify(req.body).length : 0,
+    bodyKeys: req.body ? Object.keys(req.body) : undefined,
+    cookies: Object.keys(req.cookies || {}),
+    params: req.params,
+    timing: {
+      timestamp: req.time,
+      timeElapsed: Date.now() - req.time
+    }
+  };
+
+  // Deep error analysis
+  const errorAnalysis = {
+    name: err.name,
     message: err.message,
-    stack: err.stack,
+    stack: config.env.isDevelopment ? err.stack : undefined,
+    constructor: err.constructor.name,
+    code: (err as any).code,
+    errno: (err as any).errno,
+    syscall: (err as any).syscall,
+    path: (err as any).path,
+    address: (err as any).address,
+    port: (err as any).port
+  };
+
+  // Categorize error type for monitoring and alerting
+  let errorCategory = 'UNKNOWN_ERROR';
+  let errorSeverity = 'MEDIUM';
+  let errorImpact = 'PARTIAL_OUTAGE';
+
+  if (err.name === 'ValidationError') {
+    errorCategory = 'VALIDATION_ERROR';
+    errorSeverity = 'LOW';
+    errorImpact = 'NONE';
+  } else if (err.name === 'PrismaClientKnownRequestError') {
+    errorCategory = 'DATABASE_ERROR';
+    errorSeverity = 'HIGH';
+    errorImpact = 'PARTIAL_OUTAGE';
+  } else if (err.name === 'PrismaClientInitializationError') {
+    errorCategory = 'DATABASE_INIT_ERROR';
+    errorSeverity = 'CRITICAL';
+    errorImpact = 'FULL_OUTAGE';
+  } else if (err.name === 'SyntaxError') {
+    errorCategory = 'SYNTAX_ERROR';
+    errorSeverity = 'HIGH';
+    errorImpact = 'FULL_OUTAGE';
+  } else if (err.name === 'TypeError') {
+    errorCategory = 'TYPE_ERROR';
+    errorSeverity = 'HIGH';
+    errorImpact = 'PARTIAL_OUTAGE';
+  } else if (err.name === 'ReferenceError') {
+    errorCategory = 'REFERENCE_ERROR';
+    errorSeverity = 'HIGH';
+    errorImpact = 'FULL_OUTAGE';
+  } else if (err.name === 'RangeError') {
+    errorCategory = 'RANGE_ERROR';
+    errorSeverity = 'HIGH';
+    errorImpact = 'PARTIAL_OUTAGE';
+  } else if (err.message?.includes('ECONNREFUSED')) {
+    errorCategory = 'CONNECTION_ERROR';
+    errorSeverity = 'CRITICAL';
+    errorImpact = 'FULL_OUTAGE';
+  } else if (err.message?.includes('ETIMEDOUT') || err.message?.includes('timeout')) {
+    errorCategory = 'TIMEOUT_ERROR';
+    errorSeverity = 'HIGH';
+    errorImpact = 'PARTIAL_OUTAGE';
+  } else if (err.message?.includes('ENOTFOUND')) {
+    errorCategory = 'DNS_ERROR';
+    errorSeverity = 'HIGH';
+    errorImpact = 'PARTIAL_OUTAGE';
+  } else if (err.message?.includes('EPIPE')) {
+    errorCategory = 'BROKEN_PIPE';
+    errorSeverity = 'LOW';
+    errorImpact = 'NONE';
+  }
+
+  // Complete error context
+  const errorContext = {
+    system: systemContext,
+    request: requestContext,
+    error: errorAnalysis,
+    categorization: {
+      category: errorCategory,
+      severity: errorSeverity,
+      impact: errorImpact
+    }
+  };
+
+  // Log with full context
+  console.error('[ERROR HANDLER] Pentagon-grade error analysis:', errorContext);
+  logger.error('Unhandled error - Pentagon-grade analysis', errorContext);
+
+  // Additional structured logging for monitoring systems
+  logger.error('Error metrics', {
+    requestId: req.id,
+    errorCategory,
+    errorSeverity,
+    errorImpact,
+    errorName: err.name,
+    errorMessage: err.message,
     path: req.path,
     method: req.method,
-    requestId: req.id,
-    timestamp: new Date().toISOString(),
+    ip: req.ip,
+    timestamp: errorTimestamp
   });
 
-  logger.error('Unhandled error', {
-    error: err.message,
-    stack: err.stack,
-    path: req.path,
-    method: req.method,
-    requestId: req.id,
-  });
-
-  res.status(500).json({
+  // Response with appropriate detail level based on environment
+  const responsePayload = {
     error: 'Internal server error',
     message: config.env.isDevelopment ? err.message : 'An unexpected error occurred',
     requestId: req.id,
-  });
+    timestamp: errorTimestamp,
+    errorCategory: config.env.isDevelopment ? errorCategory : undefined,
+    errorSeverity: config.env.isDevelopment ? errorSeverity : undefined,
+    errorImpact: config.env.isDevelopment ? errorImpact : undefined,
+    support: {
+      contact: 'support@an-nita.com',
+      requestId: req.id,
+      timestamp: errorTimestamp
+    }
+  };
+
+  // Set appropriate status code based on error type
+  let statusCode = 500;
+  if (errorCategory === 'VALIDATION_ERROR') statusCode = 400;
+  else if (errorCategory === 'CONNECTION_ERROR' || errorCategory === 'TIMEOUT_ERROR') statusCode = 503;
+  else if (errorCategory === 'DATABASE_ERROR') statusCode = 503;
+
+  res.status(statusCode).json(responsePayload);
 };
+
+function formatProcessUptime(seconds: number): string {
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor((seconds % 86400) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  const parts: string[] = [];
+  if (d > 0) parts.push(`${d}d`);
+  if (h > 0) parts.push(`${h}h`);
+  if (m > 0) parts.push(`${m}m`);
+  parts.push(`${s}s`);
+  return parts.join(' ');
+}
 
 // ============================================================================
 // VALIDATION REQUEST MIDDLEWARE
