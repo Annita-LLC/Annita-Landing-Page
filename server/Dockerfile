@@ -11,6 +11,7 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
+COPY prisma.config.ts ./
 
 # Install dependencies
 RUN npm ci --only=production && \
@@ -22,6 +23,7 @@ WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/prisma ./prisma
+COPY --from=deps /app/prisma.config.ts ./
 COPY . .
 
 # Build TypeScript (optional - we use tsx in prod, but could compile)
@@ -38,6 +40,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 # Copy dependencies and generated Prisma client
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/prisma ./prisma
+COPY --from=deps /app/prisma.config.ts ./
 COPY --from=builder /app/src ./src
 COPY --from=builder /app/package*.json ./
 
