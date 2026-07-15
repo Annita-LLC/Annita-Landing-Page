@@ -9,7 +9,6 @@ envoy/
 # Ignore Vercel-specific configs (Netlify has its own)
 .vercel/
 .vercelignore
-vercel.json
 
 # Ignore noise
 .git/

@@ -97,8 +97,8 @@ const nextConfig = {
       },
     ];
   },
-  // Output configuration for Docker & Netlify
-  output: 'standalone',
+  // Output configuration for Docker only — Vercel and Netlify handle their own output
+  ...(process.env.DOCKER_BUILD === 'true' ? { output: 'standalone' } : {}),
   // Security optimizations
   poweredByHeader: false,
   compress: true,

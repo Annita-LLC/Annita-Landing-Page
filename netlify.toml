@@ -8,16 +8,18 @@
 # ------------------------------------------------------------------------------
 
 [build]
-  # Next.js build command. Netlify's OpenNext adapter runs automatically.
+  # Next.js build command. Netlify's Next.js plugin handles routing.
   command = "npm run build"
-  # Directory published by Next.js (adapter handles routing).
+  # Directory published by Next.js (plugin handles routing).
   publish = ".next"
-  # Functions are auto-provisioned by the OpenNext adapter.
-  functions = ".netlify/functions"
+
+# Netlify Next.js plugin — required for proper routing and SSR
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [build.environment]
   # Pin Node.js to an LTS version matching the Dockerfile for parity.
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
   # Use npm matching the lockfile.
   NPM_FLAGS = "--legacy-peer-deps"
   # Disable Next.js telemetry in CI for reproducible, quiet builds.
