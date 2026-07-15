@@ -164,8 +164,8 @@ export const errorHandler = (
     cookies: Object.keys(req.cookies || {}),
     params: req.params,
     timing: {
-      timestamp: req.time,
-      timeElapsed: Date.now() - req.time
+      timestamp: (req as any).time,
+      timeElapsed: Date.now() - (req as any).time
     }
   };
 

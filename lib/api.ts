@@ -438,3 +438,49 @@ export async function submitPartnershipInquiry(data: PartnershipFormData): Promi
     };
   }
 }
+
+export interface DownloadNotifyFormData {
+  email: string;
+  website_url?: string;
+}
+
+/**
+ * Submit download notification signup (AnnitaPlug launch waitlist)
+ */
+export async function submitDownloadNotifyForm(data: DownloadNotifyFormData): Promise<ApiResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/download-notify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      if (response.status >= 500) {
+        return {
+          success: false,
+          message: `Server error (HTTP ${response.status}). Please try again shortly.`
+        };
+      }
+      const errRes = await response.json().catch(() => ({ message: `Request failed with status ${response.status}` }));
+      return {
+        success: false,
+        message: errRes.message || 'Signup failed. Please try again.'
+      };
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error submitting download notification form:', error);
+    const isNetworkError = error instanceof TypeError || (error as any).message?.includes('fetch') || (error as any).message?.includes('network');
+    return {
+      success: false,
+      message: isNetworkError
+        ? 'Server is unreachable. Please check your connection and try again.'
+        : 'An unexpected error occurred. Please try again later.'
+    };
+  }
+}

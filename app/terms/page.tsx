@@ -29,7 +29,7 @@ export default function TermsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 max-w-4xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -55,8 +55,8 @@ export default function TermsPage() {
       </section>
 
       {/* Content Sections */}
-      <section className="px-4 md:px-8 py-16 max-w-[1400px] mx-auto">
-        <div className="max-w-4xl mx-auto space-y-16">
+      <section className="px-4 md:px-8 py-16 max-w-[1600px] mx-auto">
+        <div className="max-w-5xl mx-auto space-y-16">
           {/* Acceptance of Terms */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -227,7 +227,7 @@ export default function TermsPage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1600px] mx-auto">
         <NewsletterSection
           title="Stay Updated on Terms & Policies"
           subtitle="Important updates to our terms of service, legal policies, and user agreements delivered to your inbox."
@@ -242,7 +242,7 @@ export default function TermsPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-4">

@@ -2,7 +2,7 @@
 
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
-import { ArrowRight, TrendingUp, Users, Globe, Award, Zap, Shield, Rocket, ChevronRight, CheckCircle2, Sparkles } from 'lucide-react'
+import { ArrowRight, TrendingUp, Users, Globe, Award, Zap, Shield, Rocket, ChevronRight, CheckCircle2, Sparkles, X, Loader2, Lock } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import Navigation from '@/components/navigation'
@@ -37,10 +37,38 @@ const homeAwards = [
     status: 'VERIFIED'
   },
   {
+    title: 'Moonshot Borderless Awards',
+    description: 'Top 15 shortlisted from 1,500+ applicants - Recognized for solutions addressing the needs of marginalized communities across borders.',
+    year: '2025',
+    category: 'Global Innovation',
+    status: 'VERIFIED'
+  },
+  {
+    title: 'African Startup Conference Grant',
+    description: 'Received a $7,000 grant on behalf of Annita at the African Startup Conference - Recognized for building scalable digital infrastructure for Africa.',
+    year: '2025',
+    category: 'Startup Excellence',
+    status: 'VERIFIED'
+  },
+  {
+    title: 'SMART Liberia Entrepreneurial Support Program',
+    description: '9th place winner - Awarded L$75,000 prize for innovation in eCommerce and fintech solutions empowering Liberian MSMEs.',
+    year: '2024',
+    category: 'National Recognition',
+    status: 'VERIFIED'
+  },
+  {
     title: 'UN STI Forum 2026',
     description: 'SDG Solutions Book Innovation #05 - Recognized globally for contributing to sustainable development goals.',
     year: '2026',
     category: 'Global Recognition',
+    status: 'VERIFIED'
+  },
+  {
+    title: 'MANSA Platform Onboarding',
+    description: 'Officially onboarded onto MANSA, Africa\'s premier due diligence repository by Afreximbank — reinforcing trust, transparency, and cross-border trade readiness.',
+    year: '2025',
+    category: 'Institutional Trust',
     status: 'VERIFIED'
   }
 ]
@@ -113,6 +141,84 @@ export default function HomePage() {
   const [glowOpacity, setGlowOpacity] = useState(0)
   const [isWiderDevice, setIsWiderDevice] = useState(false)
 
+  // Hidden admin access — 5 taps on copyright text
+  const tapCountRef = useRef(0)
+  const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [showAdminModal, setShowAdminModal] = useState(false)
+  const [adminModalStage, setAdminModalStage] = useState<'sending' | 'enter-code' | 'verifying' | 'success' | 'error'>('sending')
+  const [codeInput, setCodeInput] = useState('')
+  const [adminError, setAdminError] = useState('')
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://annita-landing-page-production.up.railway.app'
+
+  function handleCopyrightTap() {
+    tapCountRef.current += 1
+
+    if (tapTimerRef.current) clearTimeout(tapTimerRef.current)
+    tapTimerRef.current = setTimeout(() => {
+      tapCountRef.current = 0
+    }, 3000)
+
+    if (tapCountRef.current >= 5) {
+      tapCountRef.current = 0
+      if (tapTimerRef.current) clearTimeout(tapTimerRef.current)
+      setShowAdminModal(true)
+      setAdminModalStage('sending')
+      setCodeInput('')
+      setAdminError('')
+      requestAdminCode()
+    }
+  }
+
+  async function requestAdminCode() {
+    try {
+      const res = await fetch(`${API_URL}/admin/code/request`, { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) {
+        setAdminModalStage('enter-code')
+      } else {
+        setAdminModalStage('error')
+        setAdminError(data.error || 'Failed to send code')
+      }
+    } catch {
+      setAdminModalStage('error')
+      setAdminError('Network error. Please try again.')
+    }
+  }
+
+  async function verifyAdminCode(e: React.FormEvent) {
+    e.preventDefault()
+    if (!/^\d{6}$/.test(codeInput)) return
+    setAdminModalStage('verifying')
+    try {
+      const res = await fetch(`${API_URL}/admin/code/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: codeInput }),
+      })
+      const data = await res.json()
+      if (res.ok && data.redirectUrl) {
+        setAdminModalStage('success')
+        setTimeout(() => {
+          window.location.href = data.redirectUrl
+        }, 800)
+      } else {
+        setAdminModalStage('error')
+        setAdminError(data.error || 'Invalid code')
+      }
+    } catch {
+      setAdminModalStage('error')
+      setAdminError('Network error. Please try again.')
+    }
+  }
+
+  function closeAdminModal() {
+    setShowAdminModal(false)
+    setAdminModalStage('sending')
+    setCodeInput('')
+    setAdminError('')
+  }
+
   useEffect(() => {
     // Check if device is wider than tablet (md breakpoint)
     const checkDevice = () => {
@@ -159,7 +265,7 @@ export default function HomePage() {
       <section className="relative min-h-[60vh] md:min-h-screen flex items-center px-4 md:px-8 py-16 md:py-24 overflow-hidden tech-scanline">
         <div className="absolute inset-0 radial-pulse" />
 
-        <div className="relative z-10 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="relative z-10 max-w-[1600px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Hero Left Column */}
           <motion.div
@@ -255,7 +361,7 @@ export default function HomePage() {
       </section>
 
       {/* Image Slideshow Section */}
-      <section className="px-4 md:px-8 pb-8 max-w-[1400px] mx-auto -mt-4">
+      <section className="px-4 md:px-8 pb-8 max-w-[1600px] mx-auto -mt-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -266,7 +372,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-28 px-8 max-w-[1400px] mx-auto">
+      <section className="py-16 px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -319,12 +425,12 @@ export default function HomePage() {
       </section>
 
       {/* Global Expansion Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style={{ backgroundColor: 'var(--color-accent-soft)', border: '1px solid var(--color-border-accent)' }}>
             <Globe className="w-3.5 h-3.5 text-[var(--color-accent)]" />
@@ -339,12 +445,12 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-28 px-8 max-w-[1400px] mx-auto">
+      <section className="py-16 px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10"
         >
           <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-accent)] mb-4">Why Choose Us</p>
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[var(--color-text-primary)]">Built for Excellence</h2>
@@ -375,12 +481,12 @@ export default function HomePage() {
       </section>
 
       {/* Ecosystem Section */}
-      <section id="ecosystem" className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section id="ecosystem" className="py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-12"
+          className="mb-8"
         >
           <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--color-accent)', fontFamily: 'var(--font-syne)' }}>THE ANNITA PORTFOLIO</p>
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-syne)' }}>Everything Annita.</h2>
@@ -414,7 +520,7 @@ export default function HomePage() {
             <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)', lineHeight: '1.7' }}>
               Africa's first offline-first, all-in-one digital ecosystem for MSMEs — marketplace, business tools, and fintech infrastructure in one place.
             </p>
-            <Link href="/login" className="inline-flex items-center gap-2 font-semibold text-sm hover:underline group-hover:gap-3 transition-all" style={{ color: 'var(--color-accent)' }}>
+            <Link href="/ecosystem" className="inline-flex items-center gap-2 font-semibold text-sm hover:underline group-hover:gap-3 transition-all" style={{ color: 'var(--color-accent)' }}>
               Enter the Ecosystem <ChevronRight className="w-4 h-4" />
             </Link>
           </motion.div>
@@ -565,16 +671,16 @@ export default function HomePage() {
       </section>
 
       {/* Awards & Recognitions Section */}
-      <section className="py-28 px-4 md:px-8 border-t border-b border-[var(--color-border-card)]/50 bg-[var(--color-surface-card)]/10 relative overflow-hidden">
+      <section className="py-16 px-4 md:px-8 border-t border-b border-[var(--color-border-card)]/50 bg-[var(--color-surface-card)]/10 relative overflow-hidden">
         <div className="absolute inset-0 tech-grid opacity-10 pointer-events-none" />
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none bg-[var(--hero-glow)] opacity-[0.25]" />
         
-        <div className="relative z-10 max-w-[1400px] mx-auto">
+        <div className="relative z-10 max-w-[1600px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-10"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style={{ backgroundColor: 'var(--color-accent-soft)', border: '1px solid var(--color-border-accent)' }}>
               <Award className="w-3.5 h-3.5 text-[var(--color-accent)]" />
@@ -621,7 +727,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-center mt-12"
+            className="text-center mt-8"
           >
             <Link 
               href="/awards" 
@@ -635,8 +741,62 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* MANSA Platform Milestone Section */}
+      <section className="py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="relative rounded-2xl p-6 md:p-12 overflow-hidden border border-[var(--color-accent)]/20 tech-glow-card"
+          style={{ backgroundColor: 'var(--color-surface-raised)' }}
+        >
+          <div className="absolute inset-0 tech-grid opacity-[0.06] pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent)]/5 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style={{ backgroundColor: 'var(--color-accent-soft)', border: '1px solid var(--color-border-accent)' }}>
+                <Shield className="w-3.5 h-3.5 text-[var(--color-accent)]" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] font-mono">VERIFIED // AFREXIMBANK</span>
+              </div>
+              <h2 className="text-2xl md:text-4xl font-bold mb-4 font-syne text-[var(--color-text-primary)]">Annita Joins the MANSA Platform</h2>
+              <p className="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed mb-4">
+                Annita has been officially onboarded onto MANSA, Africa's premier due diligence repository, initiated by African Export-Import Bank (Afreximbank). This strategic milestone reinforces our unwavering commitment to transparency, credibility, and trust — the foundations of cross-border trade and investment.
+              </p>
+              <p className="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">
+                By meeting MANSA's rigorous due diligence standards, Annita is now positioned to unlock new trade and investment opportunities across the continent. As Africa moves toward the AfCFTA era, we remain dedicated to equipping businesses with the tools and infrastructure needed to compete globally, scale efficiently, and thrive in a borderless economy.
+              </p>
+            </div>
+            <div className="lg:col-span-4 flex flex-col gap-3">
+              <div className="p-4 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60">
+                <div className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Due Diligence Status</div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-[var(--color-accent)]" />
+                  <span className="text-sm font-bold text-[var(--color-accent)] font-mono">VERIFIED</span>
+                </div>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60">
+                <div className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Trade Readiness</div>
+                <div className="flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-[var(--color-accent)]" />
+                  <span className="text-sm font-bold text-[var(--color-accent)] font-mono">AfCFTA READY</span>
+                </div>
+              </div>
+              <div className="p-4 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60">
+                <div className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Issued By</div>
+                <div className="flex items-center gap-2">
+                  <Award className="w-5 h-5 text-[var(--color-accent)]" />
+                  <span className="text-sm font-bold text-[var(--color-text-primary)] font-mono">Afreximbank</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
       {/* Beta Signup Section */}
-      <section className="py-12 md:py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-10 md:py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -656,7 +816,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 md:py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-10 md:py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -678,7 +838,7 @@ export default function HomePage() {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link 
-                href="/login" 
+                href="/ecosystem" 
                 className="px-6 py-3 md:px-8 md:py-4 border-2 border-[var(--color-border-default)] rounded-lg font-semibold hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-all glass"
               >
                 Explore the Ecosystem
@@ -689,7 +849,7 @@ export default function HomePage() {
       </section>
 
       {/* Trust Strip */}
-      <section className="py-16 px-4 md:px-8 max-w-[1400px] mx-auto border-t border-b border-[var(--color-border-card)] bg-[var(--color-surface-card)]/25 backdrop-blur-md relative overflow-hidden">
+      <section className="py-10 px-4 md:px-8 max-w-[1600px] mx-auto border-t border-b border-[var(--color-border-card)] bg-[var(--color-surface-card)]/25 backdrop-blur-md relative overflow-hidden">
         <div className="absolute inset-0 tech-grid opacity-10 pointer-events-none" />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8 items-center justify-center relative z-10">
           
@@ -719,8 +879,8 @@ export default function HomePage() {
           </div>
 
           <div className="text-center lg:text-left p-3 rounded-lg border border-[var(--color-border-card)]/40 bg-[var(--color-surface-card)]/30 hover:border-[var(--color-accent)]/20 transition-all duration-300">
-            <div className="text-lg md:text-2xl font-bold mb-1 font-syne gradient-text">AU Fellowship</div>
-            <div className="text-[10px] md:text-xs font-mono uppercase text-[var(--color-text-tertiary)]">Top 50 African<br />Businesses</div>
+            <div className="text-lg md:text-2xl font-bold mb-1 font-syne gradient-text">MANSA</div>
+            <div className="text-[10px] md:text-xs font-mono uppercase text-[var(--color-text-tertiary)]">Afreximbank<br />Due Diligence</div>
           </div>
         </div>
       </section>
@@ -733,7 +893,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-4">
@@ -754,7 +914,7 @@ export default function HomePage() {
                 <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" /> Ecosystem
               </div>
               <div className="space-y-2">
-                <Link href="/login" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
+                <Link href="/ecosystem" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
                 <a href="https://www.an-nitapay.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AnnitaPay</a>
                 <a href="https://www.an-nita-pulse.org" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Pulse</a>
                 <a href="https://www.ezri-africa.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Ezri</a>
@@ -795,11 +955,132 @@ export default function HomePage() {
             </div>
           </div>
           <div className="pt-8 border-t border-[var(--color-border-card)]/50 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-[10px] font-mono text-[var(--color-text-muted)]">© 2026 Annita LLC. All rights reserved.</p>
+            <p
+              className="text-[10px] font-mono text-[var(--color-text-muted)]"
+              onClick={handleCopyrightTap}
+              style={{ cursor: 'default', userSelect: 'text' }}
+            >
+              © 2026 Annita LLC. All rights reserved.
+            </p>
             <p className="text-[10px] font-mono text-[var(--color-text-muted)]">Built in Liberia. Built for the World.</p>
           </div>
         </div>
       </footer>
+
+      {/* Hidden Admin Access Modal */}
+      <AnimatePresence>
+        {showAdminModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(8px)' }}
+            onClick={closeAdminModal}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-md rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-surface-card)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[var(--color-accent)]/50" />
+              <span className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-[var(--color-accent)]/50" />
+              <span className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-[var(--color-accent)]/50" />
+              <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[var(--color-accent)]/50" />
+
+              <button
+                onClick={closeAdminModal}
+                className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-[var(--color-surface-raised)] transition-colors z-10"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]" />
+              </button>
+
+              <div className="p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-soft)] border border-[var(--color-border-accent)] flex items-center justify-center">
+                    <Lock className="w-5 h-5 text-[var(--color-accent)]" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-accent)]">SYS_NODE // ADMIN_ACCESS</div>
+                    <div className="text-sm font-bold text-[var(--color-text-primary)]">Secure Admin Login</div>
+                  </div>
+                </div>
+
+                {adminModalStage === 'sending' && (
+                  <div className="flex flex-col items-center gap-4 py-8">
+                    <Loader2 className="w-8 h-8 text-[var(--color-accent)] animate-spin" />
+                    <p className="text-sm text-[var(--color-text-tertiary)]">Sending verification code to admin email…</p>
+                  </div>
+                )}
+
+                {adminModalStage === 'enter-code' && (
+                  <form onSubmit={verifyAdminCode} className="space-y-4">
+                    <p className="text-sm text-[var(--color-text-tertiary)] mb-2">
+                      A 6-digit code has been sent to the admin email. Enter it below to access the dashboard.
+                    </p>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="\d{6}"
+                      maxLength={6}
+                      required
+                      value={codeInput}
+                      onChange={(e) => setCodeInput(e.target.value.replace(/\D/g, ''))}
+                      placeholder="000000"
+                      autoFocus
+                      className="w-full px-4 py-3 rounded-xl bg-[var(--color-surface-raised)] border border-[var(--color-border-default)] text-2xl font-mono text-center tracking-[0.3em] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent)] transition-colors"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!/^\d{6}$/.test(codeInput)}
+                      className="w-full px-4 py-3 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-foreground)] text-sm font-semibold hover:brightness-110 transition-all button-glow disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Verify Code →
+                    </button>
+                  </form>
+                )}
+
+                {adminModalStage === 'verifying' && (
+                  <div className="flex flex-col items-center gap-4 py-8">
+                    <Loader2 className="w-8 h-8 text-[var(--color-accent)] animate-spin" />
+                    <p className="text-sm text-[var(--color-text-tertiary)]">Verifying code…</p>
+                  </div>
+                )}
+
+                {adminModalStage === 'success' && (
+                  <div className="flex flex-col items-center gap-4 py-8">
+                    <CheckCircle2 className="w-10 h-10 text-[var(--color-accent)]" />
+                    <p className="text-sm font-medium text-[var(--color-accent)]">Access granted. Redirecting…</p>
+                  </div>
+                )}
+
+                {adminModalStage === 'error' && (
+                  <div className="space-y-4">
+                    <div className="px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10">
+                      <p className="text-sm text-red-400">{adminError}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setAdminModalStage('sending')
+                        setAdminError('')
+                        requestAdminCode()
+                      }}
+                      className="w-full px-4 py-3 rounded-xl bg-[var(--color-surface-raised)] border border-[var(--color-border-default)] text-sm font-medium text-[var(--color-text-primary)] hover:border-[var(--color-accent)]/30 transition-colors"
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

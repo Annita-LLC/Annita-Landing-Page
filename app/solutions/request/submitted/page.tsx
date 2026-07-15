@@ -57,7 +57,7 @@ export default function SubmittedPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 max-w-4xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -174,7 +174,7 @@ export default function SubmittedPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           {/* Top Section */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Brand Section */}

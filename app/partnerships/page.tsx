@@ -95,7 +95,7 @@ export default function PartnershipsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 max-w-4xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -112,16 +112,17 @@ export default function PartnershipsPage() {
           </motion.div>
           
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
-            Partner with Annita
+            <span className="gradient-text">Partner with</span><br />
+            <span className="gradient-text">Annita</span>
           </h1>
           <p className="text-lg md:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto">
-            Build strategic partnerships to drive innovation and growth across Africa's digital landscape.
+            Build strategic partnerships to drive innovation and growth across Africa's digital landscape. Together, we can shape the continent's digital future.
           </p>
         </motion.div>
       </section>
 
       {/* Partnership Types */}
-      <section className="px-4 md:px-8 py-16 max-w-[1400px] mx-auto">
+      <section className="px-4 md:px-8 py-16 max-w-[1600px] mx-auto">
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-[var(--color-text-primary)] mb-4" style={{ fontFamily: 'var(--font-syne)' }}>
             Partnership Opportunities
@@ -138,16 +139,21 @@ export default function PartnershipsPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm hover:border-[var(--color-accent)]/30 transition-all cursor-pointer"
+              className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm hover:border-[var(--color-accent)]/30 transition-all cursor-pointer group relative overflow-hidden"
               onClick={() => setFormData({ ...formData, partnershipType: type.value })}
             >
-              <div className="flex items-start gap-4">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+              <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <div className="flex items-start gap-4 relative z-10">
                 <div className="flex-shrink-0">
-                  <type.icon className="w-9 h-9 text-[var(--color-accent)]" />
+                  <div className="w-12 h-12 rounded-xl bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 flex items-center justify-center group-hover:bg-[var(--color-accent)] transition-all">
+                    <type.icon className="w-6 h-6 text-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-colors" />
+                  </div>
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">{type.label}</h3>
-                  <p className="text-[var(--color-text-secondary)]">{type.description}</p>
+                  <p className="text-sm text-[var(--color-text-secondary)]">{type.description}</p>
                 </div>
               </div>
             </motion.div>
@@ -159,8 +165,11 @@ export default function PartnershipsPage() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="border border-[var(--color-accent)]/30 rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          className="border border-[var(--color-accent)]/30 rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm relative overflow-hidden"
         >
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--color-accent)]/5 rounded-full blur-3xl pointer-events-none" />
+          <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/50" />
+          <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/50" />
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
               <Building2 className="w-5 h-5 text-[var(--color-accent)]" />
@@ -363,7 +372,7 @@ export default function PartnershipsPage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1600px] mx-auto">
         <NewsletterSection
           title="Explore Partnership Opportunities"
           subtitle="Stay informed about new partnership programs, ecosystem integrations, and strategic collaboration opportunities with Annita."
@@ -378,7 +387,7 @@ export default function PartnershipsPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-4">

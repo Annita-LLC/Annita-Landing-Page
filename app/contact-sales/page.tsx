@@ -117,7 +117,7 @@ export default function ContactSalesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 max-w-4xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -156,7 +156,7 @@ export default function ContactSalesPage() {
       </section>
 
       {/* Contact Form Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-28 px-4 md:px-8 max-w-[1600px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Sales Form */}
           <motion.div
@@ -392,7 +392,7 @@ export default function ContactSalesPage() {
       />
 
       {/* CTA Section */}
-      <section className="py-24 px-4 md:px-8 max-w-[1400px] mx-auto text-center">
+      <section className="py-24 px-4 md:px-8 max-w-[1600px] mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -417,7 +417,7 @@ export default function ContactSalesPage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1600px] mx-auto">
         <NewsletterSection
           title="Be First to Know What We're Building"
           subtitle="Join the Annita inner circle — exclusive product previews, partnership updates, and strategic insights from the ecosystem."
@@ -432,7 +432,7 @@ export default function ContactSalesPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-4">

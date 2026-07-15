@@ -366,7 +366,7 @@ export default function RequestPage() {
 
       {/* Form Section */}
       <section className="py-12 px-4 md:px-8">
-        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative z-10">
+        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative z-10">
           
           {/* Left Column - Dynamic Step Telemetry & Context */}
           <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-36">
@@ -1364,7 +1364,7 @@ export default function RequestPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           {/* Top Section */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Brand Section */}

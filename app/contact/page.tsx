@@ -115,7 +115,7 @@ export default function ContactPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 max-w-4xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -138,34 +138,42 @@ export default function ContactPage() {
             className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 word-break"
             style={{ fontFamily: 'var(--font-syne)', fontWeight: 800 }}
           >
-            <span className="text-[var(--color-text-primary)]">Let's Build</span><br />
-            <span className="text-[var(--color-text-primary)]">Together.</span>
+            <span className="gradient-text">Let's Build</span><br />
+            <span className="gradient-text">Together.</span>
           </motion.h1>
-          
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-base md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed text-[var(--color-text-secondary)]"
           >
-            Questions? We're here to help with your project.
+            Questions, partnerships, or project inquiries — our team is ready to help you build what's next.
           </motion.p>
         </motion.div>
       </section>
 
       {/* Contact Form Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-28 px-4 md:px-8 max-w-[1600px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="rounded-2xl p-8 tech-glow-card theme-card"
+            className="rounded-2xl p-8 tech-glow-card theme-card relative overflow-hidden group"
           >
-            <h2 className="text-2xl font-bold mb-6 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
-              Send us a message
-            </h2>
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--color-accent)]/5 rounded-full blur-3xl pointer-events-none" />
+            <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="w-1.5 h-1.5 bg-[var(--color-accent)] rounded-full animate-pulse" />
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--color-text-muted)]">FORM_NODE // ENCRYPTED</span>
+              </div>
+              <h2 className="text-2xl font-bold mb-6 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
+                Send us a message
+              </h2>
             
             {submitStatus === 'success' && (
               <div className="mb-6 p-4 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]">
@@ -263,21 +271,28 @@ export default function ContactPage() {
                 )}
               </button>
             </form>
+            </div>
           </motion.div>
 
           {/* Contact Information */}
-          <div className="space-y-8">
+          <div className="space-y-6">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="rounded-2xl p-8 text-center tech-glow-card theme-card"
+              className="rounded-2xl p-8 text-center tech-glow-card theme-card group relative overflow-hidden"
             >
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-[var(--color-accent-soft)]">
-                <Mail className="w-8 h-8 text-[var(--color-accent)]" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+              <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <div className="relative z-10">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 group-hover:bg-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-all">
+                  <Mail className="w-8 h-8 text-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-colors" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Email</h3>
+                <p className="text-sm text-[var(--color-text-secondary)]">info@an-nita.com</p>
+                <div className="mt-3 text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest">Response: 1-2 Business Days</div>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Email</h3>
-              <p className="text-sm text-[var(--color-text-secondary)]">info@an-nita.com</p>
             </motion.div>
 
             <motion.div
@@ -285,13 +300,19 @@ export default function ContactPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="rounded-2xl p-8 text-center tech-glow-card theme-card"
+              className="rounded-2xl p-8 text-center tech-glow-card theme-card group relative overflow-hidden"
             >
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-[var(--color-accent-soft)]">
-                <Phone className="w-8 h-8 text-[var(--color-accent)]" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+              <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <div className="relative z-10">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 group-hover:bg-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-all">
+                  <Phone className="w-8 h-8 text-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-colors" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Phone</h3>
+                <p className="text-sm text-[var(--color-text-secondary)]">+231 77 505 7227</p>
+                <div className="mt-3 text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest">Mon-Fri: 9AM - 6PM GMT</div>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Phone</h3>
-              <p className="text-sm text-[var(--color-text-secondary)]">+231 77 505 7227</p>
             </motion.div>
 
             <motion.div
@@ -299,13 +320,19 @@ export default function ContactPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="rounded-2xl p-8 text-center tech-glow-card theme-card"
+              className="rounded-2xl p-8 text-center tech-glow-card theme-card group relative overflow-hidden"
             >
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-[var(--color-accent-soft)]">
-                <MapPin className="w-8 h-8 text-[var(--color-accent)]" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+              <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <div className="relative z-10">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 group-hover:bg-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-all">
+                  <MapPin className="w-8 h-8 text-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-colors" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Location</h3>
+                <p className="text-sm text-[var(--color-text-secondary)]">Monrovia, Liberia</p>
+                <div className="mt-3 text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest">HQ: Sinkor District</div>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Location</h3>
-              <p className="text-sm text-[var(--color-text-secondary)]">Monrovia, Liberia</p>
             </motion.div>
 
             {/* WhatsApp Contact */}
@@ -314,32 +341,37 @@ export default function ContactPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="rounded-2xl p-8 text-center tech-glow-card theme-card"
+              className="rounded-2xl p-8 text-center tech-glow-card theme-card group relative overflow-hidden"
             >
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-[var(--color-accent-soft)]">
-                <MessageSquare className="w-8 h-8 text-[var(--color-accent)]" />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>WhatsApp</h3>
-              <p className="text-sm text-[var(--color-text-secondary)] mb-4">Contact us directly</p>
-              <div className="space-y-2">
-                <a
-                  href="https://wa.me/231886213748"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-accent-soft)] text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-all text-sm w-full justify-center"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>+231 886 213 748</span>
-                </a>
-                <a
-                  href="https://wa.me/231775057227"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-accent-soft)] text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-all text-sm w-full justify-center"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>+231 77 505 7227</span>
-                </a>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+              <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <div className="relative z-10">
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 group-hover:bg-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-all">
+                  <MessageSquare className="w-8 h-8 text-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-colors" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>WhatsApp</h3>
+                <p className="text-sm text-[var(--color-text-secondary)] mb-4">Contact us directly</p>
+                <div className="space-y-2">
+                  <a
+                    href="https://wa.me/231886213748"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-accent-soft)] text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-all text-sm w-full justify-center"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>+231 886 213 748</span>
+                  </a>
+                  <a
+                    href="https://wa.me/231775057227"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-accent-soft)] text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-all text-sm w-full justify-center"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>+231 77 505 7227</span>
+                  </a>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -356,7 +388,7 @@ export default function ContactPage() {
       />
 
       {/* CTA Section */}
-      <section className="py-24 px-4 md:px-8 max-w-[1400px] mx-auto text-center">
+      <section className="py-24 px-4 md:px-8 max-w-[1600px] mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -381,7 +413,7 @@ export default function ContactPage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1600px] mx-auto">
         <NewsletterSection
           title="Stay Ahead of Africa's Digital Revolution"
           subtitle="Get ecosystem updates, product launches, and exclusive insights from Annita delivered to your inbox. No spam — ever."
@@ -396,7 +428,7 @@ export default function ContactPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-4">

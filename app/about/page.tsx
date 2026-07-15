@@ -82,7 +82,7 @@ export default function AboutPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 max-w-4xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -105,8 +105,8 @@ export default function AboutPage() {
             className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6 word-break"
             style={{ fontFamily: 'var(--font-syne)', fontWeight: 800 }}
           >
-            <span className="text-[var(--color-text-primary)]">Africa's</span><br />
-            <span className="text-[var(--color-text-primary)]">Digital Heartbeat.</span>
+            <span className="gradient-text">Africa's</span><br />
+            <span className="gradient-text">Digital Heartbeat.</span>
           </motion.h1>
           
           <motion.p
@@ -121,21 +121,26 @@ export default function AboutPage() {
       </section>
 
       {/* Mission & Vision Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-28 px-4 md:px-8 max-w-[1600px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="rounded-2xl p-8 tech-glow-card theme-card"
+            className="rounded-2xl p-8 tech-glow-card theme-card group relative overflow-hidden"
           >
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-[var(--color-accent-soft)]">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+            <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+            <div className="relative z-10">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20">
               <Target className="w-8 h-8 text-[var(--color-accent)]" />
             </div>
             <h2 className="text-3xl font-bold mb-4 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Our Mission</h2>
             <p className="text-base leading-relaxed text-[var(--color-text-secondary)]">
               To democratize access to digital infrastructure across Africa by providing MSMEs, governments, and strategic partners with affordable, scalable, and integrated technology solutions that drive economic growth and social impact.
             </p>
+            </div>
           </motion.div>
 
           <motion.div
@@ -143,21 +148,26 @@ export default function AboutPage() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="rounded-2xl p-8 tech-glow-card theme-card"
+            className="rounded-2xl p-8 tech-glow-card theme-card group relative overflow-hidden"
           >
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-[var(--color-accent-soft)]">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+            <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+            <div className="relative z-10">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20">
               <Award className="w-8 h-8 text-[var(--color-accent)]" />
             </div>
             <h2 className="text-3xl font-bold mb-4 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Our Vision</h2>
             <p className="text-base leading-relaxed text-[var(--color-text-secondary)]">
               To become Africa's leading digital ecosystem, powering the continent's transformation into a globally competitive digital economy where every business and individual has access to world-class technology.
             </p>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-28 px-8 max-w-[1400px] mx-auto">
+      <section className="py-28 px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -212,7 +222,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-28 px-4 md:px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -234,25 +244,30 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="rounded-2xl p-8 tech-glow-card theme-card"
+              className="rounded-2xl p-8 tech-glow-card theme-card group relative overflow-hidden"
             >
-              <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4 bg-[var(--color-accent-soft)]">
-                <div className="text-[var(--color-accent)]">{value.icon}</div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+              <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <div className="relative z-10">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 group-hover:bg-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-all">
+                <div className="text-[var(--color-accent)] group-hover:text-[var(--color-accent-foreground)] transition-colors">{value.icon}</div>
               </div>
               <h3 className="text-xl font-bold mb-3 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>{value.title}</h3>
               <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">{value.description}</p>
+              </div>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* Story Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-28 px-4 md:px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto"
+          className="max-w-5xl mx-auto"
         >
           <div className="text-center mb-12">
             <p className="text-xs font-bold uppercase tracking-widest mb-4 text-[var(--color-accent)]">Our Story</p>
@@ -273,13 +288,16 @@ export default function AboutPage() {
               <p>
                 But we're just getting started. Our journey continues as we expand our reach, deepen our impact, and work towards our vision of becoming Africa's digital heartbeat — powering the continent's transformation into a globally competitive digital economy.
               </p>
+              <p>
+                In a milestone that underscores our commitment to transparency and cross-border trade, Annita was officially onboarded onto MANSA, Africa's premier due diligence repository initiated by Afreximbank. By meeting MANSA's rigorous due diligence standards, Annita stands as a beacon of trust and excellence — empowering MSMEs, investors, and businesses across Africa. As the continent moves toward the AfCFTA era, this recognition positions us to unlock new trade and investment opportunities, ensuring seamless collaborations across borders.
+              </p>
             </div>
           </div>
         </motion.div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto text-center">
+      <section className="py-28 px-4 md:px-8 max-w-[1600px] mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -313,7 +331,7 @@ export default function AboutPage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1600px] mx-auto">
         <NewsletterSection
           title="Follow Africa's Innovation Story"
           subtitle="Ecosystem milestones, award announcements, and insider updates from Annita — delivered directly to your inbox."
@@ -328,7 +346,7 @@ export default function AboutPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-4">

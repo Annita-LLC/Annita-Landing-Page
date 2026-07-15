@@ -93,7 +93,7 @@ export default function WelcomeModal() {
               </Link>
 
               <Link
-                href="/login"
+                href="/ecosystem"
                 onClick={() => {
                   localStorage.setItem('welcomeModalSeen', 'true')
                   setIsOpen(false)

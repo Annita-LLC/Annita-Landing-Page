@@ -35,6 +35,7 @@ import betaSignupRoutes from './routes/beta-signup.js';
 import accountDeletionRoutes from './routes/account-deletion.js';
 import careersRoutes from './routes/careers.js';
 import partnershipsRoutes from './routes/partnerships.js';
+import downloadNotifyRoutes from './routes/download-notify.js';
 import adminRoutes from './routes/admin.js';
 import { setupSheetHeaders } from './lib/google-sheets.js';
 import { startScheduler } from './jobs/scheduler.js';
@@ -141,6 +142,7 @@ if (config.features.enableBehavioralAnalysis) {
   app.use('/api/account-deletion', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), accountDeletionRoutes);
   app.use('/api/careers', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), careersRoutes);
   app.use('/api/partnerships', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), partnershipsRoutes);
+  app.use('/api/download-notify', strictHoneypotValidation, behavioralAnalysisMiddleware(behavioralConfig), downloadNotifyRoutes);
 } else {
   // Apply honeypot validation even if behavioral analysis is disabled
   app.use('/api/contact', strictHoneypotValidation, contactRoutes);
@@ -151,6 +153,7 @@ if (config.features.enableBehavioralAnalysis) {
   app.use('/api/account-deletion', strictHoneypotValidation, accountDeletionRoutes);
   app.use('/api/careers', strictHoneypotValidation, careersRoutes);
   app.use('/api/partnerships', strictHoneypotValidation, partnershipsRoutes);
+  app.use('/api/download-notify', strictHoneypotValidation, downloadNotifyRoutes);
 }
 
 // Admin routes (separate from public API, with token-based authentication)

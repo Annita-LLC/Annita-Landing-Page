@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform, AnimatePresence, useSpring } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
-import { Menu, X, ChevronRight, Home, Wrench, Info, Trophy, type LucideIcon } from 'lucide-react'
+import { Menu, X, ChevronRight, Home, Wrench, Info, Trophy, Download, type LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ThemeToggle } from './theme-toggle'
@@ -181,7 +181,7 @@ export default function Navigation() {
           WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'none',
         }}
       >
-        <div className="flex items-center justify-between gap-4 h-full px-4 md:px-8 max-w-[1400px] mx-auto w-full">
+        <div className="flex items-center justify-between gap-4 h-full px-4 md:px-8 max-w-[1600px] mx-auto w-full">
           <Link href="/" className="flex items-center gap-3 flex-shrink-0">
             <Image
               src="/annita-real-logo.png"
@@ -217,6 +217,9 @@ export default function Navigation() {
             </button>
             <Link href="/solutions" className="text-sm font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
               Custom Solutions
+            </Link>
+            <Link href="/download" className="text-sm font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
+              Download App
             </Link>
             <button
               data-dropdown-trigger
@@ -292,7 +295,7 @@ export default function Navigation() {
             </button>
             <ThemeToggle />
             <Link
-              href="/login"
+              href="/ecosystem"
               className="px-4 py-2 bg-[var(--color-accent)] text-[var(--color-accent-foreground)] rounded-full text-sm font-semibold hover:brightness-110 transition-all button-glow"
             >
               Enter Ecosystem →
@@ -319,6 +322,9 @@ export default function Navigation() {
                 <path d="M1 2l3 3 3-3" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
+            <Link href="/download" className="text-sm font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
+              Download
+            </Link>
             <button
               data-dropdown-trigger
               className="text-sm font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-1"
@@ -375,7 +381,7 @@ export default function Navigation() {
             </button>
             <ThemeToggle />
             <Link
-              href="/login"
+              href="/ecosystem"
               className="px-4 py-2 bg-[var(--color-accent)] text-[var(--color-accent-foreground)] rounded-full text-sm font-semibold hover:brightness-110 transition-all button-glow"
             >
               Enter Ecosystem →
@@ -413,7 +419,7 @@ export default function Navigation() {
               animate={{ opacity: 1, y: 0, x: '-50%' }}
               exit={{ opacity: 0, y: -10, x: '-50%' }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[60px] left-1/2 w-[480px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
+              className="absolute top-[64px] left-1/2 w-[480px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
               style={{ backgroundColor: 'var(--color-surface-card)' }}
               onMouseLeave={() => setDropdownOpen(false)}
             >
@@ -474,7 +480,7 @@ export default function Navigation() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[60px] left-1/2 w-[320px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
+              className="absolute top-[64px] left-1/2 w-[320px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
               style={{ backgroundColor: 'var(--color-surface-card)', transform: 'translateX(-50%)' }}
               onMouseLeave={() => setContactUsDropdownOpen(false)}
             >
@@ -518,7 +524,7 @@ export default function Navigation() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[60px] left-1/2 w-[320px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
+              className="absolute top-[64px] left-1/2 w-[320px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
               style={{ backgroundColor: 'var(--color-surface-card)', transform: 'translateX(-50%)' }}
               onMouseLeave={() => setContactSalesDropdownOpen(false)}
             >
@@ -562,7 +568,7 @@ export default function Navigation() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[60px] left-1/2 w-[320px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
+              className="absolute top-[64px] left-1/2 w-[320px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
               style={{ backgroundColor: 'var(--color-surface-card)', transform: 'translateX(-50%)' }}
               onMouseLeave={() => setCareersDropdownOpen(false)}
             >
@@ -606,7 +612,7 @@ export default function Navigation() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-[60px] left-1/2 w-[320px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
+              className="absolute top-[64px] left-1/2 w-[320px] border border-[var(--color-accent)]/20 backdrop-blur-xl rounded-xl shadow-[0_20px_50px_rgba(0,194,138,0.12)] z-50 overflow-hidden tech-scanline"
               style={{ backgroundColor: 'var(--color-surface-card)', transform: 'translateX(-50%)' }}
               onMouseLeave={() => setPartnershipsDropdownOpen(false)}
             >
@@ -743,6 +749,7 @@ export default function Navigation() {
                       {([
                         { name: 'Home', href: '/', icon: Home },
                         { name: 'Custom Solutions', href: '/solutions', icon: Wrench },
+                        { name: 'Download App', href: '/download', icon: Download },
                         { name: 'About Us', href: '/about', icon: Info },
                         { name: 'Awards', href: '/awards', icon: Trophy }
                       ] as { name: string; href: string; icon: LucideIcon }[]).map((item) => (
@@ -1071,7 +1078,7 @@ export default function Navigation() {
                   {/* CTA Section */}
                   <div className="pt-4 border-t border-[var(--color-border-card)]/30">
                     <Link
-                      href="/login"
+                      href="/ecosystem"
                       onClick={() => setMobileMenuOpen(false)}
                       className="block w-full px-6 py-4 bg-[var(--color-accent)] text-[var(--color-accent-foreground)] rounded-xl font-bold text-sm hover:brightness-110 hover:shadow-lg transition-all duration-300 relative overflow-hidden group text-center"
                     >

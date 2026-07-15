@@ -109,7 +109,7 @@ export default function ImageSlideshow() {
       aria-label="Annita image slideshow"
     >
       {/* Slide images */}
-      <div className="relative w-full" style={{ aspectRatio: '16/7' }}>
+      <div className="relative w-full aspect-square sm:aspect-[16/10] md:aspect-[16/8] lg:aspect-[16/7]">
         <AnimatePresence mode="popLayout" custom={direction}>
           <motion.div
             key={current}

@@ -11,7 +11,7 @@ import crypto from 'crypto';
 import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { config } from '../config/index.js';
-import { sendAdminAccessEmail } from '../lib/email.js';
+import { sendAdminAccessEmail, sendAdminCodeEmail } from '../lib/email.js';
 
 const router = Router();
 
@@ -415,6 +415,240 @@ router.get('/maintenance/current', validateToken, async (_req: AuthenticatedRequ
   } catch (error) {
     logger.error('Failed to fetch maintenance status', error);
     res.status(500).json({ error: 'Failed to fetch maintenance status' });
+  }
+});
+
+// ============================================================================
+// IN-MEMORY ADMIN CODE STORE (6-digit code flow)
+// ============================================================================
+
+const CODE_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
+const CODE_REQUEST_COOLDOWN_MS = 60 * 1000; // 1 request per 60s per IP
+
+interface AdminCodeEntry {
+  codeHash: string;
+  ipHash: string;
+  uaHash: string;
+  fingerprint: string;
+  expiresAt: number;
+  used: boolean;
+  failedAttempts: number;
+}
+
+const adminCodeStore = new Map<string, AdminCodeEntry>();
+const codeRequestTimestamps = new Map<string, number>(); // ipHash -> last request timestamp
+
+function cleanupExpiredCodes(): void {
+  const now = Date.now();
+  for (const [key, entry] of adminCodeStore) {
+    if (now > entry.expiresAt || entry.used) {
+      adminCodeStore.delete(key);
+    }
+  }
+  for (const [ipHash, ts] of codeRequestTimestamps) {
+    if (now - ts > CODE_REQUEST_COOLDOWN_MS) {
+      codeRequestTimestamps.delete(ipHash);
+    }
+  }
+}
+
+// ============================================================================
+// ADMIN CODE ROUTES (hidden 5-tap access flow)
+// ============================================================================
+
+/**
+ * POST /admin/code/request
+ * Auto-sends a 6-digit code to the configured admin email
+ */
+router.post('/code/request', async (req: Request, res: Response) => {
+  const requestId = req.id;
+
+  // Check emergency shutdown
+  if (config.admin.emergencyShutdown) {
+    logger.logSecurityEvent('ADMIN_CODE_REQUEST_BLOCKED', {
+      ip: req.ip,
+      result: 'blocked',
+      reason: 'emergency_shutdown',
+    });
+    res.status(503).json({ error: 'Admin access temporarily disabled' });
+    return;
+  }
+
+  const ipHash = hashIp(req.ip || '');
+  const uaHash = hashUserAgent(req.get('user-agent') || '');
+  const fingerprint = generateFingerprint(req.ip || '', req.get('user-agent') || '');
+
+  cleanupExpiredCodes();
+
+  // Rate limit: 1 request per 60s per IP
+  const lastRequest = codeRequestTimestamps.get(ipHash);
+  if (lastRequest && Date.now() - lastRequest < CODE_REQUEST_COOLDOWN_MS) {
+    const waitMs = CODE_REQUEST_COOLDOWN_MS - (Date.now() - lastRequest);
+    logger.warn('Admin code request rate limited', { requestId, ipHash, waitMs });
+    res.status(429).json({ error: 'Too many requests. Please wait before trying again.', retryAfter: Math.ceil(waitMs / 1000) });
+    return;
+  }
+
+  try {
+    // Generate cryptographically random 6-digit code
+    const code = crypto.randomInt(100000, 999999).toString();
+    const codeHash = crypto.createHash('sha256').update(code).digest('hex');
+
+    // Store in memory
+    adminCodeStore.set(codeHash, {
+      codeHash,
+      ipHash,
+      uaHash,
+      fingerprint,
+      expiresAt: Date.now() + CODE_EXPIRY_MS,
+      used: false,
+      failedAttempts: 0,
+    });
+
+    codeRequestTimestamps.set(ipHash, Date.now());
+
+    // Send code via email
+    const adminEmail = process.env.ADMIN_EMAIL || 'info@an-nita.com';
+    try {
+      await sendAdminCodeEmail(adminEmail, code);
+      logger.info('Admin code email sent', { requestId, adminEmail });
+    } catch (emailError) {
+      logger.error('Failed to send admin code email', { requestId, error: emailError });
+      adminCodeStore.delete(codeHash);
+      codeRequestTimestamps.delete(ipHash);
+      res.status(500).json({ error: 'Failed to send code' });
+      return;
+    }
+
+    logger.logSecurityEvent('ADMIN_CODE_REQUESTED', {
+      ip: req.ip,
+      result: 'success',
+    });
+
+    res.json({ message: 'Code sent', expiresIn: CODE_EXPIRY_MS / 1000 });
+  } catch (error) {
+    logger.error('Failed to generate admin code', { requestId, error });
+    res.status(500).json({ error: 'Failed to generate code' });
+  }
+});
+
+/**
+ * POST /admin/code/verify
+ * Verify a 6-digit code and issue a dashboard access token
+ */
+router.post('/code/verify', async (req: Request, res: Response) => {
+  const requestId = req.id;
+  const { code } = req.body;
+
+  if (!code || typeof code !== 'string' || !/^\d{6}$/.test(code)) {
+    res.status(400).json({ error: 'Valid 6-digit code required' });
+    return;
+  }
+
+  // Check emergency shutdown
+  if (config.admin.emergencyShutdown) {
+    res.status(503).json({ error: 'Admin access temporarily disabled' });
+    return;
+  }
+
+  const ipHash = hashIp(req.ip || '');
+  const uaHash = hashUserAgent(req.get('user-agent') || '');
+  const fingerprint = generateFingerprint(req.ip || '', req.get('user-agent') || '');
+
+  cleanupExpiredCodes();
+
+  const codeHash = crypto.createHash('sha256').update(code).digest('hex');
+  const entry = adminCodeStore.get(codeHash);
+
+  if (!entry) {
+    logger.logSecurityEvent('ADMIN_CODE_VERIFY_FAILED', {
+      ip: req.ip,
+      result: 'invalid_code',
+    });
+    res.status(401).json({ error: 'Invalid or expired code' });
+    return;
+  }
+
+  if (entry.used) {
+    logger.logSecurityEvent('ADMIN_CODE_VERIFY_FAILED', {
+      ip: req.ip,
+      result: 'code_already_used',
+    });
+    res.status(401).json({ error: 'Code already used' });
+    return;
+  }
+
+  if (Date.now() > entry.expiresAt) {
+    adminCodeStore.delete(codeHash);
+    logger.logSecurityEvent('ADMIN_CODE_VERIFY_FAILED', {
+      ip: req.ip,
+      result: 'code_expired',
+    });
+    res.status(401).json({ error: 'Code expired' });
+    return;
+  }
+
+  // Validate IP binding
+  if (entry.ipHash !== ipHash) {
+    logger.logSecurityEvent('ADMIN_CODE_VERIFY_FAILED', {
+      ip: req.ip,
+      result: 'ip_mismatch',
+    });
+    res.status(401).json({ error: 'Code not valid from this network' });
+    return;
+  }
+
+  // Validate UA binding
+  if (entry.uaHash !== uaHash) {
+    logger.logSecurityEvent('ADMIN_CODE_VERIFY_FAILED', {
+      ip: req.ip,
+      result: 'ua_mismatch',
+    });
+    res.status(401).json({ error: 'Code not valid from this browser' });
+    return;
+  }
+
+  // Validate fingerprint
+  if (entry.fingerprint !== fingerprint) {
+    logger.logSecurityEvent('ADMIN_CODE_VERIFY_FAILED', {
+      ip: req.ip,
+      result: 'fingerprint_mismatch',
+    });
+    res.status(401).json({ error: 'Device verification failed' });
+    return;
+  }
+
+  // Code is valid — generate a dashboard token (reuses existing flow)
+  try {
+    entry.used = true;
+    adminCodeStore.delete(codeHash);
+
+    const token = generateSecureToken();
+    const expiresAt = new Date(Date.now() + TOKEN_EXPIRY_MS);
+    const adminEmail = process.env.ADMIN_EMAIL || 'info@an-nita.com';
+
+    await prisma.adminToken.create({
+      data: {
+        token,
+        email: adminEmail,
+        expiresAt,
+        ipHash,
+        uaHash,
+        fingerprint,
+      },
+    });
+
+    logger.logSecurityEvent('ADMIN_CODE_VERIFY_SUCCESS', {
+      email: adminEmail,
+      ip: req.ip,
+      result: 'success',
+    });
+
+    const redirectUrl = `/admin/dashboard?token=${token}`;
+    res.json({ token, redirectUrl });
+  } catch (error) {
+    logger.error('Failed to issue admin token after code verification', { requestId, error });
+    res.status(500).json({ error: 'Failed to issue access token' });
   }
 });
 

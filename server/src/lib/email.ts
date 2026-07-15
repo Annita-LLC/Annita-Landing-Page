@@ -117,167 +117,399 @@ function safeUrl(input: unknown): string {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SHARED STYLE TOKENS
+// BRAND DESIGN TOKENS (from Annita master email template — light theme)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const COLOR = {
-  bg:         '#0A0F1E',
-  surface:    '#111827',
-  card:       '#1A2436',
-  border:     '#1E3A5F',
-  accent:     '#00C28A',
-  accentDark: '#009E70',
-  accentSoft: 'rgba(0,194,138,0.10)',
-  textPrimary:'#F0F4FF',
-  textMuted:  '#8B9CB6',
-  white:      '#FFFFFF',
-  danger:     '#EF4444',
-  gold:       '#F59E0B',
+  // Template palette
+  inkNavy:      '#0B1229',
+  inkIndigo:    '#151B3B',
+  signalAmber:  '#F5A623',
+  pulseTeal:    '#17B8A6',
+  paper:        '#F7F6F2',
+  slate:        '#5B6472',
+  hairline:     '#E7E4DC',
+  bodyBg:       '#EEECE5',
+  white:        '#FFFFFF',
+  bodyText:     '#3A4150',
+  mutedText:    '#B6BCCC',
+  // Semantic aliases (for backward compat in template logic)
+  bg:           '#EEECE5',
+  surface:      '#FFFFFF',
+  card:         '#F7F6F2',
+  border:       '#E7E4DC',
+  accent:       '#F5A623',
+  accentDark:   '#E0951C',
+  accentSoft:   'rgba(245,166,35,0.10)',
+  textPrimary:  '#0B1229',
+  textMuted:    '#5B6472',
+  danger:       '#EF4444',
+  gold:         '#F5A623',
+  teal:         '#17B8A6',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BASE LAYOUT WRAPPER
+// BASE LAYOUT WRAPPER — matches Annita master email template design
 // ─────────────────────────────────────────────────────────────────────────────
 
-const wrap = (body: string, preheader = '') => `
-<!DOCTYPE html>
-<html lang="en">
+interface WrapOptions {
+  eyebrow?: string;
+  eyebrowColor?: 'amber' | 'teal' | 'red';
+  headline: string;
+  subhead?: string;
+  preheader?: string;
+}
+
+const eyebrowStyles = (color: 'amber' | 'teal' | 'red') => {
+  const map = {
+    amber: { bg: 'rgba(245,166,35,0.14)', border: 'rgba(245,166,35,0.4)', text: '#F5A623' },
+    teal:  { bg: 'rgba(23,184,166,0.14)', border: 'rgba(23,184,166,0.4)', text: '#17B8A6' },
+    red:   { bg: 'rgba(239,68,68,0.14)',  border: 'rgba(239,68,68,0.4)',  text: '#EF4444' },
+  };
+  return map[color];
+};
+
+const wrap = (body: string, opts: WrapOptions | string = '', preheaderStr = '') => {
+  // Backward compat: if opts is a string, treat it as preheader
+  const optsObj: WrapOptions = typeof opts === 'string'
+    ? { headline: '', preheader: opts }
+    : opts;
+  const preheader = preheaderStr || optsObj.preheader || '';
+  const eyebrowColor = optsObj.eyebrowColor || 'amber';
+  const es = eyebrowStyles(eyebrowColor);
+
+  const eyebrowHtml = optsObj.eyebrow ? `
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+      <tr>
+        <td style="background-color:${es.bg}; border:1px solid ${es.border}; border-radius:20px; padding:6px 14px;">
+          <span class="font-body" style="color:${es.text}; font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase;">
+            ${optsObj.eyebrow}
+          </span>
+        </td>
+      </tr>
+    </table>` : '';
+
+  const subheadHtml = optsObj.subhead ? `
+    <div class="font-body hero-subhead" style="color:#B6BCCC; font-size:15px; line-height:23px; max-width:460px;">
+      ${optsObj.subhead}
+    </div>` : '';
+
+  const headlineHtml = optsObj.headline ? `
+    <div class="font-display hero-title" style="color:#FFFFFF; font-size:30px; line-height:38px; font-weight:700; margin-bottom:12px;">
+      ${optsObj.headline}
+    </div>` : '';
+
+  return `<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="x-apple-disable-message-reformatting">
-  <!--[if !mso]><!-->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <!--<![endif]-->
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: ${COLOR.bg}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: ${COLOR.textPrimary}; -webkit-font-smoothing: antialiased; }
-    a { color: ${COLOR.accent}; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .email-body { background-color: ${COLOR.bg}; padding: 40px 20px; }
-    .email-container { max-width: 600px; margin: 0 auto; }
-    .email-header { background: linear-gradient(135deg, #0A1628 0%, #0D2040 100%); border-radius: 16px 16px 0 0; padding: 40px 40px 32px; text-align: center; border-bottom: 1px solid ${COLOR.border}; }
-    .logo-row { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .logo-dot { width: 8px; height: 8px; background: ${COLOR.accent}; border-radius: 50%; display: inline-block; }
-    .brand-name { font-size: 22px; font-weight: 800; color: ${COLOR.white}; letter-spacing: 0.04em; }
-    .brand-dot { color: ${COLOR.accent}; }
-    .badge { display: inline-block; background: rgba(0,194,138,0.12); border: 1px solid rgba(0,194,138,0.3); color: ${COLOR.accent}; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 20px; }
-    .email-title { font-size: 26px; font-weight: 800; color: ${COLOR.white}; line-height: 1.3; margin-bottom: 8px; }
-    .email-subtitle { font-size: 14px; color: ${COLOR.textMuted}; }
-    .email-content { background: ${COLOR.surface}; padding: 36px 40px; border-left: 1px solid ${COLOR.border}; border-right: 1px solid ${COLOR.border}; }
-    .greeting { font-size: 16px; font-weight: 600; color: ${COLOR.textPrimary}; margin-bottom: 12px; }
-    .body-text { font-size: 14px; color: ${COLOR.textMuted}; line-height: 1.7; margin-bottom: 16px; }
-    .divider { border: none; border-top: 1px solid ${COLOR.border}; margin: 28px 0; }
-    .field-label { font-size: 10px; font-weight: 700; color: ${COLOR.accent}; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px; font-family: monospace; }
-    .field-value { font-size: 14px; color: ${COLOR.textPrimary}; background: ${COLOR.card}; border: 1px solid ${COLOR.border}; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; word-break: break-word; }
-    .field-value-long { font-size: 13px; color: ${COLOR.textPrimary}; background: ${COLOR.card}; border: 1px solid ${COLOR.border}; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; line-height: 1.6; }
-    .grid-2 { display: table; width: 100%; margin-bottom: 0; }
-    .grid-col { display: table-cell; width: 50%; padding-right: 12px; vertical-align: top; }
-    .grid-col:last-child { padding-right: 0; }
-    .cta-btn { display: inline-block; background: ${COLOR.accent}; color: #000 !important; font-size: 14px; font-weight: 700; padding: 14px 32px; border-radius: 100px; text-decoration: none !important; margin: 8px 0; }
-    .steps-list { list-style: none; padding: 0; margin: 0 0 20px; }
-    .steps-list li { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; font-size: 14px; color: ${COLOR.textMuted}; line-height: 1.5; }
-    .step-num { flex-shrink: 0; width: 22px; height: 22px; background: ${COLOR.accentSoft}; border: 1px solid ${COLOR.accent}; border-radius: 50%; color: ${COLOR.accent}; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-    .check-icon { color: ${COLOR.accent}; font-size: 16px; flex-shrink: 0; }
-    .highlight-box { background: ${COLOR.accentSoft}; border: 1px solid rgba(0,194,138,0.25); border-radius: 10px; padding: 18px 20px; margin: 20px 0; }
-    .highlight-box p { font-size: 14px; color: ${COLOR.textPrimary}; line-height: 1.6; }
-    .queue-badge { text-align: center; padding: 24px; background: ${COLOR.card}; border: 1px solid ${COLOR.border}; border-radius: 12px; margin: 20px 0; }
-    .queue-number { font-size: 56px; font-weight: 900; color: ${COLOR.accent}; line-height: 1; }
-    .queue-label { font-size: 11px; font-weight: 700; color: ${COLOR.textMuted}; text-transform: uppercase; letter-spacing: 0.15em; margin-top: 6px; }
-    .email-footer { background: #080C18; padding: 28px 40px; border-radius: 0 0 16px 16px; border: 1px solid ${COLOR.border}; border-top: none; text-align: center; }
-    .footer-links { margin-bottom: 12px; }
-    .footer-links a { font-size: 12px; color: ${COLOR.textMuted}; margin: 0 8px; }
-    .footer-copy { font-size: 11px; color: #4A5568; margin-top: 8px; }
-    .status-dot { display: inline-block; width: 6px; height: 6px; background: ${COLOR.accent}; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
-    .admin-tag { display: inline-block; background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #F87171; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; margin-bottom: 16px; }
-    .role-badge { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
-    .role-buyer { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #93C5FD; }
-    .role-seller { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); color: #FCD34D; }
-    .role-logistics { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); color: #C4B5FD; }
-    @media only screen and (max-width: 600px) {
-      .email-header, .email-content, .email-footer { padding-left: 24px !important; padding-right: 24px !important; }
-      .email-title { font-size: 22px !important; }
-      .grid-2, .grid-col { display: block !important; width: 100% !important; padding-right: 0 !important; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<!--[if mso]>
+<noscript>
+<xml>
+<o:OfficeDocumentSettings>
+<o:PixelsPerInch>96</o:PixelsPerInch>
+</o:OfficeDocumentSettings>
+</xml>
+</noscript>
+<![endif]-->
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+  table, td { mso-table-lspace: 0pt; mso-table-lspace: 0pt; }
+  table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+  img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+  body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; background-color: #EEECE5; }
+  .font-display { font-family: 'Sora', Arial, Helvetica, sans-serif; }
+  .font-body { font-family: 'Inter', Arial, Helvetica, sans-serif; }
+  a.cta-button:hover { background-color: #E0951C !important; }
+  a.text-link { color: #17B8A6; text-decoration: none; }
+  @media only screen and (max-width: 600px) {
+    .email-container { width: 100% !important; }
+    .stack-col { display: block !important; width: 100% !important; text-align: left !important; padding-bottom: 14px !important; }
+    .fluid-padding { padding-left: 24px !important; padding-right: 24px !important; }
+    .hero-title { font-size: 24px !important; line-height: 32px !important; }
+    .bubble-max { max-width: 88% !important; }
+    .mobile-center { text-align: center !important; }
+    .cta-button { display: block !important; width: 100% !important; box-sizing: border-box !important; text-align: center !important; }
+    .cta-wrap { width: 100% !important; }
+    .otp-box { font-size: 30px !important; letter-spacing: 8px !important; padding: 18px 10px !important; }
+  }
+  @media only screen and (max-width: 480px) {
+    .outer-pad { padding: 16px 8px !important; }
+    .email-container { border-radius: 14px !important; }
+    .fluid-padding { padding-left: 20px !important; padding-right: 20px !important; }
+    .hero-title { font-size: 22px !important; line-height: 29px !important; }
+    .hero-subhead { font-size: 14px !important; line-height: 21px !important; }
+    .body-copy { font-size: 14px !important; line-height: 22px !important; }
+    .bubble-max { max-width: 92% !important; font-size: 13px !important; }
+    .secondary-block { padding: 20px 18px !important; }
+    .wordmark { font-size: 18px !important; }
+    .otp-box { font-size: 26px !important; letter-spacing: 6px !important; }
+  }
+  @media only screen and (max-width: 375px) {
+    .fluid-padding { padding-left: 16px !important; padding-right: 16px !important; }
+    .hero-title { font-size: 20px !important; line-height: 27px !important; }
+    .bubble-max { max-width: 96% !important; }
+    .cta-button { padding-left: 22px !important; padding-right: 22px !important; font-size: 13.5px !important; }
+    .footer-fine { font-size: 10.5px !important; }
+    .otp-box { font-size: 22px !important; letter-spacing: 5px !important; }
+  }
+</style>
 </head>
-<body>
-  ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>` : ''}
-  <div class="email-body">
-    <div class="email-container">
-      ${body}
-      <div style="height:32px;"></div>
-    </div>
-  </div>
+<body style="margin:0; padding:0; background-color:#EEECE5;">
+
+  ${preheader ? `<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#EEECE5;">
+    ${preheader}
+    &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+  </div>` : ''}
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#EEECE5;">
+    <tr>
+      <td align="center" class="outer-pad" style="padding: 32px 16px;">
+
+        <table role="presentation" class="email-container" width="600" cellpadding="0" cellspacing="0" style="width:600px; max-width:600px; background-color:#FFFFFF; border-radius:20px; overflow:hidden; box-shadow: 0 2px 24px rgba(11,18,41,0.06);">
+
+          <!-- ============= HEADER / WORDMARK ============= -->
+          <tr>
+            <td style="background-color:#0B1229; padding: 28px 40px;" class="fluid-padding">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="left" valign="middle">
+                    <span class="font-display wordmark" style="color:#FFFFFF; font-size:20px; font-weight:800; letter-spacing:0.2px;">
+                      Annita<span style="color:#F5A623;">.</span>
+                    </span>
+                    <br>
+                    <span class="font-body" style="color:#8B93A7; font-size:11px; letter-spacing:1.6px; text-transform:uppercase;">
+                      Africa's All-in-One Digital Ecosystem
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          ${headlineHtml || eyebrowHtml ? `<!-- ============= HERO ============= -->
+          <tr>
+            <td style="background-color:#151B3B; background-image:linear-gradient(135deg,#151B3B 0%,#0B1229 100%); padding: 44px 40px 40px 40px;" class="fluid-padding">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="left">
+                    ${eyebrowHtml}
+                    ${headlineHtml}
+                    ${subheadHtml}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>` : ''}
+
+          <!-- ============= BODY ============= -->
+          ${body}
+
+          <!-- ============= FOOTER ============= -->
+          <tr>
+            <td align="center" style="background-color:#FFFFFF; padding: 32px 40px 36px 40px;" class="fluid-padding">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom:14px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="64" height="64" align="center" valign="middle"
+                            style="width:64px; height:64px; border-radius:50%; background-color:#0B1229; border:2px solid #F5A623; overflow:hidden; mso-padding-alt:0;">
+                          <!--[if !mso]><!-->
+                          <img src="https://an-nita.com/Annita-Logo.jpg" width="64" height="64" alt="Annita"
+                               style="display:block; width:64px; height:64px; border-radius:50%; object-fit:cover;">
+                          <!--<![endif]-->
+                          <!--[if mso]>
+                          <span class="font-display" style="color:#F5A623; font-size:20px; font-weight:800; line-height:64px;">A</span>
+                          <![endif]-->
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <span class="font-display" style="color:#0B1229; font-size:14px; font-weight:700;">
+                      Annita<span style="color:#F5A623;">.</span>
+                    </span>
+                    <p class="font-body" style="color:#8B93A7; font-size:12px; line-height:18px; margin:6px 0 0 0; font-style:italic;">
+                      Annita is Africa's first all-in-one digital ecosystem, integrating e-commerce, fintech, AI, communication, marketing, logistics, and more into a single, connected system.
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-top:14px;">
+                    <p class="font-body footer-fine" style="color:#5B6472; font-size:12px; line-height:20px; margin:0;">
+                      Monrovia, Liberia<br>
+                      <a href="tel:+2317755057227" class="text-link" style="color:#5B6472;">+231 77 505 7227</a>
+                      &nbsp;&middot;&nbsp;
+                      <a href="mailto:info@an-nita.com" class="text-link" style="color:#5B6472;">info@an-nita.com</a>
+                      <br>
+                      <a href="https://www.an-nita.com" class="text-link" style="color:#17B8A6; font-weight:600;">www.an-nita.com</a>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-top:18px;">
+                    <p class="font-body footer-fine" style="color:#B0B5C1; font-size:11px; line-height:17px; margin:0;">
+                      You're receiving this because you're connected to Annita. &nbsp;
+                      <a href="#" class="text-link" style="color:#8B93A7;">Unsubscribe</a> &nbsp;&middot;&nbsp;
+                      <a href="#" class="text-link" style="color:#8B93A7;">Manage preferences</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>`;
+};
 
-const footer = () => `
-<div class="email-footer">
-  <div class="footer-links">
-    <a href="https://an-nita.com">Website</a>
-    <a href="https://an-nita.com/about">About</a>
-    <a href="https://an-nita.com/contact">Contact</a>
-  </div>
-  <p class="footer-copy"><span class="status-dot"></span>© ${new Date().getFullYear()} Annita LLC · Built in Liberia. Built for the World.</p>
-  <p class="footer-copy" style="margin-top:4px;">Monrovia, Liberia · +231 77 505 7227 · info@an-nita.com</p>
-</div>`;
+// ─────────────────────────────────────────────────────────────────────────────
+// REUSABLE BODY COMPONENTS (matching the template design system)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** White body content section */
+const bodySection = (content: string) => `
+<tr>
+  <td style="background-color:#FFFFFF; padding: 20px 40px 8px 40px;" class="fluid-padding">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="left">
+          ${content}
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>`;
+
+/** CTA button */
+const ctaButton = (href: string, label: string) => `
+<tr>
+  <td align="center" style="background-color:#FFFFFF; padding: 24px 40px 8px 40px;" class="fluid-padding">
+    <table role="presentation" class="cta-wrap" cellpadding="0" cellspacing="0" style="width:auto;">
+      <tr>
+        <td align="center" style="border-radius:28px; background-color:#F5A623;">
+          <a href="${safeUrl(href)}" class="cta-button font-body" target="_blank"
+             style="display:inline-block; padding:14px 34px; font-size:14.5px; font-weight:700; color:#0B1229; text-decoration:none; border-radius:28px; letter-spacing:0.2px;">
+            ${label} &nbsp;&rarr;
+          </a>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>`;
+
+/** Divider line */
+const divider = () => `
+<tr>
+  <td style="padding: 0 40px;" class="fluid-padding">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="border-top:1px solid #E7E4DC; font-size:0; line-height:0;">&nbsp;</td></tr>
+    </table>
+  </td>
+</tr>`;
+
+/** Secondary block (paper background, for details/highlights) */
+const secondaryBlock = (content: string) => `
+<tr>
+  <td style="background-color:#FFFFFF; padding: 32px 40px 40px 40px;" class="fluid-padding">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F6F2; border-radius:14px;">
+      <tr>
+        <td class="secondary-block" style="padding: 24px 26px;">
+          ${content}
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>`;
+
+/** Body copy paragraph */
+const p = (text: string, extraStyle = '') =>
+  `<p class="font-body body-copy" style="color:#3A4150; font-size:15px; line-height:24px; margin:0 0 16px 0; ${extraStyle}">${text}</p>`;
+
+/** Greeting line */
+const greeting = (text: string, color = '#3A4150') =>
+  `<p class="font-body body-copy" style="color:${color}; font-size:15px; line-height:24px; margin:0 0 16px 0;">${text}</p>`;
+
+/** Detail row for secondary blocks */
+const detailRow = (label: string, value: string) => `
+<tr>
+  <td class="font-body" style="color:#5B6472; font-size:13.5px; padding-bottom:8px;">${label}</td>
+  <td class="font-body" align="right" style="color:#0B1229; font-size:13.5px; font-weight:600; padding-bottom:8px;">${value}</td>
+</tr>`;
+
+/** Detail section header */
+const detailHeader = (text: string) => `
+<tr>
+  <td style="padding-bottom:14px; border-bottom:1px solid #E7E4DC;">
+    <span class="font-display" style="color:#0B1229; font-size:13px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase;">
+      ${text}
+    </span>
+  </td>
+</tr>`;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ① NEWSLETTER TEMPLATES
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const newsletterConfirmationTemplate = (email: string) => wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="badge">Newsletter Confirmed</div>
-  <h1 class="email-title">Welcome to the Inner Circle 🎉</h1>
-  <p class="email-subtitle">You're now part of Africa's most innovative ecosystem</p>
-</div>
-<div class="email-content">
-  <p class="greeting">You're officially subscribed!</p>
-  <p class="body-text">
-    Thank you for joining the Annita newsletter. You'll be among the first to receive exclusive updates, product launches, ecosystem milestones, and insights from Africa's most ambitious digital infrastructure company.
-  </p>
-  <div class="highlight-box">
-    <p>📬 Subscribed as: <strong style="color:${COLOR.accent};">${escapeHtml(email)}</strong></p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">What's coming your way:</p>
-  <ul class="steps-list">
-    <li><span class="check-icon">✦</span> <span>Ecosystem milestones &amp; product launch announcements</span></li>
-    <li><span class="check-icon">✦</span> <span>Partnership news across Africa and globally</span></li>
-    <li><span class="check-icon">✦</span> <span>Exclusive beta access &amp; early invitations</span></li>
-    <li><span class="check-icon">✦</span> <span>Insights from Annita's tech &amp; innovation team</span></li>
-  </ul>
-  <hr class="divider">
-  <div style="text-align:center;">
-    <a href="https://an-nita.com" class="cta-btn">Explore Annita →</a>
-  </div>
-</div>
-${footer()}`,
-'You\'re subscribed to the Annita newsletter — here\'s what to expect.');
+export const newsletterConfirmationTemplate = (email: string) => wrap(
+  `${bodySection(`
+    ${greeting("You're officially subscribed!")}
+    ${p(`Thank you for joining the Annita newsletter. You'll be among the first to receive exclusive updates, product launches, ecosystem milestones, and insights from Africa's most ambitious digital infrastructure company.`)}
+  `)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${detailHeader('Subscription Details')}
+      <tr><td style="padding-top:14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Subscribed as', escapeHtml(email))}
+          ${detailRow('Subscribed at', new Date().toUTCString())}
+        </table>
+      </td></tr>
+    </table>
+  `)}
+  ${bodySection(`
+    ${p(`<strong style="color:#0B1229;">What's coming your way:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+    ${p('• Ecosystem milestones &amp; product launch announcements')}
+    ${p('• Partnership news across Africa and globally')}
+    ${p('• Exclusive beta access &amp; early invitations')}
+    ${p('• Insights from Annita\'s tech &amp; innovation team', 'margin:0;')}
+  `)}
+  ${ctaButton('https://an-nita.com', 'Explore Annita')}`,
+  { eyebrow: 'Subscribed', eyebrowColor: 'teal', headline: "You're on the list", subhead: "You'll now get Annita news and updates in your inbox.", preheader: "You're subscribed to the Annita newsletter — here's what to expect." }
+);
 
-export const newsletterAdminNoticeTemplate = (email: string) => wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="admin-tag">Admin Notification</div>
-  <h1 class="email-title">New Newsletter Subscriber</h1>
-  <p class="email-subtitle">Annita Newsletter System</p>
-</div>
-<div class="email-content">
-  <div class="field-label">Subscriber Email</div>
-  <div class="field-value">${escapeHtml(email)}</div>
-  <div class="field-label">Subscribed At</div>
-  <div class="field-value">${new Date().toUTCString()}</div>
-</div>
-${footer()}`);
+export const newsletterAdminNoticeTemplate = (email: string) => wrap(
+  `${bodySection(`
+    ${greeting('New subscriber registered.')}
+    ${p(`A new user has subscribed to the Annita newsletter.`)}
+  `)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${detailHeader('Subscriber Details')}
+      <tr><td style="padding-top:14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Email', escapeHtml(email))}
+          ${detailRow('Subscribed at', new Date().toUTCString())}
+        </table>
+      </td></tr>
+    </table>
+  `)}`,
+  { eyebrow: 'Admin Notification', eyebrowColor: 'red', headline: 'New Newsletter Subscriber', subhead: 'Annita Newsletter System' }
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ② CONTACT FORM TEMPLATES
@@ -285,63 +517,48 @@ ${footer()}`);
 
 export const contactFormAdminTemplate = (data: {
   name: string; email: string; phone?: string; subject?: string; message: string;
-}) => wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="admin-tag">Admin · New Contact</div>
-  <h1 class="email-title">📩 New Contact Form Submission</h1>
-  <p class="email-subtitle">Annita Landing Page · Contact Form</p>
-</div>
-<div class="email-content">
-  <div class="grid-2">
-    <div class="grid-col">
-      <div class="field-label">Name</div>
-      <div class="field-value">${escapeHtml(data.name)}</div>
-    </div>
-    <div class="grid-col">
-      <div class="field-label">Email</div>
-      <div class="field-value"><a href="mailto:${safeUrl(data.email)}">${escapeHtml(data.email)}</a></div>
-    </div>
-  </div>
-  ${data.phone ? `<div class="field-label">Phone</div><div class="field-value">${escapeHtml(data.phone)}</div>` : ''}
-  ${data.subject ? `<div class="field-label">Subject</div><div class="field-value">${escapeHtml(data.subject)}</div>` : ''}
-  <div class="field-label">Message</div>
-  <div class="field-value-long">${escapeHtmlMultiline(data.message)}</div>
-  <div class="field-label">Received At</div>
-  <div class="field-value">${new Date().toUTCString()}</div>
-</div>
-${footer()}`);
+}) => wrap(
+  `${bodySection(`
+    ${greeting('A new contact form submission has been received.')}
+  `)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${detailHeader('Submission Details')}
+      <tr><td style="padding-top:14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Name', escapeHtml(data.name))}
+          ${detailRow('Email', `<a href="mailto:${safeUrl(data.email)}" class="text-link" style="color:#17B8A6;">${escapeHtml(data.email)}</a>`)}
+          ${data.phone ? detailRow('Phone', escapeHtml(data.phone)) : ''}
+          ${data.subject ? detailRow('Subject', escapeHtml(data.subject)) : ''}
+          ${detailRow('Received at', new Date().toUTCString())}
+        </table>
+      </td></tr>
+      <tr><td style="padding-top:14px;border-top:1px solid #E7E4DC;">
+        <span class="font-display" style="color:#0B1229;font-size:13px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;">Message</span>
+        <p class="font-body" style="color:#3A4150;font-size:14px;line-height:22px;margin-top:8px;">${escapeHtmlMultiline(data.message)}</p>
+      </td></tr>
+    </table>
+  `)}`,
+  { eyebrow: 'Admin · New Contact', eyebrowColor: 'red', headline: 'New Contact Form Submission', subhead: 'Annita Landing Page · Contact Form' }
+);
 
-export const contactFormConfirmationTemplate = (data: { name: string }) => wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="badge">Message Received</div>
-  <h1 class="email-title">We got your message ✅</h1>
-  <p class="email-subtitle">Thank you for reaching out to Annita LLC</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hi ${escapeHtml(data.name)},</p>
-  <p class="body-text">
-    Thank you for contacting Annita LLC. We've received your message and our team will be in touch with you shortly.
-  </p>
-  <div class="highlight-box">
-    <p>⏱️ <strong>Expected response time: 1–2 business days</strong></p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">What happens next:</p>
-  <ul class="steps-list">
-    <li><span class="step-num">1</span><span>Our team reviews your inquiry</span></li>
-    <li><span class="step-num">2</span><span>We'll respond via email or phone</span></li>
-    <li><span class="step-num">3</span><span>If needed, we'll schedule a consultation call</span></li>
-  </ul>
-  <p class="body-text">For urgent matters, call us at <strong>+231 77 505 7227</strong>.</p>
-  <hr class="divider">
-  <div style="text-align:center;">
-    <a href="https://an-nita.com" class="cta-btn">Explore Annita →</a>
-  </div>
-</div>
-${footer()}`,
-`Hi ${escapeHtml(data.name)}, we've received your message and will respond within 1–2 business days.`);
+export const contactFormConfirmationTemplate = (data: { name: string }) => wrap(
+  `${bodySection(`
+    ${greeting(`Hi ${escapeHtml(data.name)},`)}
+    ${p(`Thank you for contacting Annita. We've received your message and our team will be in touch with you shortly.`)}
+    ${p(`<strong>Expected response time: 1–2 business days</strong>`, 'font-size:13px;')}
+  `)}
+  ${divider()}
+  ${bodySection(`
+    ${p(`<strong style="color:#0B1229;">What happens next:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+    ${p('1. Our team reviews your inquiry')}
+    ${p('2. We\'ll respond via email or phone')}
+    ${p('3. If needed, we\'ll schedule a consultation call', 'margin:0;')}
+    ${p(`For urgent matters, call us at <strong>+231 77 505 7227</strong>.`, 'margin-top:16px;')}
+  `)}
+  ${ctaButton('https://an-nita.com', 'Explore Annita')}`,
+  { eyebrow: 'Message Received', eyebrowColor: 'teal', headline: "We got your message", subhead: 'Thank you for reaching out to Annita', preheader: `Hi ${escapeHtml(data.name)}, we've received your message and will respond within 1–2 business days.` }
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ③ CONTACT SALES TEMPLATES
@@ -350,73 +567,48 @@ ${footer()}`,
 export const salesInquiryAdminTemplate = (data: {
   name: string; email: string; phone?: string; companyName: string;
   projectDescription: string; budget: string;
-}) => wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="admin-tag">Admin · Sales Inquiry</div>
-  <h1 class="email-title">💼 New Sales Inquiry</h1>
-  <p class="email-subtitle">Annita Enterprise Solutions</p>
-</div>
-<div class="email-content">
-  <div class="grid-2">
-    <div class="grid-col">
-      <div class="field-label">Name</div>
-      <div class="field-value">${escapeHtml(data.name)}</div>
-    </div>
-    <div class="grid-col">
-      <div class="field-label">Company</div>
-      <div class="field-value">${escapeHtml(data.companyName)}</div>
-    </div>
-  </div>
-  <div class="grid-2">
-    <div class="grid-col">
-      <div class="field-label">Email</div>
-      <div class="field-value"><a href="mailto:${safeUrl(data.email)}">${escapeHtml(data.email)}</a></div>
-    </div>
-    <div class="grid-col">
-      ${data.phone ? `<div class="field-label">Phone</div><div class="field-value">${escapeHtml(data.phone)}</div>` : ''}
-    </div>
-  </div>
-  <div class="field-label">Budget Range</div>
-  <div class="field-value">${escapeHtml(data.budget)}</div>
-  <div class="field-label">Project Description</div>
-  <div class="field-value-long">${escapeHtmlMultiline(data.projectDescription)}</div>
-  <div class="field-label">Received At</div>
-  <div class="field-value">${new Date().toUTCString()}</div>
-</div>
-${footer()}`);
+}) => wrap(
+  `${bodySection(`${greeting('A new sales inquiry has been received.')}`)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${detailHeader('Inquiry Details')}
+      <tr><td style="padding-top:14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Name', escapeHtml(data.name))}
+          ${detailRow('Company', escapeHtml(data.companyName))}
+          ${detailRow('Email', `<a href="mailto:${safeUrl(data.email)}" class="text-link" style="color:#17B8A6;">${escapeHtml(data.email)}</a>`)}
+          ${data.phone ? detailRow('Phone', escapeHtml(data.phone)) : ''}
+          ${detailRow('Budget range', escapeHtml(data.budget))}
+          ${detailRow('Received at', new Date().toUTCString())}
+        </table>
+      </td></tr>
+      <tr><td style="padding-top:14px;border-top:1px solid #E7E4DC;">
+        <span class="font-display" style="color:#0B1229;font-size:13px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;">Project Description</span>
+        <p class="font-body" style="color:#3A4150;font-size:14px;line-height:22px;margin-top:8px;">${escapeHtmlMultiline(data.projectDescription)}</p>
+      </td></tr>
+    </table>
+  `)}`,
+  { eyebrow: 'Admin · Sales Inquiry', eyebrowColor: 'red', headline: 'New Sales Inquiry', subhead: 'Annita Enterprise Solutions' }
+);
 
-export const salesInquiryConfirmationTemplate = (data: { name: string; companyName: string }) => wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="badge">Sales Inquiry Received</div>
-  <h1 class="email-title">Your inquiry is with our team ✅</h1>
-  <p class="email-subtitle">Annita Enterprise Solutions</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hi ${escapeHtml(data.name)},</p>
-  <p class="body-text">
-    Thank you for your interest in Annita's enterprise solutions. We've received your inquiry from <strong>${escapeHtml(data.companyName)}</strong> and our sales team will be in touch promptly.
-  </p>
-  <div class="highlight-box">
-    <p>⏱️ <strong>Our sales team responds within 1 business day.</strong></p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">Your next steps:</p>
-  <ul class="steps-list">
-    <li><span class="step-num">1</span><span>Our enterprise team reviews your project requirements</span></li>
-    <li><span class="step-num">2</span><span>A senior solutions advisor contacts you within 1 business day</span></li>
-    <li><span class="step-num">3</span><span>We schedule a detailed discovery &amp; consultation call</span></li>
-    <li><span class="step-num">4</span><span>You receive a customised proposal &amp; pricing</span></li>
-  </ul>
-  <p class="body-text">For urgent enterprise matters: <strong>sales@an-nita.com</strong> · <strong>+231 77 505 7227</strong></p>
-  <hr class="divider">
-  <div style="text-align:center;">
-    <a href="https://an-nita.com/solutions" class="cta-btn">View Our Solutions →</a>
-  </div>
-</div>
-${footer()}`,
-`Hi ${escapeHtml(data.name)}, your sales inquiry for ${escapeHtml(data.companyName)} has been received.`);
+export const salesInquiryConfirmationTemplate = (data: { name: string; companyName: string }) => wrap(
+  `${bodySection(`
+    ${greeting(`Hi ${escapeHtml(data.name)},`)}
+    ${p(`Thank you for your interest in Annita's enterprise solutions. We've received your inquiry from <strong>${escapeHtml(data.companyName)}</strong> and our sales team will be in touch promptly.`)}
+    ${p(`<strong>Our sales team responds within 1 business day.</strong>`, 'font-size:13px;')}
+  `)}
+  ${divider()}
+  ${bodySection(`
+    ${p(`<strong style="color:#0B1229;">Your next steps:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+    ${p('1. Our enterprise team reviews your project requirements')}
+    ${p('2. A senior solutions advisor contacts you within 1 business day')}
+    ${p('3. We schedule a detailed discovery &amp; consultation call')}
+    ${p('4. You receive a customised proposal &amp; pricing', 'margin:0;')}
+    ${p(`For urgent enterprise matters: <strong>sales@an-nita.com</strong> · <strong>+231 77 505 7227</strong>`, 'margin-top:16px;')}
+  `)}
+  ${ctaButton('https://an-nita.com/solutions', 'View Our Solutions')}`,
+  { eyebrow: 'Sales Inquiry Received', eyebrowColor: 'teal', headline: 'Your inquiry is with our team', subhead: 'Annita Enterprise Solutions', preheader: `Hi ${escapeHtml(data.name)}, your sales inquiry for ${escapeHtml(data.companyName)} has been received.` }
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ④ SOLUTIONS REQUEST TEMPLATES
@@ -426,86 +618,51 @@ export const solutionsRequestAdminTemplate = (data: {
   fullName: string; email: string; phone: string; organization: string;
   projectName: string; projectSummary: string; solutionTypes: string[];
   budget: string; timeline: string;
-}) => wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="admin-tag">Admin · Solutions Request</div>
-  <h1 class="email-title">🚀 New Custom Solutions Request</h1>
-  <p class="email-subtitle">Annita Custom Solutions Pipeline</p>
-</div>
-<div class="email-content">
-  <div class="grid-2">
-    <div class="grid-col">
-      <div class="field-label">Full Name</div>
-      <div class="field-value">${escapeHtml(data.fullName)}</div>
-    </div>
-    <div class="grid-col">
-      <div class="field-label">Organization</div>
-      <div class="field-value">${escapeHtml(data.organization)}</div>
-    </div>
-  </div>
-  <div class="grid-2">
-    <div class="grid-col">
-      <div class="field-label">Email</div>
-      <div class="field-value"><a href="mailto:${safeUrl(data.email)}">${escapeHtml(data.email)}</a></div>
-    </div>
-    <div class="grid-col">
-      <div class="field-label">Phone</div>
-      <div class="field-value">${escapeHtml(data.phone)}</div>
-    </div>
-  </div>
-  <div class="field-label">Project Name</div>
-  <div class="field-value">${escapeHtml(data.projectName)}</div>
-  <div class="field-label">Solution Types</div>
-  <div class="field-value">${escapeHtml(data.solutionTypes.join(' · '))}</div>
-  <div class="grid-2">
-    <div class="grid-col">
-      <div class="field-label">Budget</div>
-      <div class="field-value">${escapeHtml(data.budget)}</div>
-    </div>
-    <div class="grid-col">
-      <div class="field-label">Timeline</div>
-      <div class="field-value">${escapeHtml(data.timeline)}</div>
-    </div>
-  </div>
-  <div class="field-label">Project Summary</div>
-  <div class="field-value-long">${escapeHtmlMultiline(data.projectSummary)}</div>
-  <div class="field-label">Received At</div>
-  <div class="field-value">${new Date().toUTCString()}</div>
-</div>
-${footer()}`);
+}) => wrap(
+  `${bodySection(`${greeting('A new custom solutions request has been received.')}`)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${detailHeader('Project Details')}
+      <tr><td style="padding-top:14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Full name', escapeHtml(data.fullName))}
+          ${detailRow('Organization', escapeHtml(data.organization))}
+          ${detailRow('Email', `<a href="mailto:${safeUrl(data.email)}" class="text-link" style="color:#17B8A6;">${escapeHtml(data.email)}</a>`)}
+          ${detailRow('Phone', escapeHtml(data.phone))}
+          ${detailRow('Project name', escapeHtml(data.projectName))}
+          ${detailRow('Solution types', escapeHtml(data.solutionTypes.join(' · ')))}
+          ${detailRow('Budget', escapeHtml(data.budget))}
+          ${detailRow('Timeline', escapeHtml(data.timeline))}
+          ${detailRow('Received at', new Date().toUTCString())}
+        </table>
+      </td></tr>
+      <tr><td style="padding-top:14px;border-top:1px solid #E7E4DC;">
+        <span class="font-display" style="color:#0B1229;font-size:13px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;">Project Summary</span>
+        <p class="font-body" style="color:#3A4150;font-size:14px;line-height:22px;margin-top:8px;">${escapeHtmlMultiline(data.projectSummary)}</p>
+      </td></tr>
+    </table>
+  `)}`,
+  { eyebrow: 'Admin · Solutions Request', eyebrowColor: 'red', headline: 'New Custom Solutions Request', subhead: 'Annita Custom Solutions Pipeline' }
+);
 
-export const solutionsRequestConfirmationTemplate = (data: { name: string; projectName: string }) => wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="badge">Solutions Request Received</div>
-  <h1 class="email-title">Your project is in our hands ✅</h1>
-  <p class="email-subtitle">Annita Custom Solutions</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hi ${escapeHtml(data.name)},</p>
-  <p class="body-text">
-    Thank you for submitting your solutions request for <strong>"${escapeHtml(data.projectName)}"</strong>. Our technical team has received all your project details and will begin reviewing them immediately.
-  </p>
-  <div class="highlight-box">
-    <p>⏱️ <strong>Our solutions team will contact you within 1–2 business days.</strong></p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">Your build journey begins:</p>
-  <ul class="steps-list">
-    <li><span class="step-num">1</span><span>Technical team reviews your full project requirements</span></li>
-    <li><span class="step-num">2</span><span>We schedule a technical discovery &amp; scoping call</span></li>
-    <li><span class="step-num">3</span><span>You receive a detailed proposal, architecture plan &amp; timeline</span></li>
-    <li><span class="step-num">4</span><span>Development begins on your custom-built solution</span></li>
-  </ul>
-  <p class="body-text">For urgent project inquiries: <strong>solutions@an-nita.com</strong></p>
-  <hr class="divider">
-  <div style="text-align:center;">
-    <a href="https://an-nita.com/solutions" class="cta-btn">View Our Solutions →</a>
-  </div>
-</div>
-${footer()}`,
-`Hi ${escapeHtml(data.name)}, your custom solutions request for "${escapeHtml(data.projectName)}" has been received.`);
+export const solutionsRequestConfirmationTemplate = (data: { name: string; projectName: string }) => wrap(
+  `${bodySection(`
+    ${greeting(`Hi ${escapeHtml(data.name)},`)}
+    ${p(`Thank you for submitting your solutions request for <strong>"${escapeHtml(data.projectName)}"</strong>. Our technical team has received all your project details and will begin reviewing them immediately.`)}
+    ${p(`<strong>Our solutions team will contact you within 1–2 business days.</strong>`, 'font-size:13px;')}
+  `)}
+  ${divider()}
+  ${bodySection(`
+    ${p(`<strong style="color:#0B1229;">Your build journey begins:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+    ${p('1. Technical team reviews your full project requirements')}
+    ${p('2. We schedule a technical discovery &amp; scoping call')}
+    ${p('3. You receive a detailed proposal, architecture plan &amp; timeline')}
+    ${p('4. Development begins on your custom-built solution', 'margin:0;')}
+    ${p(`For urgent project inquiries: <strong>solutions@an-nita.com</strong>`, 'margin-top:16px;')}
+  `)}
+  ${ctaButton('https://an-nita.com/solutions', 'View Our Solutions')}`,
+  { eyebrow: 'Solutions Request Received', eyebrowColor: 'teal', headline: 'Your project is in our hands', subhead: 'Annita Custom Solutions', preheader: `Hi ${escapeHtml(data.name)}, your custom solutions request for "${escapeHtml(data.projectName)}" has been received.` }
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ⑤ BETA SIGNUP TEMPLATES
@@ -517,98 +674,71 @@ const roleLabelMap: Record<string, string> = {
   logistics: 'Logistics / Courier',
 };
 
-const roleClass: Record<string, string> = {
-  buyer: 'role-buyer',
-  seller: 'role-seller',
-  logistics: 'role-logistics',
-};
-
 export const betaSignupConfirmationTemplate = (data: {
   fullName: string; role: string; queuePosition: number; country: string;
-}) => wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="badge">AnnitaPlug Beta</div>
-  <h1 class="email-title">You're on the waitlist! 🚀</h1>
-  <p class="email-subtitle">AnnitaPlug Beta — Limited to 100 spots per role</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hi ${escapeHtml(data.fullName)},</p>
-  <p class="body-text">
-    You've successfully joined the <strong>AnnitaPlug Beta</strong> as a <span class="role-badge ${roleClass[data.role] || ''}">${escapeHtml(roleLabelMap[data.role] || data.role)}</span>. Your spot is reserved and we'll notify you the moment your access is ready.
-  </p>
-  <div class="queue-badge">
-    <div class="queue-number">#${escapeHtml(data.queuePosition)}</div>
-    <div class="queue-label">Your Queue Position</div>
-  </div>
-  <div class="highlight-box">
-    <p>🌍 <strong>Country:</strong> ${escapeHtml(data.country)}<br>
-    🎯 <strong>Role:</strong> ${escapeHtml(roleLabelMap[data.role] || data.role)}<br>
-    📋 <strong>Status:</strong> Waitlisted — access granted in order</p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">What is AnnitaPlug?</p>
-  <p class="body-text">
-    AnnitaPlug is Annita's AI commerce and payment OS — a single chat interface connecting buyers, sellers, and logistics providers across Africa's digital economy. Powered by AI. Built for real commerce.
-  </p>
-  <ul class="steps-list">
-    <li><span class="check-icon">✦</span><span>One interface for buying, selling &amp; shipping</span></li>
-    <li><span class="check-icon">✦</span><span>AI-powered product discovery &amp; payments</span></li>
-    <li><span class="check-icon">✦</span><span>Works offline — built for Africa's connectivity realities</span></li>
-  </ul>
-  <hr class="divider">
-  <div style="text-align:center;">
-    <a href="https://an-nita.com" class="cta-btn">Learn More About Annita →</a>
-  </div>
-</div>
-${footer()}`,
-`You're #${escapeHtml(data.queuePosition)} on the AnnitaPlug Beta waitlist as a ${escapeHtml(roleLabelMap[data.role] || data.role)}.`);
+}) => wrap(
+  `${bodySection(`
+    ${greeting(`Hi ${escapeHtml(data.fullName)},`)}
+    ${p(`You've successfully joined the <strong>Annita Beta</strong> as a <strong>${escapeHtml(roleLabelMap[data.role] || data.role)}</strong>. Your spot is reserved and we'll notify you the moment your access is ready.`)}
+  `)}
+  ${bodySection(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0B1229;border-radius:14px;">
+      <tr>
+        <td align="center" style="padding:28px 20px;">
+          <p class="font-display" style="color:#F5A623;font-size:52px;font-weight:800;line-height:1;margin:0;">#${escapeHtml(data.queuePosition)}</p>
+          <p class="font-body" style="color:#8B93A7;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-top:8px;">Your Queue Position</p>
+        </td>
+      </tr>
+    </table>
+  `)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${detailHeader('Your Details')}
+      <tr><td style="padding-top:14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Country', escapeHtml(data.country))}
+          ${detailRow('Role', escapeHtml(roleLabelMap[data.role] || data.role))}
+          ${detailRow('Status', 'Waitlisted — access granted in order')}
+        </table>
+      </td></tr>
+    </table>
+  `)}
+  ${divider()}
+  ${bodySection(`
+    ${p(`<strong style="color:#0B1229;">What is Annita?</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+    ${p(`Annita is Africa's first all-in-one digital ecosystem, integrating e-commerce, fintech, AI, communication, marketing, logistics, and more into a single, connected system.`)}
+    ${p('• One interface for buying, selling &amp; shipping')}
+    ${p('• AI-powered product discovery &amp; payments')}
+    ${p('• Works offline — built for Africa\'s connectivity realities', 'margin:0;')}
+  `)}
+  ${ctaButton('https://an-nita.com', 'Learn More About Annita')}`,
+  { eyebrow: 'Annita Beta', eyebrowColor: 'amber', headline: "You're on the waitlist!", subhead: 'Annita Beta — Limited to 100 spots per role', preheader: `You're #${escapeHtml(data.queuePosition)} on the Annita Beta waitlist as a ${escapeHtml(roleLabelMap[data.role] || data.role)}.` }
+);
 
 export const betaSignupAdminTemplate = (data: {
   fullName: string; email: string; phone?: string; role: string;
   country: string; queuePosition: number; businessName?: string;
-}) => wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="admin-tag">Admin · Beta Signup</div>
-  <h1 class="email-title">🎯 New AnnitaPlug Beta Signup</h1>
-  <p class="email-subtitle">Position #${escapeHtml(data.queuePosition)} · Role: ${escapeHtml(roleLabelMap[data.role] || data.role)}</p>
-</div>
-<div class="email-content">
-  <div class="grid-2">
-    <div class="grid-col">
-      <div class="field-label">Full Name</div>
-      <div class="field-value">${escapeHtml(data.fullName)}</div>
-    </div>
-    <div class="grid-col">
-      <div class="field-label">Role</div>
-      <div class="field-value"><span class="role-badge ${roleClass[data.role] || ''}">${escapeHtml(roleLabelMap[data.role] || data.role)}</span></div>
-    </div>
-  </div>
-  <div class="grid-2">
-    <div class="grid-col">
-      <div class="field-label">Email</div>
-      <div class="field-value"><a href="mailto:${safeUrl(data.email)}">${escapeHtml(data.email)}</a></div>
-    </div>
-    <div class="grid-col">
-      ${data.phone ? `<div class="field-label">Phone</div><div class="field-value">${escapeHtml(data.phone)}</div>` : ''}
-    </div>
-  </div>
-  <div class="grid-2">
-    <div class="grid-col">
-      <div class="field-label">Country</div>
-      <div class="field-value">${escapeHtml(data.country)}</div>
-    </div>
-    <div class="grid-col">
-      <div class="field-label">Queue Position</div>
-      <div class="field-value">#${escapeHtml(data.queuePosition)}</div>
-    </div>
-  </div>
-  ${data.businessName ? `<div class="field-label">Business / Company Name</div><div class="field-value">${escapeHtml(data.businessName)}</div>` : ''}
-  <div class="field-label">Signed Up At</div>
-  <div class="field-value">${new Date().toUTCString()}</div>
-</div>
-${footer()}`);
+}) => wrap(
+  `${bodySection(`${greeting('A new beta signup has been received.')}`)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${detailHeader('Signup Details')}
+      <tr><td style="padding-top:14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Full name', escapeHtml(data.fullName))}
+          ${detailRow('Role', escapeHtml(roleLabelMap[data.role] || data.role))}
+          ${detailRow('Email', `<a href="mailto:${safeUrl(data.email)}" class="text-link" style="color:#17B8A6;">${escapeHtml(data.email)}</a>`)}
+          ${data.phone ? detailRow('Phone', escapeHtml(data.phone)) : ''}
+          ${detailRow('Country', escapeHtml(data.country))}
+          ${detailRow('Queue position', `#${escapeHtml(data.queuePosition)}`)}
+          ${data.businessName ? detailRow('Business name', escapeHtml(data.businessName)) : ''}
+          ${detailRow('Signed up at', new Date().toUTCString())}
+        </table>
+      </td></tr>
+    </table>
+  `)}`,
+  { eyebrow: 'Admin · Beta Signup', eyebrowColor: 'red', headline: 'New Annita Beta Signup', subhead: `Position #${escapeHtml(data.queuePosition)} · Role: ${escapeHtml(roleLabelMap[data.role] || data.role)}` }
+);
 
 // Account Deletion Templates
 function accountDeletionVerificationTemplate(data: { email: string; softwareProduct: string; verificationToken: string }) {
@@ -622,48 +752,41 @@ function accountDeletionVerificationTemplate(data: { email: string; softwareProd
   const productName = productNames[data.softwareProduct] || data.softwareProduct;
   const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://an-nita.com'}/api/account-deletion/verify/${data.verificationToken}`;
 
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="badge">Account Deletion</div>
-  <h1 class="email-title">Confirm Your Deletion Request</h1>
-  <p class="email-subtitle">Please verify your email to proceed</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hello,</p>
-  <p class="body-text">
-    We received a request to delete your account from <strong>${escapeHtml(productName)}</strong>. To protect your privacy, we require email verification before processing this request.
-  </p>
-  <div class="highlight-box">
-    <p>📧 Email: <strong style="color:${COLOR.accent};">${escapeHtml(data.email)}</strong></p>
-    <p>📦 Product: <strong style="color:${COLOR.accent};">${escapeHtml(productName)}</strong></p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">To confirm this request:</p>
-  <div style="text-align:center;">
-    <a href="${safeUrl(verificationUrl)}" class="cta-btn">Confirm Deletion Request</a>
-  </div>
-  <p class="body-text" style="font-size:12px;margin-top:16px;">
-    Or copy and paste this link into your browser:
-  </p>
-  <div class="field-value" style="word-break:break-all;font-size:12px;">${escapeHtml(verificationUrl)}</div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.danger};">Important:</p>
-  <ul class="steps-list">
-    <li><span class="check-icon" style="color:${COLOR.danger};">✦</span> <span>This link expires in 24 hours</span></li>
-    <li><span class="check-icon" style="color:${COLOR.danger};">✦</span> <span>Once verified, your deletion request will be processed within 30 days</span></li>
-    <li><span class="check-icon" style="color:${COLOR.danger};">✦</span> <span>You cannot undo this request after verification</span></li>
-  </ul>
-  <hr class="divider">
-  <p class="body-text">
-    If you did not request this deletion, please ignore this email or contact us at <a href="mailto:info@an-nita.com">info@an-nita.com</a>.
-  </p>
-</div>
-${footer()}`,
-`Confirm your account deletion request for ${productName}`);
+  return wrap(
+    `${bodySection(`
+      ${greeting('Hello,')}
+      ${p(`We received a request to delete your account from <strong>${escapeHtml(productName)}</strong>. To protect your privacy, we require email verification before processing this request.`)}
+    `)}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Request Details')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Email', escapeHtml(data.email))}
+            ${detailRow('Product', escapeHtml(productName))}
+          </table>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#0B1229;">To confirm this request:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+    `)}
+    ${ctaButton(verificationUrl, 'Confirm Deletion Request')}
+    ${bodySection(`
+      ${p(`Or copy and paste this link into your browser:`, 'font-size:12px;')}
+      ${p(`<span style="color:#17B8A6;word-break:break-all;font-size:12px;">${escapeHtml(verificationUrl)}</span>`, 'margin:0;')}
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#EF4444;">Important:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      ${p('• This link expires in 24 hours')}
+      ${p('• Once verified, your deletion request will be processed within 30 days')}
+      ${p('• You cannot undo this request after verification', 'margin:0;')}
+      ${p(`If you did not request this deletion, please ignore this email or contact us at <a href="mailto:info@an-nita.com" class="text-link" style="color:#17B8A6;">info@an-nita.com</a>.`, 'margin-top:16px;')}
+    `)}`,
+    { eyebrow: 'Account Deletion', eyebrowColor: 'red', headline: 'Confirm Your Deletion Request', subhead: 'Please verify your email to proceed', preheader: `Confirm your account deletion request for ${productName}` }
+  );
 }
 
 function accountDeletionConfirmationTemplate(data: { email: string; softwareProduct: string; requestId: number }) {
@@ -675,42 +798,36 @@ function accountDeletionConfirmationTemplate(data: { email: string; softwareProd
     'aiim-hub': 'AIIM Hub'
   };
   const productName = productNames[data.softwareProduct] || data.softwareProduct;
-  
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="badge">Account Deletion</div>
-  <h1 class="email-title">Deletion Request Received</h1>
-  <p class="email-subtitle">Your request has been submitted for processing</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hello,</p>
-  <p class="body-text">
-    We have received your request to delete your account from <strong>${escapeHtml(productName)}</strong>.
-  </p>
-  <div class="highlight-box">
-    <p>📋 Request ID: <strong style="color:${COLOR.accent};">#${escapeHtml(data.requestId)}</strong></p>
-    <p>📧 Email: <strong style="color:${COLOR.accent};">${escapeHtml(data.email)}</strong></p>
-    <p>📦 Product: <strong style="color:${COLOR.accent};">${escapeHtml(productName)}</strong></p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">What happens next:</p>
-  <ul class="steps-list">
-    <li><span class="check-icon">✦</span> <span>Your request will be processed within 30 days</span></li>
-    <li><span class="check-icon">✦</span> <span>You will receive a confirmation email when deletion is complete</span></li>
-    <li><span class="check-icon">✦</span> <span>Your data will be permanently deleted from our systems</span></li>
-    <li><span class="check-icon">✦</span> <span>You will not be able to recover your account after deletion</span></li>
-  </ul>
-  <hr class="divider">
-  <p class="body-text">
-    If you did not request this deletion, please contact us immediately at <a href="mailto:info@an-nita.com">info@an-nita.com</a>.
-  </p>
-  <p class="body-text">Thank you for using Annita services.</p>
-</div>
-${footer()}`);
+
+  return wrap(
+    `${bodySection(`
+      ${greeting('Hello,')}
+      ${p(`We have received your request to delete your account from <strong>${escapeHtml(productName)}</strong>.`)}
+    `)}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Request Details')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Request ID', `#${escapeHtml(data.requestId)}`)}
+            ${detailRow('Email', escapeHtml(data.email))}
+            ${detailRow('Product', escapeHtml(productName))}
+          </table>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#0B1229;">What happens next:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      ${p('• Your request will be processed within 30 days')}
+      ${p('• You will receive a confirmation email when deletion is complete')}
+      ${p('• Your data will be permanently deleted from our systems')}
+      ${p('• You will not be able to recover your account after deletion', 'margin:0;')}
+      ${p(`If you did not request this deletion, please contact us immediately at <a href="mailto:info@an-nita.com" class="text-link" style="color:#17B8A6;">info@an-nita.com</a>.`, 'margin-top:16px;')}
+      ${p('Thank you for using Annita services.')}
+    `)}`,
+    { eyebrow: 'Account Deletion', eyebrowColor: 'red', headline: 'Deletion Request Received', subhead: 'Your request has been submitted for processing' }
+  );
 }
 
 function accountDeletionAdminTemplate(data: { email: string; softwareProduct: string; reason: string; communicationChannel: string; requestId: number }) {
@@ -722,40 +839,39 @@ function accountDeletionAdminTemplate(data: { email: string; softwareProduct: st
     'aiim-hub': 'AIIM Hub'
   };
   const productName = productNames[data.softwareProduct] || data.softwareProduct;
-  
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="admin-tag">ADMIN NOTIFICATION</div>
-  <h1 class="email-title">Account Deletion Request</h1>
-  <p class="email-subtitle">New deletion request submitted</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Admin,</p>
-  <p class="body-text">
-    A new account deletion request has been submitted:
-  </p>
-  <div class="highlight-box">
-    <p>📋 Request ID: <strong style="color:${COLOR.accent};">#${escapeHtml(data.requestId)}</strong></p>
-    <p>📧 Email: <a href="mailto:${safeUrl(data.email)}">${escapeHtml(data.email)}</a></p>
-    <p>📦 Product: <strong style="color:${COLOR.accent};">${escapeHtml(productName)}</strong></p>
-    <p>📞 Communication: <strong style="color:${COLOR.accent};">${escapeHtml(data.communicationChannel)}</strong></p>
-  </div>
-  <div class="field-label">Reason for Deletion</div>
-  <div class="field-value-long">${escapeHtmlMultiline(data.reason)}</div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">Action Required:</p>
-  <ul class="steps-list">
-    <li><span class="step-num">1</span> <span>Review the deletion request</span></li>
-    <li><span class="step-num">2</span> <span>Verify the user's identity</span></li>
-    <li><span class="step-num">3</span> <span>Process the deletion within 30 days</span></li>
-    <li><span class="step-num">4</span> <span>Update the request status in the system</span></li>
-  </ul>
-</div>
-${footer()}`);
+
+  return wrap(
+    `${bodySection(`
+      ${greeting('Admin,')}
+      ${p('A new account deletion request has been submitted:')}
+    `)}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Deletion Request')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Request ID', `#${escapeHtml(data.requestId)}`)}
+            ${detailRow('Email', `<a href="mailto:${safeUrl(data.email)}" class="text-link" style="color:#17B8A6;">${escapeHtml(data.email)}</a>`)}
+            ${detailRow('Product', escapeHtml(productName))}
+            ${detailRow('Communication', escapeHtml(data.communicationChannel))}
+          </table>
+        </td></tr>
+        <tr><td style="padding-top:14px;border-top:1px solid #E7E4DC;">
+          <span class="font-display" style="color:#0B1229;font-size:13px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;">Reason for Deletion</span>
+          <p class="font-body" style="color:#3A4150;font-size:14px;line-height:22px;margin-top:8px;">${escapeHtmlMultiline(data.reason)}</p>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#0B1229;">Action Required:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      ${p('1. Review the deletion request')}
+      ${p('2. Verify the user\'s identity')}
+      ${p('3. Process the deletion within 30 days')}
+      ${p('4. Update the request status in the system', 'margin:0;')}
+    `)}`,
+    { eyebrow: 'Admin Notification', eyebrowColor: 'red', headline: 'Account Deletion Request', subhead: 'New deletion request submitted' }
+  );
 }
 
 function accountDeletionCompletedTemplate(data: { email: string; softwareProduct: string }) {
@@ -767,114 +883,99 @@ function accountDeletionCompletedTemplate(data: { email: string; softwareProduct
     'aiim-hub': 'AIIM Hub'
   };
   const productName = productNames[data.softwareProduct] || data.softwareProduct;
-  
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="badge">Account Deletion</div>
-  <h1 class="email-title">Deletion Completed</h1>
-  <p class="email-subtitle">Your account has been permanently deleted</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hello,</p>
-  <p class="body-text">
-    Your account deletion request for <strong>${escapeHtml(productName)}</strong> has been completed.
-  </p>
-  <div class="highlight-box">
-    <p>📧 Email: <strong style="color:${COLOR.accent};">${escapeHtml(data.email)}</strong></p>
-    <p>📦 Product: <strong style="color:${COLOR.accent};">${escapeHtml(productName)}</strong></p>
-    <p>⏰ Completed At: <strong style="color:${COLOR.accent};">${new Date().toUTCString()}</strong></p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.danger};">Important:</p>
-  <ul class="steps-list">
-    <li><span class="check-icon" style="color:${COLOR.danger};">✦</span> <span>Your account has been permanently deleted</span></li>
-    <li><span class="check-icon" style="color:${COLOR.danger};">✦</span> <span>All your data has been removed from our systems</span></li>
-    <li><span class="check-icon" style="color:${COLOR.danger};">✦</span> <span>You will no longer receive communications from this service</span></li>
-    <li><span class="check-icon" style="color:${COLOR.danger};">✦</span> <span>You cannot recover this account</span></li>
-  </ul>
-  <hr class="divider">
-  <p class="body-text">
-    If you wish to use our services again in the future, you will need to create a new account.
-  </p>
-  <p class="body-text">Thank you for your time with Annita.</p>
-</div>
-${footer()}`);
+
+  return wrap(
+    `${bodySection(`
+      ${greeting('Hello,')}
+      ${p(`Your account deletion request for <strong>${escapeHtml(productName)}</strong> has been completed.`)}
+    `)}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Completion Details')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Email', escapeHtml(data.email))}
+            ${detailRow('Product', escapeHtml(productName))}
+            ${detailRow('Completed at', new Date().toUTCString())}
+          </table>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#EF4444;">Important:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      ${p('• Your account has been permanently deleted')}
+      ${p('• All your data has been removed from our systems')}
+      ${p('• You will no longer receive communications from this service')}
+      ${p('• You cannot recover this account', 'margin:0;')}
+      ${p('If you wish to use our services again in the future, you will need to create a new account.', 'margin-top:16px;')}
+      ${p('Thank you for your time with Annita.')}
+    `)}`,
+    { eyebrow: 'Account Deletion', eyebrowColor: 'red', headline: 'Deletion Completed', subhead: 'Your account has been permanently deleted' }
+  );
 }
 
 // Career Application Templates
 function careerApplicationConfirmationTemplate(data: { applicantName: string; email: string; jobTitle?: string }) {
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="badge">Career Application</div>
-  <h1 class="email-title">Application Received</h1>
-  <p class="email-subtitle">Thank you for your interest in joining Annita</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hello ${escapeHtml(data.applicantName)},</p>
-  <p class="body-text">
-    We have received your application${data.jobTitle ? ` for the <strong>${escapeHtml(data.jobTitle)}</strong> position` : ' to join our talent pool'}.
-  </p>
-  <div class="highlight-box">
-    <p>📧 Email: <strong style="color:${COLOR.accent};">${escapeHtml(data.email)}</strong></p>
-    ${data.jobTitle ? `<p>🎯 Position: <strong style="color:${COLOR.accent};">${escapeHtml(data.jobTitle)}</strong></p>` : '<p>🎯 Application: <strong style="color:${COLOR.accent};">Talent Pool</strong></p>'}
-    <p>📅 Received: <strong style="color:${COLOR.accent};">${new Date().toUTCString()}</strong></p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">What happens next:</p>
-  <ul class="steps-list">
-    <li><span class="check-icon">✦</span> <span>Our team will review your application</span></li>
-    <li><span class="check-icon">✦</span> <span>We will contact you if your profile matches our needs</span></li>
-    <li><span class="check-icon">✦</span> <span>This process typically takes 1-2 weeks</span></li>
-  </ul>
-  <hr class="divider">
-  <p class="body-text">
-    If you have any questions, feel free to reach out to us at <a href="mailto:info@an-nita.com">info@an-nita.com</a>.
-  </p>
-  <p class="body-text">Thank you for considering Annita as your next career move.</p>
-</div>
-${footer()}`);
+  return wrap(
+    `${bodySection(`
+      ${greeting(`Hello ${escapeHtml(data.applicantName)},`)}
+      ${p(`We have received your application${data.jobTitle ? ` for the <strong>${escapeHtml(data.jobTitle)}</strong> position` : ' to join our talent pool'}.`)}
+    `)}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Application Details')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Email', escapeHtml(data.email))}
+            ${detailRow('Position', data.jobTitle ? escapeHtml(data.jobTitle) : 'Talent Pool')}
+            ${detailRow('Received', new Date().toUTCString())}
+          </table>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#0B1229;">What happens next:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      ${p('• Our team will review your application')}
+      ${p('• We will contact you if your profile matches our needs')}
+      ${p('• This process typically takes 1-2 weeks', 'margin:0;')}
+      ${p(`If you have any questions, feel free to reach out to us at <a href="mailto:info@an-nita.com" class="text-link" style="color:#17B8A6;">info@an-nita.com</a>.`, 'margin-top:16px;')}
+      ${p('Thank you for considering Annita as your next career move.')}
+    `)}`,
+    { eyebrow: 'Career Application', eyebrowColor: 'teal', headline: 'Application Received', subhead: 'Thank you for your interest in joining Annita' }
+  );
 }
 
 function careerApplicationAdminTemplate(data: { applicantName: string; email: string; jobTitle?: string; country: string; phone?: string }) {
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="admin-tag">ADMIN NOTIFICATION</div>
-  <h1 class="email-title">New Career Application</h1>
-  <p class="email-subtitle">Talent pool or job application received</p>
-</div>
-<div class="email-content">
-  <p class="greeting">HR Team,</p>
-  <p class="body-text">
-    A new career application has been submitted:
-  </p>
-  <div class="highlight-box">
-    <p>👤 Name: <strong style="color:${COLOR.accent};">${escapeHtml(data.applicantName)}</strong></p>
-    <p>📧 Email: <a href="mailto:${safeUrl(data.email)}">${escapeHtml(data.email)}</a></p>
-    ${data.jobTitle ? `<p>🎯 Position: <strong style="color:${COLOR.accent};">${escapeHtml(data.jobTitle)}</strong></p>` : '<p>🎯 Application: <strong style="color:${COLOR.accent};">Talent Pool</strong></p>'}
-    <p>🌍 Country: <strong style="color:${COLOR.accent};">${escapeHtml(data.country)}</strong></p>
-    ${data.phone ? `<p>📞 Phone: <strong style="color:${COLOR.accent};">${escapeHtml(data.phone)}</strong></p>` : ''}
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">Action Required:</p>
-  <ul class="steps-list">
-    <li><span class="step-num">1</span> <span>Review the application in the system</span></li>
-    <li><span class="step-num">2</span> <span>Check if the candidate matches open positions</span></li>
-    <li><span class="step-num">3</span> <span>Schedule an interview if appropriate</span></li>
-  </ul>
-</div>
-${footer()}`);
+  return wrap(
+    `${bodySection(`
+      ${greeting('HR Team,')}
+      ${p('A new career application has been submitted:')}
+    `)}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Applicant Details')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Name', escapeHtml(data.applicantName))}
+            ${detailRow('Email', `<a href="mailto:${safeUrl(data.email)}" class="text-link" style="color:#17B8A6;">${escapeHtml(data.email)}</a>`)}
+            ${detailRow('Position', data.jobTitle ? escapeHtml(data.jobTitle) : 'Talent Pool')}
+            ${detailRow('Country', escapeHtml(data.country))}
+            ${data.phone ? detailRow('Phone', escapeHtml(data.phone)) : ''}
+          </table>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#0B1229;">Action Required:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      ${p('1. Review the application in the system')}
+      ${p('2. Check if the candidate matches open positions')}
+      ${p('3. Schedule an interview if appropriate', 'margin:0;')}
+    `)}`,
+    { eyebrow: 'Admin Notification', eyebrowColor: 'red', headline: 'New Career Application', subhead: 'Talent pool or job application received' }
+  );
 }
 
 // Partnership Templates
@@ -886,42 +987,36 @@ function partnershipConfirmationTemplate(data: { contactName: string; email: str
     'other': 'Other Partnership'
   };
   const partnershipLabel = partnershipLabels[data.partnershipType] || data.partnershipType;
-  
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="badge">Partnership Inquiry</div>
-  <h1 class="email-title">Inquiry Received</h1>
-  <p class="email-subtitle">Thank you for your interest in partnering with Annita</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hello ${escapeHtml(data.contactName)},</p>
-  <p class="body-text">
-    We have received your partnership inquiry from <strong>${escapeHtml(data.companyName)}</strong>.
-  </p>
-  <div class="highlight-box">
-    <p>🏢 Company: <strong style="color:${COLOR.accent};">${escapeHtml(data.companyName)}</strong></p>
-    <p>📧 Email: <strong style="color:${COLOR.accent};">${escapeHtml(data.email)}</strong></p>
-    <p>🤝 Type: <strong style="color:${COLOR.accent};">${escapeHtml(partnershipLabel)}</strong></p>
-    <p>📅 Received: <strong style="color:${COLOR.accent};">${new Date().toUTCString()}</strong></p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">What happens next:</p>
-  <ul class="steps-list">
-    <li><span class="check-icon">✦</span> <span>Our partnerships team will review your inquiry</span></li>
-    <li><span class="check-icon">✦</span> <span>We will assess alignment with our strategic goals</span></li>
-    <li><span class="check-icon">✦</span> <span>We will contact you within 5-7 business days</span></li>
-  </ul>
-  <hr class="divider">
-  <p class="body-text">
-    If you have any questions, feel free to reach out to us at <a href="mailto:info@an-nita.com">info@an-nita.com</a>.
-  </p>
-  <p class="body-text">Thank you for considering a partnership with Annita.</p>
-</div>
-${footer()}`);
+
+  return wrap(
+    `${bodySection(`
+      ${greeting(`Hello ${escapeHtml(data.contactName)},`)}
+      ${p(`We have received your partnership inquiry from <strong>${escapeHtml(data.companyName)}</strong>.`)}
+    `)}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Inquiry Details')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Company', escapeHtml(data.companyName))}
+            ${detailRow('Email', escapeHtml(data.email))}
+            ${detailRow('Type', escapeHtml(partnershipLabel))}
+            ${detailRow('Received', new Date().toUTCString())}
+          </table>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#0B1229;">What happens next:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      ${p('• Our partnerships team will review your inquiry')}
+      ${p('• We will assess alignment with our strategic goals')}
+      ${p('• We will contact you within 5-7 business days', 'margin:0;')}
+      ${p(`If you have any questions, feel free to reach out to us at <a href="mailto:info@an-nita.com" class="text-link" style="color:#17B8A6;">info@an-nita.com</a>.`, 'margin-top:16px;')}
+      ${p('Thank you for considering a partnership with Annita.')}
+    `)}`,
+    { eyebrow: 'Partnership Inquiry', eyebrowColor: 'teal', headline: 'Inquiry Received', subhead: 'Thank you for your interest in partnering with Annita' }
+  );
 }
 
 function partnershipAdminTemplate(data: { contactName: string; email: string; companyName: string; partnershipType: string; partnershipGoals: string }) {
@@ -932,78 +1027,71 @@ function partnershipAdminTemplate(data: { contactName: string; email: string; co
     'other': 'Other Partnership'
   };
   const partnershipLabel = partnershipLabels[data.partnershipType] || data.partnershipType;
-  
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="admin-tag">ADMIN NOTIFICATION</div>
-  <h1 class="email-title">New Partnership Inquiry</h1>
-  <p class="email-subtitle">Strategic partnership opportunity received</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Partnerships Team,</p>
-  <p class="body-text">
-    A new partnership inquiry has been submitted:
-  </p>
-  <div class="highlight-box">
-    <p>🏢 Company: <strong style="color:${COLOR.accent};">${escapeHtml(data.companyName)}</strong></p>
-    <p>👤 Contact: <strong style="color:${COLOR.accent};">${escapeHtml(data.contactName)}</strong></p>
-    <p>📧 Email: <a href="mailto:${safeUrl(data.email)}">${escapeHtml(data.email)}</a></p>
-    <p>🤝 Type: <strong style="color:${COLOR.accent};">${escapeHtml(partnershipLabel)}</strong></p>
-  </div>
-  <div class="field-label">Partnership Goals</div>
-  <div class="field-value-long">${escapeHtmlMultiline(data.partnershipGoals)}</div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${COLOR.accent};">Action Required:</p>
-  <ul class="steps-list">
-    <li><span class="step-num">1</span> <span>Review the partnership inquiry in the system</span></li>
-    <li><span class="step-num">2</span> <span>Assess strategic alignment and potential value</span></li>
-    <li><span class="step-num">3</span> <span>Schedule a discovery call if appropriate</span></li>
-  </ul>
-</div>
-${footer()}`);
+
+  return wrap(
+    `${bodySection(`
+      ${greeting('Partnerships Team,')}
+      ${p('A new partnership inquiry has been submitted:')}
+    `)}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Inquiry Details')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Company', escapeHtml(data.companyName))}
+            ${detailRow('Contact', escapeHtml(data.contactName))}
+            ${detailRow('Email', `<a href="mailto:${safeUrl(data.email)}" class="text-link" style="color:#17B8A6;">${escapeHtml(data.email)}</a>`)}
+            ${detailRow('Type', escapeHtml(partnershipLabel))}
+          </table>
+        </td></tr>
+        <tr><td style="padding-top:14px;border-top:1px solid #E7E4DC;">
+          <span class="font-display" style="color:#0B1229;font-size:13px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;">Partnership Goals</span>
+          <p class="font-body" style="color:#3A4150;font-size:14px;line-height:22px;margin-top:8px;">${escapeHtmlMultiline(data.partnershipGoals)}</p>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#0B1229;">Action Required:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      ${p('1. Review the partnership inquiry in the system')}
+      ${p('2. Assess strategic alignment and potential value')}
+      ${p('3. Schedule a discovery call if appropriate', 'margin:0;')}
+    `)}`,
+    { eyebrow: 'Admin Notification', eyebrowColor: 'red', headline: 'New Partnership Inquiry', subhead: 'Strategic partnership opportunity received' }
+  );
 }
 
 // New Position Notification Template (for talent pool)
 function newPositionNotificationTemplate(data: { email: string; applicantName: string; jobTitle: string; jobDescription: string; location: string }) {
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row">
-    <span class="logo-dot"></span>
-    <span class="brand-name">Annita<span class="brand-dot">.</span></span>
-  </div>
-  <div class="badge">New Opportunity</div>
-  <h1 class="email-title">New Position Available</h1>
-  <p class="email-subtitle">A role matching your profile has opened</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Hello ${escapeHtml(data.applicantName)},</p>
-  <p class="body-text">
-    We have a new position that matches your profile in our talent pool:
-  </p>
-  <div class="highlight-box">
-    <p>🎯 Position: <strong style="color:${COLOR.accent};">${escapeHtml(data.jobTitle)}</strong></p>
-    <p>📍 Location: <strong style="color:${COLOR.accent};">${escapeHtml(data.location)}</strong></p>
-  </div>
-  <div class="field-label">Job Description</div>
-  <div class="field-value-long">${escapeHtmlMultiline(data.jobDescription)}</div>
-  <hr class="divider">
-  <p class="body-text">
-    If you're interested in this position, please visit our careers page to apply.
-  </p>
-  <p class="body-text">
-    <a href="https://an-nita.com/careers" style="color:${COLOR.accent};text-decoration:underline;">View Careers Page</a>
-  </p>
-  <hr class="divider">
-  <p class="body-text">
-    If you have any questions, feel free to reach out to us at <a href="mailto:info@an-nita.com">info@an-nita.com</a>.
-  </p>
-  <p class="body-text">Best regards,<br/>The Annita Team</p>
-</div>
-${footer()}`);
+  return wrap(
+    `${bodySection(`
+      ${greeting(`Hello ${escapeHtml(data.applicantName)},`)}
+      ${p('We have a new position that matches your profile in our talent pool:')}
+    `)}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Position Details')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Position', escapeHtml(data.jobTitle))}
+            ${detailRow('Location', escapeHtml(data.location))}
+          </table>
+        </td></tr>
+        <tr><td style="padding-top:14px;border-top:1px solid #E7E4DC;">
+          <span class="font-display" style="color:#0B1229;font-size:13px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;">Job Description</span>
+          <p class="font-body" style="color:#3A4150;font-size:14px;line-height:22px;margin-top:8px;">${escapeHtmlMultiline(data.jobDescription)}</p>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`If you're interested in this position, please visit our careers page to apply.`)}
+      ${p(`<a href="https://an-nita.com/careers" class="text-link" style="color:#17B8A6;font-weight:600;">View Careers Page</a>`)}
+      ${p(`If you have any questions, feel free to reach out to us at <a href="mailto:info@an-nita.com" class="text-link" style="color:#17B8A6;">info@an-nita.com</a>.`)}
+      ${p('Best regards,<br>The Annita Team', 'margin:0;')}
+    `)}`,
+    { eyebrow: 'New Opportunity', eyebrowColor: 'amber', headline: 'New Position Available', subhead: 'A role matching your profile has opened' }
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1070,7 +1158,7 @@ export async function sendSolutionsRequestConfirmation(data: { name: string; ema
 
 // ⑤ Beta Signup
 export async function sendBetaSignupConfirmation(data: { fullName: string; email: string; role: string; queuePosition: number; country: string }) {
-  return send({ to: data.email, subject: sanitizeHeader(`🚀 You're #${data.queuePosition} on AnnitaPlug Beta!`), html: betaSignupConfirmationTemplate(data) });
+  return send({ to: data.email, subject: sanitizeHeader(`🚀 You're #${data.queuePosition} on Annita Beta!`), html: betaSignupConfirmationTemplate(data) });
 }
 export async function sendBetaSignupAdminNotice(data: { fullName: string; email: string; phone?: string; role: string; country: string; queuePosition: number; businessName?: string }) {
   return send({ to: adminEmail, subject: sanitizeHeader(`🎯 Beta Signup #${data.queuePosition}: ${data.fullName} (${data.role})`), html: betaSignupAdminTemplate(data) });
@@ -1109,6 +1197,14 @@ export async function sendPartnershipAdminNotice(data: { contactName: string; em
 // ⑨ New Position Notifications (for talent pool)
 export async function sendNewPositionNotification(data: { email: string; applicantName: string; jobTitle: string; jobDescription: string; location: string }) {
   return send({ to: data.email, subject: sanitizeHeader(`🎯 New Position Matching Your Profile: ${data.jobTitle}`), html: newPositionNotificationTemplate(data) });
+}
+
+// ⑩ Download Notification (Annita launch)
+export async function sendDownloadNotifyConfirmation(email: string) {
+  return send({ to: email, subject: '📱 You\'re on the Annita List — We\'ll Notify You!', html: downloadNotifyConfirmationTemplate(email) });
+}
+export async function sendDownloadNotifyAdminNotice(email: string) {
+  return send({ to: adminEmail, subject: sanitizeHeader(`📱 New Annita Download Notification: ${email}`), html: downloadNotifyAdminTemplate(email) });
 }
 
 // Generic (backwards compat)
@@ -1158,37 +1254,101 @@ const errorRateColor = (rate: number): string =>
   rate > 5 ? REPORT_COLOR.critical : rate > 2 ? REPORT_COLOR.warning : REPORT_COLOR.healthy;
 
 // ─────────────────────────────────────────────────────────────────────────────
+// DOWNLOAD NOTIFICATION TEMPLATES (Annita launch)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const downloadNotifyConfirmationTemplate = (email: string) => wrap(
+  `${bodySection(`
+    ${greeting("You're officially on the waitlist!")}
+    ${p(`Thank you for your interest in <strong>Annita</strong> — Africa's all-in-one digital ecosystem app. We're putting the finishing touches on something powerful, and you'll be among the first to know when it's available for download on the App Store and Google Play.`)}
+  `)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${detailHeader('What happens next?')}
+      <tr><td style="padding-top:14px;">
+        <p class="font-body" style="color:#3A4150;font-size:14px;line-height:22px;margin:0;">We'll send you a launch notification email the moment Annita is live. No spam, just the good stuff.</p>
+      </td></tr>
+    </table>
+  `)}
+  ${divider()}
+  ${bodySection(`
+    ${p(`You're receiving this because you signed up for launch notifications at <a href="https://an-nita.com/download" class="text-link" style="color:#17B8A6;">an-nita.com/download</a>. If you didn't sign up, you can safely ignore this email.`, 'font-size:12px;color:#5B6472;')}
+  `)}`,
+  { eyebrow: 'Annita · Coming Soon', eyebrowColor: 'amber', headline: "You're on the List", subhead: "We'll notify you the moment Annita goes live", preheader: "You're on the Annita launch notification list — we'll email you when it's live." }
+);
+
+export const downloadNotifyAdminTemplate = (email: string) => wrap(
+  `${bodySection(`
+    ${greeting('New signup received')}
+  `)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${detailHeader('Signup Details')}
+      <tr><td style="padding-top:14px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Email address', escapeHtml(email))}
+        </table>
+      </td></tr>
+    </table>
+  `)}
+  ${divider()}
+  ${bodySection(`
+    ${p(`This user signed up at <a href="https://an-nita.com/download" class="text-link" style="color:#17B8A6;">an-nita.com/download</a> to be notified when Annita launches.`, 'font-size:12px;color:#5B6472;')}
+  `)}`,
+  { eyebrow: 'New Notification Signup', eyebrowColor: 'red', headline: 'Annita Launch List', subhead: 'New user wants to be notified at launch', preheader: 'New Annita launch notification signup.' }
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
 // DAILY HEALTH REPORT TEMPLATE
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const adminAccessTemplate = (accessUrl: string) => wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="admin-tag">Secure Admin Access</div>
-  <h1 class="email-title">Admin Dashboard Access</h1>
-  <p class="email-subtitle">One-time secure access link — Do not share</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Administrator,</p>
-  <p class="body-text">
-    You have been granted <strong>one-time secure access</strong> to the Annita system monitoring dashboard. This link expires in <span style="color:${COLOR.accent};font-weight:700;">15 minutes</span> and can only be used <strong>once</strong> from the same device and network you requested it from.
-  </p>
-  <hr class="divider">
-  <div style="text-align:center;padding:24px;background:${COLOR.card};border:1px solid ${COLOR.border};border-radius:12px;">
-    <p style="font-size:10px;font-weight:700;color:${COLOR.accent};text-transform:uppercase;letter-spacing:0.15em;margin-bottom:12px;">Secure Access Link</p>
-    <a href="${safeUrl(accessUrl)}" style="display:inline-block;background:${COLOR.accent};color:#000;font-size:14px;font-weight:700;padding:14px 32px;border-radius:100px;text-decoration:none;">Open Admin Dashboard →</a>
-    <p style="font-size:11px;color:${COLOR.textMuted};margin-top:12px;">Expires: ${new Date(Date.now() + 15 * 60000).toUTCString()}</p>
-  </div>
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;color:${COLOR.danger};font-weight:700;">
-    ⚠ This link is single-use, IP-bound, and device-bound. Do not forward or share.
-  </p>
-  <p class="body-text" style="font-size:12px;color:${COLOR.textMuted};">
-    If you did not request this, ignore this email. All admin access is audited.
-  </p>
-</div>
-${footer()}`,
-`Admin dashboard access — one-time secure link. Expires in 15 minutes.`);
+export const adminAccessTemplate = (accessUrl: string) => wrap(
+  `${bodySection(`
+    ${greeting('Administrator,')}
+    ${p(`You have been granted <strong>one-time secure access</strong> to the Annita system monitoring dashboard. This link expires in <span style="color:#F5A623;font-weight:700;">15 minutes</span> and can only be used <strong>once</strong> from the same device and network you requested it from.`)}
+  `)}
+  ${bodySection(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0B1229;border-radius:14px;">
+      <tr>
+        <td align="center" style="padding:28px 20px;">
+          <p class="font-display" style="color:#F5A623;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:16px;">Secure Access Link</p>
+          <a href="${safeUrl(accessUrl)}" class="font-body" target="_blank" style="display:inline-block;background-color:#F5A623;color:#0B1229;font-size:14px;font-weight:700;padding:14px 32px;border-radius:100px;text-decoration:none;">Open Admin Dashboard &nbsp;&rarr;</a>
+          <p class="font-body" style="color:#8B93A7;font-size:11px;margin-top:12px;">Expires: ${new Date(Date.now() + 15 * 60000).toUTCString()}</p>
+        </td>
+      </tr>
+    </table>
+  `)}
+  ${divider()}
+  ${bodySection(`
+    ${p(`<strong style="color:#EF4444;">⚠ This link is single-use, IP-bound, and device-bound. Do not forward or share.</strong>`, 'font-size:12px;')}
+    ${p('If you did not request this, ignore this email. All admin access is audited.', 'font-size:12px;color:#5B6472;margin:0;')}
+  `)}`,
+  { eyebrow: 'Secure Admin Access', eyebrowColor: 'red', headline: 'Admin Dashboard Access', subhead: 'One-time secure access link — Do not share', preheader: 'Admin dashboard access — one-time secure link. Expires in 15 minutes.' }
+);
+
+export const adminCodeTemplate = (code: string) => wrap(
+  `${bodySection(`
+    ${greeting('Administrator,')}
+    ${p(`A hidden admin access request was triggered. Use the verification code below to access the Annita admin dashboard. This code expires in <span style="color:#F5A623;font-weight:700;">5 minutes</span> and can only be used <strong>once</strong>.`)}
+  `)}
+  ${bodySection(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0B1229;border-radius:14px;">
+      <tr>
+        <td align="center" style="padding:32px 20px;">
+          <p class="font-display" style="color:#F5A623;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:16px;">Verification Code</p>
+          <p class="font-display" style="color:#FFFFFF;font-size:42px;font-weight:800;letter-spacing:0.3em;font-family:monospace;margin:0;">${escapeHtml(code)}</p>
+          <p class="font-body" style="color:#8B93A7;font-size:11px;margin-top:16px;">Expires: ${new Date(Date.now() + 5 * 60000).toUTCString()}</p>
+        </td>
+      </tr>
+    </table>
+  `)}
+  ${divider()}
+  ${bodySection(`
+    ${p(`<strong style="color:#EF4444;">⚠ This code is single-use and device-bound. Do not forward or share.</strong>`, 'font-size:12px;')}
+    ${p('If you did not request this, ignore this email. All admin access is audited.', 'font-size:12px;color:#5B6472;margin:0;')}
+  `)}`,
+  { eyebrow: 'Secure Admin Access', eyebrowColor: 'red', headline: 'Admin Access Code', subhead: 'One-time verification code — Do not share', preheader: 'Admin access code — one-time verification. Expires in 5 minutes.' }
+);
 
 export const dailyHealthReportTemplate = (data: ReportData) => {
   const dbColor = healthStatusColor(data.dbStatus);
@@ -1197,146 +1357,116 @@ export const dailyHealthReportTemplate = (data: ReportData) => {
 
   const endpointRows = data.topEndpoints.slice(0, 6).map(ep => `
 <tr>
-  <td style="padding:6px 8px;font-size:12px;color:${COLOR.textPrimary};border-bottom:1px solid ${COLOR.border};font-family:monospace;">${escapeHtml(ep.path)}</td>
-  <td style="padding:6px 8px;font-size:12px;color:${COLOR.textPrimary};text-align:right;border-bottom:1px solid ${COLOR.border};">${ep.hits}</td>
-  <td style="padding:6px 8px;font-size:12px;color:${COLOR.textPrimary};text-align:right;border-bottom:1px solid ${COLOR.border};">${ep.avgLatency.toFixed(1)}ms</td>
+  <td style="padding:6px 8px;font-size:12px;color:#0B1229;border-bottom:1px solid #E7E4DC;font-family:monospace;">${escapeHtml(ep.path)}</td>
+  <td style="padding:6px 8px;font-size:12px;color:#0B1229;text-align:right;border-bottom:1px solid #E7E4DC;">${ep.hits}</td>
+  <td style="padding:6px 8px;font-size:12px;color:#0B1229;text-align:right;border-bottom:1px solid #E7E4DC;">${ep.avgLatency.toFixed(1)}ms</td>
 </tr>`).join('');
 
   const errorRows = data.recentErrors.slice(0, 5).map(e => `
 <tr>
-  <td style="padding:4px 8px;font-size:11px;color:${COLOR.textMuted};font-family:monospace;">${escapeHtml(e.timestamp.split('T')[1].slice(0, 8))}</td>
+  <td style="padding:4px 8px;font-size:11px;color:#5B6472;font-family:monospace;">${escapeHtml(e.timestamp.split('T')[1].slice(0, 8))}</td>
   <td style="padding:4px 8px;font-size:11px;color:${severityColor(e.level)};font-weight:700;">${escapeHtml(e.level)}</td>
-  <td style="padding:4px 8px;font-size:11px;color:${COLOR.textPrimary};">${escapeHtml(e.message.slice(0, 80))}</td>
+  <td style="padding:4px 8px;font-size:11px;color:#0B1229;">${escapeHtml(e.message.slice(0, 80))}</td>
 </tr>`).join('');
 
-  return wrap(`
-<div class="email-header">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="badge">${escapeHtml(data.reportType.toUpperCase())} Report</div>
-  <h1 class="email-title">System Health Report</h1>
-  <p class="email-subtitle">${escapeHtml(data.date)} — Annita Landing Page Server</p>
-</div>
-<div class="email-content">
-  <p class="greeting">Administrator,</p>
-  <p class="body-text">
-    Here is the ${escapeHtml(data.reportType)} system health summary for the Annita Landing Page server.
-  </p>
-  
-  <!-- Key Metrics -->
-  <div style="display:table;width:100%;margin-bottom:20px;">
-    <div style="display:table-cell;width:33%;text-align:center;padding:12px;background:${COLOR.card};border-radius:8px;margin-right:8px;">
-      <div style="font-size:24px;font-weight:800;color:${escapeHtml(errColor)};">${data.errorRate.toFixed(1)}%</div>
-      <div style="font-size:10px;text-transform:uppercase;color:${COLOR.textMuted};margin-top:4px;">Error Rate</div>
-    </div>
-    <div style="display:table-cell;width:33%;text-align:center;padding:12px;background:${COLOR.card};border-radius:8px;">
-      <div style="font-size:24px;font-weight:800;color:${COLOR.accent};">${data.totalRequests.toLocaleString()}</div>
-      <div style="font-size:10px;text-transform:uppercase;color:${COLOR.textMuted};margin-top:4px;">Total Requests</div>
-    </div>
-    <div style="display:table-cell;width:33%;text-align:center;padding:12px;background:${COLOR.card};border-radius:8px;">
-      <div style="font-size:24px;font-weight:800;color:${escapeHtml(dbColor)};">${escapeHtml(data.dbStatus)}</div>
-      <div style="font-size:10px;text-transform:uppercase;color:${COLOR.textMuted};margin-top:4px;">Database</div>
-    </div>
-  </div>
-
-  <hr class="divider">
-  
-  <!-- Detailed Stats -->
-  <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:${COLOR.accent};letter-spacing:0.12em;margin-bottom:12px;">Server Stats</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
-    <div style="padding:8px;background:${COLOR.card};border-radius:6px;">
-      <span style="font-size:10px;color:${COLOR.textMuted};">Uptime</span>
-      <span style="font-size:13px;color:${COLOR.textPrimary};display:block;">${escapeHtml(data.uptime)}</span>
-    </div>
-    <div style="padding:8px;background:${COLOR.card};border-radius:6px;">
-      <span style="font-size:10px;color:${COLOR.textMuted};">Avg Response</span>
-      <span style="font-size:13px;color:${COLOR.textPrimary};display:block;">${data.avgResponseTime.toFixed(1)}ms</span>
-    </div>
-    <div style="padding:8px;background:${COLOR.card};border-radius:6px;">
-      <span style="font-size:10px;color:${COLOR.textMuted};">Errors</span>
-      <span style="font-size:13px;color:${COLOR.textPrimary};display:block;">${data.totalErrors} (${data.errorRate.toFixed(1)}%)</span>
-    </div>
-    <div style="padding:8px;background:${COLOR.card};border-radius:6px;">
-      <span style="font-size:10px;color:${COLOR.textMuted};">DB Latency</span>
-      <span style="font-size:13px;color:${COLOR.textPrimary};display:block;">${escapeHtml(dbLat)}</span>
-    </div>
-  </div>
-
-  <hr class="divider">
-  
-  <!-- Top Endpoints -->
-  <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:${COLOR.accent};letter-spacing:0.12em;margin-bottom:8px;">Top Endpoints</div>
-  <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-    <tr style="border-bottom:2px solid ${COLOR.border};">
-      <th style="text-align:left;padding:4px 8px;font-size:10px;color:${COLOR.textMuted};text-transform:uppercase;">Path</th>
-      <th style="text-align:right;padding:4px 8px;font-size:10px;color:${COLOR.textMuted};text-transform:uppercase;">Hits</th>
-      <th style="text-align:right;padding:4px 8px;font-size:10px;color:${COLOR.textMuted};text-transform:uppercase;">Latency</th>
-    </tr>
-    ${endpointRows}
-  </table>
-
-  ${errorRows ? `
-  <hr class="divider">
-  <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:${COLOR.danger};letter-spacing:0.12em;margin-bottom:8px;">Recent Errors/Warnings</div>
-  <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-    ${errorRows}
-  </table>
-  ` : ''}
-
-  <div style="text-align:center;margin-top:16px;">
-    <a href="https://an-nita.com" class="cta-btn">View Admin Dashboard →</a>
-  </div>
-</div>
-${footer()}`,
-`System Health Report — ${escapeHtml(data.date)} — Error Rate: ${data.errorRate.toFixed(1)}% — ${data.totalRequests.toLocaleString()} Requests`);
+  return wrap(
+    `${bodySection(`
+      ${greeting('Administrator,')}
+      ${p(`Here is the ${escapeHtml(data.reportType)} system health summary for the Annita Landing Page server.`)}
+    `)}
+    ${bodySection(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td width="33%" align="center" style="padding:12px;background-color:#F7F6F2;border-radius:8px;">
+            <p class="font-display" style="font-size:24px;font-weight:800;color:${escapeHtml(errColor)};margin:0;">${data.errorRate.toFixed(1)}%</p>
+            <p class="font-body" style="font-size:10px;text-transform:uppercase;color:#5B6472;margin-top:4px;">Error Rate</p>
+          </td>
+          <td width="33%" align="center" style="padding:12px;background-color:#F7F6F2;border-radius:8px;">
+            <p class="font-display" style="font-size:24px;font-weight:800;color:#F5A623;margin:0;">${data.totalRequests.toLocaleString()}</p>
+            <p class="font-body" style="font-size:10px;text-transform:uppercase;color:#5B6472;margin-top:4px;">Total Requests</p>
+          </td>
+          <td width="33%" align="center" style="padding:12px;background-color:#F7F6F2;border-radius:8px;">
+            <p class="font-display" style="font-size:24px;font-weight:800;color:${escapeHtml(dbColor)};margin:0;">${escapeHtml(data.dbStatus)}</p>
+            <p class="font-body" style="font-size:10px;text-transform:uppercase;color:#5B6472;margin-top:4px;">Database</p>
+          </td>
+        </tr>
+      </table>
+    `)}
+    ${divider()}
+    ${secondaryBlock(`
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${detailHeader('Server Stats')}
+        <tr><td style="padding-top:14px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            ${detailRow('Uptime', escapeHtml(data.uptime))}
+            ${detailRow('Avg response', `${data.avgResponseTime.toFixed(1)}ms`)}
+            ${detailRow('Errors', `${data.totalErrors} (${data.errorRate.toFixed(1)}%)`)}
+            ${detailRow('DB latency', escapeHtml(dbLat))}
+          </table>
+        </td></tr>
+      </table>
+    `)}
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#0B1229;">Top Endpoints</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;">
+        <tr style="border-bottom:2px solid #E7E4DC;">
+          <th style="text-align:left;padding:4px 8px;font-size:10px;color:#5B6472;text-transform:uppercase;">Path</th>
+          <th style="text-align:right;padding:4px 8px;font-size:10px;color:#5B6472;text-transform:uppercase;">Hits</th>
+          <th style="text-align:right;padding:4px 8px;font-size:10px;color:#5B6472;text-transform:uppercase;">Latency</th>
+        </tr>
+        ${endpointRows}
+      </table>
+    `)}
+    ${errorRows ? `
+    ${divider()}
+    ${bodySection(`
+      ${p(`<strong style="color:#EF4444;">Recent Errors/Warnings</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;">
+        ${errorRows}
+      </table>
+    `)}` : ''}
+    ${ctaButton('https://an-nita.com', 'View Admin Dashboard')}`,
+    { eyebrow: `${escapeHtml(data.reportType.toUpperCase())} Report`, eyebrowColor: 'red', headline: 'System Health Report', subhead: `${escapeHtml(data.date)} — Annita Landing Page Server`, preheader: `System Health Report — ${escapeHtml(data.date)} — Error Rate: ${data.errorRate.toFixed(1)}% — ${data.totalRequests.toLocaleString()} Requests` }
+  );
 };
 
 export const weeklyHealthReportTemplate = (data: ReportData) => {
-  return dailyHealthReportTemplate(data); // Same template structure, different reportType label
+  return dailyHealthReportTemplate(data);
 };
 
-export const emergencyAlertTemplate = (data: { message: string; severity: string; timestamp: string; metrics?: Partial<ReportData> }) => wrap(`
-<div class="email-header" style="border-top:3px solid ${COLOR.danger};">
-  <div class="logo-row"><span class="logo-dot"></span><span class="brand-name">Annita<span class="brand-dot">.</span></span></div>
-  <div class="admin-tag" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.5);color:${COLOR.danger};">EMERGENCY ALERT</div>
-  <h1 class="email-title" style="color:${COLOR.danger};">🚨 Critical System Alert</h1>
-  <p class="email-subtitle">${escapeHtml(data.timestamp)} — Immediate attention required</p>
-</div>
-<div class="email-content">
-  <p class="greeting" style="color:${COLOR.danger};">⚠ Administrator — ACTION REQUIRED</p>
-  <p class="body-text">
-    A critical event was detected on the Annita Landing Page server. Please investigate immediately.
-  </p>
-  
-  <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:16px;margin:16px 0;">
-    <div class="field-label" style="color:${COLOR.danger};">Severity</div>
-    <div class="field-value" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.2);color:${COLOR.danger};">${escapeHtml(data.severity)}</div>
-    <div class="field-label" style="color:${COLOR.danger};">Alert Message</div>
-    <div class="field-value-long" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.2);color:${COLOR.textPrimary};">${escapeHtmlMultiline(data.message)}</div>
-  </div>
-
+export const emergencyAlertTemplate = (data: { message: string; severity: string; timestamp: string; metrics?: Partial<ReportData> }) => wrap(
+  `${bodySection(`
+    ${greeting('⚠ Administrator — ACTION REQUIRED', '#EF4444')}
+    ${p('A critical event was detected on the Annita Landing Page server. Please investigate immediately.')}
+  `)}
+  ${secondaryBlock(`
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.20);border-radius:14px;">
+      <tr><td style="padding:16px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          ${detailRow('Severity', `<span style="color:#EF4444;font-weight:700;">${escapeHtml(data.severity)}</span>`)}
+        </table>
+        <p class="font-display" style="color:#0B1229;font-size:13px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;margin-top:14px;padding-top:14px;border-top:1px solid #E7E4DC;">Alert Message</p>
+        <p class="font-body" style="color:#3A4150;font-size:14px;line-height:22px;margin-top:8px;">${escapeHtmlMultiline(data.message)}</p>
+      </td></tr>
+    </table>
+  `)}
   ${data.metrics ? `
-  <hr class="divider">
-  <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:${COLOR.accent};letter-spacing:0.12em;margin-bottom:8px;">Current Metrics Snapshot</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-    <div style="padding:6px;background:${COLOR.card};border-radius:4px;font-size:11px;">
-      DB: <span style="color:${escapeHtml(healthStatusColor(data.metrics.dbStatus || ''))};">${escapeHtml(data.metrics.dbStatus || '?')}</span>
-    </div>
-    <div style="padding:6px;background:${COLOR.card};border-radius:4px;font-size:11px;">
-      Errors: <span style="color:${escapeHtml(errorRateColor(data.metrics.errorRate || 0))};">${(data.metrics.errorRate || 0).toFixed(1)}%</span>
-    </div>
-  </div>
-  ` : ''}
-
-  <hr class="divider">
-  <p class="body-text" style="font-size:12px;font-weight:700;text-transform:uppercase;color:${COLOR.danger};letter-spacing:0.1em;">Required Actions:</p>
-  <ul class="steps-list">
-    <li><span class="step-num" style="background:rgba(239,68,68,0.12);border-color:${COLOR.danger};color:${COLOR.danger};">1</span><span>Check server health endpoint immediately</span></li>
-    <li><span class="step-num" style="background:rgba(239,68,68,0.12);border-color:${COLOR.danger};color:${COLOR.danger};">2</span><span>Review recent logs for root cause</span></li>
-    <li><span class="step-num" style="background:rgba(239,68,68,0.12);border-color:${COLOR.danger};color:${COLOR.danger};">3</span><span>Access admin dashboard for full diagnostics</span></li>
-  </ul>
-</div>
-${footer()}`,
-`CRITICAL ALERT — ${escapeHtml(data.severity)} — ${escapeHtml(data.message.slice(0, 100))}`);
+  ${divider()}
+  ${bodySection(`
+    ${p(`<strong style="color:#0B1229;">Current Metrics Snapshot</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+    ${p(`DB: <span style="color:${escapeHtml(healthStatusColor(data.metrics.dbStatus || ''))};">${escapeHtml(data.metrics.dbStatus || '?')}</span>`)}
+    ${p(`Errors: <span style="color:${escapeHtml(errorRateColor(data.metrics.errorRate || 0))};">${(data.metrics.errorRate || 0).toFixed(1)}%</span>`, 'margin:0;')}
+  `)}` : ''}
+  ${divider()}
+  ${bodySection(`
+    ${p(`<strong style="color:#EF4444;">Required Actions:</strong>`, 'font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;')}
+    ${p('1. Check server health endpoint immediately')}
+    ${p('2. Review recent logs for root cause')}
+    ${p('3. Access admin dashboard for full diagnostics', 'margin:0;')}
+  `)}`,
+  { eyebrow: 'EMERGENCY ALERT', eyebrowColor: 'red', headline: 'Critical System Alert', subhead: `${escapeHtml(data.timestamp)} — Immediate attention required`, preheader: `CRITICAL ALERT — ${escapeHtml(data.severity)} — ${escapeHtml(data.message.slice(0, 100))}` }
+);
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // ADMIN & REPORT EMAIL SENDERS
@@ -1347,6 +1477,14 @@ export async function sendAdminAccessEmail(email: string, accessUrl: string) {
     to: email,
     subject: '🔐 Annita Admin Dashboard — Secure Access Link',
     html: adminAccessTemplate(accessUrl),
+  });
+}
+
+export async function sendAdminCodeEmail(email: string, code: string) {
+  return send({
+    to: email,
+    subject: '🔐 Annita Admin — Access Code',
+    html: adminCodeTemplate(code),
   });
 }
 

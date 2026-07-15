@@ -83,7 +83,7 @@ export default function SolutionsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 max-w-4xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -106,8 +106,8 @@ export default function SolutionsPage() {
             className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-6 word-break"
             style={{ fontFamily: 'var(--font-syne)', fontWeight: 800 }}
           >
-            <span className="text-[var(--color-text-primary)]">We Build What</span><br />
-            <span className="text-[var(--color-text-primary)]">Africa Needs.</span>
+            <span className="gradient-text">We Build What</span><br />
+            <span className="gradient-text">Africa Needs.</span>
           </motion.h1>
           
           <motion.p
@@ -137,7 +137,7 @@ export default function SolutionsPage() {
       </section>
 
       {/* What We Build Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-28 px-4 md:px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -156,11 +156,16 @@ export default function SolutionsPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="rounded-2xl p-6 transition-all group card-shadow-hover tech-glow-card theme-card"
+              className="rounded-2xl p-6 transition-all group card-shadow-hover tech-glow-card theme-card relative overflow-hidden"
             >
-              <div className="text-xs font-bold mb-3 text-[var(--color-accent)]" style={{ fontFamily: 'var(--font-syne)' }}>{solution.number}</div>
+              <div className="absolute top-0 right-0 w-28 h-28 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+              <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <div className="relative z-10">
+              <div className="text-xs font-bold mb-3 text-[var(--color-accent)] font-mono" style={{ fontFamily: 'var(--font-syne)' }}>{solution.number}</div>
               <h3 className="text-lg font-bold mb-2 text-[var(--color-text-primary)]">{solution.name}</h3>
               <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">{solution.description}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -184,7 +189,7 @@ export default function SolutionsPage() {
       </section>
 
       {/* Who We Build For Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-28 px-4 md:px-8 max-w-[1600px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {targetAudiences.map((audience, index) => (
             <motion.div
@@ -194,18 +199,23 @@ export default function SolutionsPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="rounded-2xl p-8 transition-all group card-shadow-hover tech-glow-card theme-card"
+              className="rounded-2xl p-8 transition-all group card-shadow-hover tech-glow-card theme-card relative overflow-hidden"
             >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+              <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+              <div className="relative z-10">
               <h3 className="text-xl font-bold mb-2 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>{audience.title}</h3>
               <p className="text-sm font-semibold mb-4 text-[var(--color-accent)]">{audience.subtitle}</p>
               <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">{audience.description}</p>
+              </div>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* Process Strip Section */}
-      <section className="py-28 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-28 px-4 md:px-8 max-w-[1600px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -234,7 +244,7 @@ export default function SolutionsPage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1600px] mx-auto">
         <NewsletterSection
           title="Get Updates on Custom Tech Built for Africa"
           subtitle="Be the first to know about new solution capabilities, client case studies, and technology breakthroughs from Annita's engineering team."
@@ -249,7 +259,7 @@ export default function SolutionsPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-4">

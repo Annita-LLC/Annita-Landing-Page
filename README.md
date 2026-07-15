@@ -6,7 +6,9 @@
 [![Vulnerabilities: 0](https://img.shields.io/badge/Vulnerabilities-0-success?style=for-the-badge)](#)
 [![License: Proprietary](https://img.shields.io/badge/License-Proprietary-blue?style=for-the-badge)](#)
 
-This repository houses the production-ready marketing website, enterprise portal, and security gateway for **Annita LLC**. Serving as the official entry point (landing page) for the Annita ecosystem, this project hosts high-performance marketing pages, dynamic solution request pipelines, and acts as the gatekeeper directing traffic securely to the standalone **AnnitaPlug** application.
+This repository houses the production-ready marketing website, enterprise portal, and security gateway for **Annita LLC**. Serving as the official entry point (landing page) for the Annita ecosystem, this project hosts high-performance marketing pages, dynamic solution request pipelines, the **AnnitaPlug** download page with live app loading simulation, and acts as the gatekeeper directing traffic securely to the standalone **AnnitaPlug** application.
+
+**AnnitaPlug** is launching on two platforms (iOS & Android) as part of the Annita ecosystem — one app, one ecosystem.
 
 ---
 
@@ -36,21 +38,23 @@ The landing page consists of two main components that communicate via REST API:
 
 **1. Next.js Client (Frontend)**
 - **Port**: 3000 (development)
-- **Framework**: Next.js 16.2.9 with React 19.2.7
+- **Framework**: Next.js 16.2.10 with React 19.2.7
 - **Responsibilities**: 
-  - Render marketing pages and interactive components
-  - Handle user interactions (forms, navigation)
+  - Render marketing pages, download page, and interactive components
+  - Handle user interactions (forms, navigation, command palette)
   - Make API requests to the landing page server
-  - Implement client-side security (CSRF tokens, input validation)
+  - Implement client-side security (CSRF tokens, honeypot fields, input validation)
+  - AnnitaPlug app loading simulation with phone mockup
 
 **2. Express Server (Backend)**
 - **Port**: 3001 (development)
-- **Framework**: Express.js 5.2.1 with TypeScript 6.0.3
+- **Framework**: Express.js 4.21.2 with TypeScript 5.7.3
 - **Responsibilities**:
-  - Handle API endpoints (contact forms, newsletter, analytics)
+  - Handle API endpoints (contact, newsletter, sales, careers, partnerships, solutions, beta signup)
   - Process and validate incoming requests
   - Interact with PostgreSQL database via Prisma
   - Send emails via Resend API
+  - Sync data to Google Sheets via Google Sheets API
   - Implement server-side security middleware
 
 **Communication Flow:**
@@ -66,6 +70,11 @@ Client (Next.js) → HTTP/HTTPS → Server (Express) → Database/Email Service
 - `POST /api/contact` - Submit contact form
 - `POST /api/newsletter` - Subscribe to newsletter
 - `POST /api/sales` - Submit sales inquiry
+- `POST /api/partnerships/submit` - Submit partnership inquiry
+- `POST /api/careers/apply` - Submit job application / join talent pool
+- `POST /api/solutions/request` - Submit custom solutions request
+- `POST /api/beta-signup` - Beta signup registration
+- `GET /api/maintenance` - Maintenance mode status
 - `GET /health` - Server health check with telemetry
 
 ### 🔒 Core Security Controls
@@ -97,62 +106,64 @@ Client (Next.js) → HTTP/HTTPS → Server (Express) → Database/Email Service
 
 ## � Package Dependencies
 
-### Client (Next.js) - All Packages Pinned to Latest Versions
+### Client (Next.js)
 
 **Dependencies:**
-- `@vercel/analytics`: 2.0.1 - Vercel analytics integration
-- `framer-motion`: 12.42.0 - Animation library for React
-- `lucide-react`: 1.21.0 - Icon library
-- `next`: 16.2.9 - React framework for production
-- `next-themes`: 0.4.6 - Theme management for Next.js
-- `react`: 19.2.7 - React library
-- `react-dom`: 19.2.7 - React DOM renderer
+- `@vercel/analytics`: ^2.0.1 - Vercel analytics integration
+- `framer-motion`: ^11.15.0 - Animation library for React
+- `lucide-react`: ^0.468.0 - Icon library
+- `next`: ^16.2.10 - React framework for production
+- `next-themes`: ^0.4.4 - Theme management for Next.js
+- `react`: ^19.2.7 - React library
+- `react-dom`: ^19.2.7 - React DOM renderer
+- `sharp`: ^0.35.0 - Image optimization
 - `world-map-country-shapes`: 1.0.0 - World map SVG shapes
 
 **DevDependencies:**
-- `@types/node`: 26.0.1 - TypeScript definitions for Node.js
-- `@types/react`: 19.2.17 - TypeScript definitions for React
-- `@types/react-dom`: 19.2.3 - TypeScript definitions for React DOM
-- `autoprefixer`: 10.5.2 - PostCSS plugin for autoprefixing
-- `eslint`: 10.5.0 - JavaScript linter
-- `eslint-config-next`: 16.2.9 - ESLint config for Next.js
-- `postcss`: 8.5.15 - CSS transformation tool
-- `tailwindcss`: 4.3.1 - Utility-first CSS framework
-- `typescript`: 6.0.3 - TypeScript compiler
+- `@tailwindcss/postcss`: ^4.0.0 - Tailwind CSS PostCSS plugin
+- `@types/node`: ^22.10.2 - TypeScript definitions for Node.js
+- `@types/react`: ^19.2.17 - TypeScript definitions for React
+- `@types/react-dom`: ^19.2.3 - TypeScript definitions for React DOM
+- `autoprefixer`: ^10.4.20 - PostCSS plugin for autoprefixing
+- `eslint`: ^9.18.0 - JavaScript linter
+- `eslint-config-next`: ^16.2.10 - ESLint config for Next.js
+- `postcss`: ^8.4.49 - CSS transformation tool
+- `tailwindcss`: ^4.0.0 - Utility-first CSS framework
+- `typescript`: ^5.7.3 - TypeScript compiler
 
 **Package Overrides:**
-- `postcss`: 8.5.15 - Pinned to fix XSS vulnerability
+- `postcss`: ^8.4.49 - Pinned to fix XSS vulnerability
 
-### Server (Express) - All Packages Pinned to Latest Versions
+### Server (Express)
 
 **Dependencies:**
-- `@prisma/adapter-pg`: 7.8.0 - PostgreSQL adapter for Prisma
-- `@prisma/client`: 7.8.0 - Prisma client for database access
-- `@prisma/extension-accelerate`: 3.0.1 - Prisma Accelerate extension
-- `@react-email/render`: 2.0.9 - React Email rendering
-- `cors`: 2.8.6 - CORS middleware for Express
-- `dotenv`: 17.4.2 - Environment variable loader
-- `express`: 5.2.1 - Fast, unopinionated web framework
-- `express-rate-limit`: 8.5.2 - Rate limiting middleware
-- `express-validator`: 7.3.2 - Request validation middleware
-- `helmet`: 8.2.0 - Security headers middleware
-- `pg`: 8.22.0 - PostgreSQL client
-- `react`: 19.2.7 - React library (for email templates)
-- `react-dom`: 19.2.7 - React DOM (for email templates)
-- `resend`: 6.16.0 - Email sending service
-- `zod`: 4.4.3 - TypeScript-first schema validation
+- `@prisma/adapter-pg`: ^7.8.0 - PostgreSQL adapter for Prisma
+- `@prisma/client`: ^7.8.0 - Prisma client for database access
+- `@prisma/extension-accelerate`: ^3.0.0 - Prisma Accelerate extension
+- `@react-email/render`: ^2.0.0 - React Email rendering
+- `cors`: ^2.8.5 - CORS middleware for Express
+- `dotenv`: ^16.4.7 - Environment variable loader
+- `express`: ^4.21.2 - Fast, unopinionated web framework
+- `express-rate-limit`: ^7.5.1 - Rate limiting middleware
+- `express-validator`: ^7.2.0 - Request validation middleware
+- `googleapis`: ^140.0.0 - Google Sheets API integration
+- `helmet`: ^8.2.0 - Security headers middleware
+- `pg`: ^8.13.1 - PostgreSQL client
+- `prisma`: ^7.8.0 - Prisma ORM toolkit
+- `resend`: ^6.16.0 - Email sending service
+- `tsx`: ^4.19.2 - TypeScript execution engine
+- `zod`: ^4.4.3 - TypeScript-first schema validation
 
 **DevDependencies:**
-- `@types/cors`: 2.8.19 - TypeScript definitions for CORS
-- `@types/express`: 5.0.6 - TypeScript definitions for Express
-- `@types/node`: 26.0.1 - TypeScript definitions for Node.js
-- `@types/pg`: 8.20.0 - TypeScript definitions for pg
-- `prisma`: 7.8.0 - Prisma ORM toolkit
-- `tsx`: 4.22.4 - TypeScript execution engine
-- `typescript`: 6.0.3 - TypeScript compiler
+- `@types/cors`: ^2.8.17 - TypeScript definitions for CORS
+- `@types/express`: ^5.0.6 - TypeScript definitions for Express
+- `@types/node`: ^22.10.2 - TypeScript definitions for Node.js
+- `@types/pg`: ^8.11.10 - TypeScript definitions for pg
+- `typescript`: ^5.7.3 - TypeScript compiler
 
 **Package Overrides:**
 - `@hono/node-server`: 1.19.13 - Pinned to fix middleware bypass vulnerability
+- `uuid`: ^11.1.1 - Pinned for security
 
 **Security Status:**
 - **Client**: 0 vulnerabilities ✅
@@ -162,13 +173,24 @@ Client (Next.js) → HTTP/HTTPS → Server (Express) → Database/Email Service
 
 ## � Key Features
 
+* **AnnitaPlug Download Page**: Features a phone mockup with animated app loading simulation (boot sequence, circular progress, boot logs), platform badges for iOS & Android, milestone timeline, and notify-me signup.
+* **Awards & Recognitions Timeline**: Interactive timeline with numbered nodes, animated stat counters, metric badges, and entries for UN STI Forum, APGYD, Orange Social Venture Prize, AU EAN Fellowship, and MANSA Platform onboarding.
+* **Ecosystem Page**: AnnitaPlug announcement with two-platform messaging and ecosystem module directory.
 * **Interactive Live Coding Terminal**: Supports real-time execution logs for multithreaded systems (`annita_pay.ts`, `ezri_ai.py`, and `pulse_health.go`), including run script actions and state-saving parameters.
 * **Session-Aware Loader**: Optimized loading sequencing checks `sessionStorage` to serve the bootscreen only on the initial page visit, bypassing it on subsequent tab navigation for instant loading.
 * **Viewport-Triggered Stats**: Counter modules count up dynamically from `0` to real stats matching the company's verified global statistics when they enter the user's viewport.
+* **Command Palette**: Keyboard-accessible command palette (Cmd/Ctrl+K) for quick navigation across the site.
+* **Tech Cursor & Particle Background**: Custom animated cursor and particle background effects for a modern, techy aesthetic.
+* **Scroll Progress Indicator**: Visual progress bar tracking scroll position through the page.
+* **Sound Effects**: Interactive sound effects on key UI interactions.
+* **Cookies Banner**: GDPR-compliant cookie consent banner.
 * **Responsive Layout Spacing**: Standardized vertical spacing (`py-28`) across components ensures consistent visual flow on all mobile, tablet, and desktop screens.
-* **Enterprise Email Service**: Resend API integration for contact forms, newsletter subscriptions, and sales inquiries with beautiful HTML email templates.
+* **Enterprise Email Service**: Resend API integration for contact forms, newsletter subscriptions, sales inquiries, partnership inquiries, and job applications with beautiful HTML email templates.
+* **Google Sheets Integration**: Form submissions sync to Google Sheets via the Google Sheets API for team visibility.
 * **Custom Enterprise Logger**: Dependency-free logger with real-time telemetry, structured logging, crash handlers, and system health monitoring.
 * **Database Integration**: PostgreSQL database via Prisma ORM with connection pooling and automatic migrations.
+* **Honeypot Anti-Spam**: Hidden honeypot fields on all forms to detect and block bot submissions.
+* **GitHub Actions Security Workflow**: Automated security scanning via Snyk on every push and PR.
 
 ---
 
@@ -177,48 +199,76 @@ Client (Next.js) → HTTP/HTTPS → Server (Express) → Database/Email Service
 ```
 Annita-Landing-Page/
 ├── app/                       # Next.js App Router root directory
-│   ├── about/                 # About Us and verified team stats
-│   ├── awards/                # Global recognitions page
-│   ├── contact/               # Contact support and location index
+│   ├── about/                 # About Us with mission, vision, values, and story
+│   ├── admin/                 # Admin dashboard
+│   │   └── dashboard/         # Admin management interface
+│   ├── awards/                # Awards & recognitions timeline with animated stats
+│   ├── api/                   # Next.js API routes
+│   │   └── maintenance/       # Maintenance mode status endpoint
+│   ├── contact/               # Contact form with WhatsApp integration
 │   ├── contact-sales/         # Enterprise sales pipeline forms
+│   ├── careers/               # Job listings and talent pool application
+│   ├── download/              # AnnitaPlug download page with app loading simulation
+│   ├── ecosystem/             # Ecosystem modules and AnnitaPlug announcement
 │   ├── login/                 # Ecosystem redirect landing point
+│   ├── partnerships/          # Partnership inquiry form and types
 │   ├── solutions/             # Solutions catalog and request pipeline
 │   │   ├── request/           # Multi-step solutions request form
 │   │   └── page.tsx           # Solutions directory landing
 │   ├── globals.css            # Global CSS custom properties and styles
-│   ├── layout.tsx             # Root layout with metadata and site loader
-│   └── page.tsx               # Homepage and interactive code playground
+│   ├── layout.tsx             # Root layout with metadata, JSON-LD, and site loader
+│   ├── page.tsx               # Homepage with interactive code playground
+│   └── robots.ts              # SEO robots configuration
 ├── components/                # Reusable UI component modules
+│   ├── beta-signup.tsx        # Beta signup form component
+│   ├── command-palette.tsx    # Cmd/Ctrl+K command palette navigation
+│   ├── cookies-banner.tsx     # GDPR cookie consent banner
+│   ├── FormFeedbackModal.tsx  # Reusable form success/error modal
+│   ├── HoneypotField.tsx      # Anti-spam honeypot field component
 │   ├── live-coding-terminal.tsx # Tabbed script terminal emulator
 │   ├── loader.tsx             # Spinning visual loader component
+│   ├── newsletter-section.tsx # Reusable newsletter signup section
+│   ├── particle-background.tsx # Animated particle background effect
+│   ├── scroll-progress.tsx    # Scroll position progress indicator
 │   ├── site-loader-wrapper.tsx # Session-aware mounting container
-│   ├── navigation.tsx         # Responsive sticky header navigation
-│   └── theme-provider.tsx     # Custom hydration-safe theme wrapper
+│   ├── sound-effects.tsx      # Interactive UI sound effects
+│   ├── tech-cursor.tsx        # Custom animated tech cursor
+│   ├── theme-provider.tsx     # Custom hydration-safe theme wrapper
+│   └── theme-toggle.tsx      # Dark/light theme toggle button
 ├── envoy/                     # Envoy reverse proxy configurations
 │   ├── docker-compose.yml     # Standalone Envoy container config
 │   ├── envoy.yaml             # Cluster and routing proxy layout
 │   └── ratelimit-config.yaml  # Rate limits for inbound endpoint routes
 ├── lib/                       # Utility functions and API integrations
-│   └── api.ts                 # Form submission helpers to production API
+│   ├── api.ts                 # Form submission helpers to production API
+│   └── health-check.ts        # Server health check utilities
 ├── public/                    # Optimized logos, icons, and image assets
 ├── server/                    # Express.js backend server
 │   ├── src/
 │   │   ├── config/           # Configuration management
+│   │   ├── jobs/             # Background jobs (Google Sheets sync)
 │   │   ├── lib/              # Core libraries (database, logger, email)
 │   │   ├── middleware/       # Express middleware (security, CORS)
-│   │   │   ├── security-enhanced.ts  # Pentagon-grade security middleware
-│   │   │   ├── security.ts            # Basic security middleware
-│   │   │   └── cors.ts                 # CORS configuration
 │   │   └── index.ts          # Server entry point
 │   ├── prisma/
-│   │   └── schema.prisma     # Database schema
-│   ├── .env                  # Environment variables
+│   │   ├── schema.prisma     # Database schema
+│   │   ├── seed.ts           # Database seeding
+│   │   └── migrations/       # Database migrations
+│   ├── scripts/              # Utility scripts
+│   │   ├── setup-sheet-headers.ts # Google Sheets header setup
+│   │   ├── test-sheets.ts    # Google Sheets integration test
+│   │   └── verify-prisma.ts  # Prisma connection verification
+│   ├── .env.example          # Environment variables template
+│   ├── Dockerfile            # Docker container configuration
 │   ├── package.json          # Server dependencies
 │   ├── railway.toml          # Railway deployment config
 │   └── README.md             # Server documentation
+├── types/                     # TypeScript type declarations
+├── .github/workflows/         # GitHub Actions CI/CD
+│   └── security.yml           # Snyk security scan workflow
 ├── .env.example               # Standard mock environment configurations
 ├── .env.production            # Production endpoints for redirection and API
-├── vercel.json                # Vercel routing parameters and build path settings
+├── netlify.toml               # Netlify deployment configuration
 ├── package.json               # Client dependencies
 ├── tsconfig.json              # TypeScript engine configurations
 └── README.md                 # This file
@@ -315,15 +365,18 @@ npm start
 
 ## 🌐 Deployment Configuration
 
-### Client Deployment (Vercel)
+### Client Deployment (Netlify / Vercel)
 
-The landing page client is configured to run as a standalone Next.js deployment on Vercel.
+The landing page client is configured for deployment on both Netlify and Vercel as a standalone Next.js application.
+
+**Netlify Integration:**
+The `netlify.toml` file is pre-configured with build settings and redirects. Connect this repository in the Netlify dashboard to deploy.
 
 **Vercel Integration:**
-To deploy to Vercel, link this directory as a Next.js project. The root `vercel.json` or repository-specific settings will direct traffic accordingly.
+To deploy to Vercel, link this directory as a Next.js project.
 
 **Environment Variables:**
-Ensure the following Environment Variables are configured in the Vercel dashboard:
+Ensure the following Environment Variables are configured in your deployment dashboard:
 - `NEXT_PUBLIC_CLIENT_URL` = `https://annita-v1.vercel.app` (The standalone client dashboard application)
 - `NEXT_PUBLIC_API_URL` = `https://api.an-nita.com` (The production backend API endpoint)
 

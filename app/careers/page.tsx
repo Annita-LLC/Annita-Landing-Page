@@ -135,7 +135,7 @@ export default function CareersPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 max-w-4xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -152,16 +152,17 @@ export default function CareersPage() {
           </motion.div>
           
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
-            Build the Future with Us
+            <span className="gradient-text">Build the Future</span><br />
+            <span className="gradient-text">With Us</span>
           </h1>
           <p className="text-lg md:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto">
-            Join Annita in building Africa's digital infrastructure. We're looking for passionate individuals who want to make an impact.
+            Join Annita in building Africa's digital infrastructure. We're looking for passionate individuals who want to make a lasting impact on the continent's tech ecosystem.
           </p>
         </motion.div>
       </section>
 
       {/* Job Listings */}
-      <section className="px-4 md:px-8 py-16 max-w-[1400px] mx-auto">
+      <section className="px-4 md:px-8 py-16 max-w-[1600px] mx-auto">
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-[var(--color-text-primary)] mb-4" style={{ fontFamily: 'var(--font-syne)' }}>
             Open Positions
@@ -174,7 +175,11 @@ export default function CareersPage() {
         {loading ? (
           <div className="text-center py-12 text-[var(--color-text-tertiary)]">Loading...</div>
         ) : jobs.length === 0 ? (
-          <div className="border border-[var(--color-border-card)] rounded-xl p-8 md:p-12 bg-[var(--color-surface-card)]/30 backdrop-blur-sm text-center">
+          <div className="border border-[var(--color-border-card)] rounded-xl p-8 md:p-12 bg-[var(--color-surface-card)]/30 backdrop-blur-sm text-center relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+            <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30" />
+            <div className="relative z-10">
             <Briefcase className="w-16 h-16 text-[var(--color-accent)] mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">No Open Positions</h3>
             <p className="text-[var(--color-text-secondary)] mb-6">
@@ -186,6 +191,7 @@ export default function CareersPage() {
             >
               Join Our Talent Pool
             </button>
+            </div>
           </div>
         ) : (
           <div className="grid gap-6">
@@ -195,8 +201,11 @@ export default function CareersPage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm hover:border-[var(--color-accent)]/30 transition-all"
+                className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm hover:border-[var(--color-accent)]/30 transition-all group relative overflow-hidden"
               >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+                <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <Link href={`/careers/${job.id}`} className="flex-1 group/link">
                     <h3 className="text-xl font-bold text-[var(--color-text-primary)] mb-2 group-hover/link:text-[var(--color-accent)] transition-colors">
@@ -236,9 +245,12 @@ export default function CareersPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-12 border border-[var(--color-accent)]/30 rounded-xl p-8 md:p-12 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+            className="mt-12 border border-[var(--color-accent)]/30 rounded-xl p-8 md:p-12 bg-[var(--color-surface-card)]/30 backdrop-blur-sm relative overflow-hidden group"
           >
-            <div className="text-center">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
+            <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/50" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[var(--color-accent)]/50" />
+            <div className="text-center relative z-10">
               <h3 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">Join Our Talent Pool</h3>
               <p className="text-[var(--color-text-secondary)] mb-6">
                 Don't see a role that fits? Submit your application and we'll notify you when a matching position opens up.
@@ -468,7 +480,7 @@ export default function CareersPage() {
       )}
 
       {/* Newsletter Section */}
-      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="py-12 md:py-20 px-4 md:px-8 max-w-[1600px] mx-auto">
         <NewsletterSection
           title="Join Our Talent Network"
           subtitle="Be the first to know about new opportunities, career updates, and insider insights from Annita's growing team."
@@ -483,7 +495,7 @@ export default function CareersPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--color-accent)]/5 to-transparent animate-scanline" />
         </div>
 
-        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="relative z-10 py-12 px-4 md:px-8 max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-4">

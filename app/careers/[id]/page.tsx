@@ -164,7 +164,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
     return (
       <div className="min-h-screen tech-grid theme-bg">
         <Navigation />
-        <div className="max-w-4xl mx-auto px-4 md:px-8 py-16 mt-8">
+        <div className="max-w-5xl mx-auto px-4 md:px-8 py-16 mt-8">
           <div className="border border-[var(--color-border-card)] rounded-xl p-8 md:p-12 bg-[var(--color-surface-card)]/30 backdrop-blur-sm text-center">
             <AlertCircle className="w-16 h-16 text-[var(--color-accent)] mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-3">
@@ -206,7 +206,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative z-10 max-w-4xl mx-auto text-center"
+          className="relative z-10 max-w-5xl mx-auto text-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -246,7 +246,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
       </section>
 
       {/* Content + Application */}
-      <section className="max-w-6xl mx-auto px-4 md:px-8 py-16">
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-16">
         <Link
           href="/careers"
           className="inline-flex items-center gap-2 text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors mb-8"

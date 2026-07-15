@@ -4,16 +4,18 @@
 
 ## Overview
 
-This is a standalone Express.js server for the Annita Landing Page, built with enterprise-grade security, observability, and deployment practices. It handles API requests for contact forms, newsletter subscriptions, and analytics events.
+This is a standalone Express.js server for the Annita Landing Page, built with enterprise-grade security, observability, and deployment practices. It handles API requests for contact forms, newsletter subscriptions, sales inquiries, partnership inquiries, job applications, custom solutions requests, beta signups, and syncs form submissions to Google Sheets.
 
 ## Architecture
 
 ### Technology Stack
 - **Runtime**: Node.js 22+
-- **Framework**: Express.js
+- **Framework**: Express.js 4.21.2
 - **Database**: PostgreSQL (Prisma Cloud)
-- **ORM**: Prisma
-- **Language**: TypeScript
+- **ORM**: Prisma 7.8.0
+- **Language**: TypeScript 5.7.3
+- **Email**: Resend API
+- **Data Sync**: Google Sheets API (googleapis)
 - **Deployment**: Railway
 
 ### Directory Structure
@@ -81,9 +83,24 @@ server/
 - `POST /api/contact` - Submit contact form
 - `GET /api/contact` - Get all submissions (admin)
 
-#### Newsletter (Future)
+#### Newsletter
 - `POST /api/newsletter` - Subscribe to newsletter
 - `DELETE /api/newsletter/:id` - Unsubscribe
+
+#### Sales
+- `POST /api/sales` - Submit sales inquiry
+
+#### Partnerships
+- `POST /api/partnerships/submit` - Submit partnership inquiry
+
+#### Careers
+- `POST /api/careers/apply` - Submit job application / join talent pool
+
+#### Solutions
+- `POST /api/solutions/request` - Submit custom solutions request
+
+#### Beta Signup
+- `POST /api/beta-signup` - Beta signup registration
 
 #### Analytics (Future)
 - `POST /api/analytics` - Track analytics events
@@ -145,6 +162,11 @@ See `.env.example` for all available variables. Key variables:
 - `JWT_SECRET` - JWT signing secret (min 32 chars)
 - `CORS_ORIGIN` - Allowed CORS origins
 - `NODE_ENV` - Environment (development/production)
+- `RESEND_API_KEY` - Resend email API key
+- `RESEND_FROM_EMAIL` - Sender email address
+- `GOOGLE_SHEETS_ID` - Google Sheets ID for data sync
+- `GOOGLE_SERVICE_ACCOUNT_EMAIL` - Google service account email
+- `GOOGLE_PRIVATE_KEY` - Google service account private key
 
 ## Deployment
 

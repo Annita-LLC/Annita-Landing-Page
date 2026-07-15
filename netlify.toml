@@ -25,6 +25,35 @@
   # Enable skew protection to avoid client/server version drift across deploys.
   NETLIFY_NEXT_SKEW_PROTECTION = "true"
 
+  # ----------------------------------------------------------------------------
+  # Public runtime environment variables (from .env.production)
+  # These are NEXT_PUBLIC_* so they are inlined at build time.
+  # ----------------------------------------------------------------------------
+  NEXT_PUBLIC_CLIENT_URL = "https://annita-v1.vercel.app"
+  NEXT_PUBLIC_API_URL = "https://api.an-nita.com"
+  NEXT_PUBLIC_LANDING_PAGE_URL = "https://annita-landing-page-production.up.railway.app"
+
+  # Company & Branding
+  NEXT_PUBLIC_COMPANY_NAME = "Annita LLC"
+  NEXT_PUBLIC_COMPANY_TAGLINE = "Africa's Digital Heartbeat"
+  NEXT_PUBLIC_COMPANY_ADDRESS = "Monrovia, Liberia"
+  NEXT_PUBLIC_COMPANY_PHONE = "+231 77 505 7227"
+  NEXT_PUBLIC_COMPANY_EMAIL = "info@an-nita.com"
+  NEXT_PUBLIC_COMPANY_WEBSITE = "https://www.an-nita.com"
+
+  # Support Contacts
+  NEXT_PUBLIC_SUPPORT_EMAIL = "support@an-nita.com"
+  NEXT_PUBLIC_ENTERPRISE_EMAIL = "enterprise@an-nita.com"
+  NEXT_PUBLIC_SECURITY_EMAIL = "security@an-nita.com"
+
+  # Social Media Links
+  NEXT_PUBLIC_SOCIAL_FACEBOOK = "https://web.facebook.com/annitallc/"
+  NEXT_PUBLIC_SOCIAL_INSTAGRAM = "https://www.instagram.com/annita_llc/"
+  NEXT_PUBLIC_SOCIAL_LINKEDIN = "https://www.linkedin.com/feed/update/urn:li:activity:7328629052678823938"
+  NEXT_PUBLIC_SOCIAL_YOUTUBE = "https://youtube.com/@annita_llc"
+  NEXT_PUBLIC_SOCIAL_WHATSAPP = "https://wa.me/231775057227"
+  NEXT_PUBLIC_SOCIAL_TIKTOK = "https://www.tiktok.com/@annita_llc"
+
 # ------------------------------------------------------------------------------
 # Security headers (mirror next.config.js for Defense-in-Depth on the edge)
 # ------------------------------------------------------------------------------
