@@ -6,8 +6,7 @@ export default function LoginPage() {
   useEffect(() => {
     // Redirect to the client app's login page
     // In production, this should be the actual client app domain
-    const clientAppUrl = process.env.NEXT_PUBLIC_CLIENT_URL || 'http://localhost:3001'
-    window.location.href = `${clientAppUrl}/login`
+    window.location.href = '/ecosystem'
   }, [])
 
   return (

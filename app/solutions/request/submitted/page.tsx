@@ -113,7 +113,7 @@ export default function SubmittedPage() {
               Back to Annita Home
             </Link>
             <Link
-              href="/login"
+              href="/ecosystem"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold transition-all"
               style={{ backgroundColor: 'transparent', color: 'var(--color-accent)', border: '2px solid var(--color-accent)', borderRadius: '100px' }}
             >
@@ -208,7 +208,7 @@ export default function SubmittedPage() {
                 Ecosystem
               </div>
               <div className="space-y-2">
-                <Link href="/login" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
+                <Link href="/ecosystem" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
                 <a href="https://www.an-nitapay.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AnnitaPay</a>
                 <a href="https://www.an-nita-pulse.org" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Pulse</a>
                 <a href="https://www.ezri-africa.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Ezri</a>

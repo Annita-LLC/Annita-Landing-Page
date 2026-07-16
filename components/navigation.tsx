@@ -13,7 +13,7 @@ const ecosystemItems = [
     name: 'Annita Ecosystem',
     description: 'Marketplace & SaaS',
     icon: '/annita-real-logo.png',
-    href: '/login',
+    href: '/ecosystem',
     isFlagship: true,
   },
   {

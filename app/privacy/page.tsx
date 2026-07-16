@@ -8,6 +8,7 @@ import NextImage from 'next/image'
 import Navigation from '@/components/navigation'
 import NewsletterSection from '@/components/newsletter-section'
 import { HoneypotField } from '@/components/HoneypotField'
+import { submitAccountDeletionRequest } from '@/lib/api'
 
 export default function PrivacyPage() {
   const [formData, setFormData] = useState({
@@ -26,13 +27,8 @@ export default function PrivacyPage() {
     setIsSubmitting(true)
     
     try {
-      const response = await fetch('/api/account-deletion/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-      
-      if (response.ok) {
+      const result = await submitAccountDeletionRequest(formData as any)
+      if (result.success) {
         setSubmitStatus('success')
         setFormData({ email: '', softwareProduct: '', reason: '', communicationChannel: 'email', alternativeContact: '', website_url: '' })
       } else {
@@ -390,7 +386,7 @@ export default function PrivacyPage() {
                 <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" /> Ecosystem
               </div>
               <div className="space-y-2">
-                <Link href="/login" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
+                <Link href="/ecosystem" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
                 <a href="https://www.an-nitapay.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AnnitaPay</a>
                 <a href="https://www.an-nita-pulse.org" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Pulse</a>
                 <a href="https://www.ezri-africa.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Ezri</a>

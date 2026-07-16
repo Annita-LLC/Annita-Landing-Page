@@ -20,7 +20,7 @@ const commands: CommandItem[] = [
   { id: 'contact', label: 'Contact', description: 'Get in touch', href: '/contact' },
   { id: 'contact-sales', label: 'Contact Sales', description: 'Enterprise inquiries', href: '/contact-sales' },
   { id: 'awards', label: 'Awards', description: 'View recognitions', href: '/awards' },
-  { id: 'login', label: 'Login', description: 'Access your account', href: '/login' },
+  { id: 'login', label: 'Login', description: 'Access your account', href: '/ecosystem' },
   { id: 'cookies', label: 'Cookie Policy', description: 'Privacy settings', href: '/cookies' }
 ]
 

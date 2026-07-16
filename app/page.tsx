@@ -2,14 +2,13 @@
 
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
-import { ArrowRight, TrendingUp, Users, Globe, Award, Zap, Shield, Rocket, ChevronRight, CheckCircle2, Sparkles, X, Loader2, Lock } from 'lucide-react'
+import { ArrowRight, Globe, Award, Zap, Shield, Rocket, ChevronRight, CheckCircle2, X, Loader2, Lock } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import Navigation from '@/components/navigation'
 import WelcomeModal from '@/components/welcome-modal'
 import LiveCodingTerminal from '@/components/live-coding-terminal'
 import TechGlobe from '@/components/tech-globe'
-import BetaSignup from '@/components/beta-signup'
 import ImageSlideshow from '@/components/image-slideshow'
 
 const stats = [
@@ -48,13 +47,6 @@ const homeAwards = [
     description: 'Received a $7,000 grant on behalf of Annita at the African Startup Conference - Recognized for building scalable digital infrastructure for Africa.',
     year: '2025',
     category: 'Startup Excellence',
-    status: 'VERIFIED'
-  },
-  {
-    title: 'SMART Liberia Entrepreneurial Support Program',
-    description: '9th place winner - Awarded L$75,000 prize for innovation in eCommerce and fintech solutions empowering Liberian MSMEs.',
-    year: '2024',
-    category: 'National Recognition',
     status: 'VERIFIED'
   },
   {
@@ -368,6 +360,75 @@ export default function HomePage() {
           transition={{ duration: 0.9, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
         >
           <ImageSlideshow />
+        </motion.div>
+      </section>
+
+      {/* MANSA Platform Milestone Section */}
+      <section className="py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="relative rounded-2xl p-6 md:p-12 overflow-hidden border border-[var(--color-accent)]/20 tech-glow-card"
+          style={{ backgroundColor: 'var(--color-surface-raised)' }}
+        >
+          <div className="absolute inset-0 tech-grid opacity-[0.06] pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent)]/5 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col items-center text-center gap-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full" style={{ backgroundColor: 'var(--color-accent-soft)', border: '1px solid var(--color-border-accent)' }}>
+              <Shield className="w-3.5 h-3.5 text-[var(--color-accent)]" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] font-mono">VERIFIED // AFREXIMBANK</span>
+            </div>
+
+            {/* Two logos side by side — clickable to MANSA platform */}
+            <div className="flex items-center justify-center gap-6 md:gap-12">
+              <a
+                href="https://www.mansaafrica.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-16 h-16 md:w-20 md:h-20 rounded-xl border-2 overflow-hidden relative shrink-0 transition-transform hover:scale-110 hover:shadow-lg"
+                style={{ borderColor: 'var(--color-accent)' }}
+                aria-label="View Annita on MANSA platform"
+              >
+                <Image
+                  src="/annita-real-logo.png"
+                  alt="Annita on MANSA"
+                  width={80}
+                  height={80}
+                  className="object-cover"
+                />
+              </a>
+              <div className="text-xl md:text-2xl font-bold text-[var(--color-text-muted)]">×</div>
+              <a
+                href="https://www.mansaafrica.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-16 h-16 md:w-20 md:h-20 rounded-xl border-2 overflow-hidden relative shrink-0 transition-transform hover:scale-110 hover:shadow-lg"
+                style={{ borderColor: 'var(--color-accent)' }}
+                aria-label="Visit MANSA platform"
+              >
+                <Image
+                  src="/mansa-logo.png"
+                  alt="MANSA platform"
+                  width={80}
+                  height={80}
+                  className="object-cover"
+                />
+              </a>
+            </div>
+
+            {/* Two-line message */}
+            <div className="max-w-2xl">
+              <p className="text-sm md:text-base text-[var(--color-text-primary)] font-semibold leading-relaxed">
+                Annita is verified on MANSA — Africa's premier due diligence platform by Afreximbank.
+              </p>
+              <p className="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed mt-2">
+                Trust, transparency, and cross-border trade readiness — built into everything we do.
+              </p>
+            </div>
+          </div>
         </motion.div>
       </section>
 
@@ -739,80 +800,6 @@ export default function HomePage() {
             </Link>
           </motion.div>
         </div>
-      </section>
-
-      {/* MANSA Platform Milestone Section */}
-      <section className="py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative rounded-2xl p-6 md:p-12 overflow-hidden border border-[var(--color-accent)]/20 tech-glow-card"
-          style={{ backgroundColor: 'var(--color-surface-raised)' }}
-        >
-          <div className="absolute inset-0 tech-grid opacity-[0.06] pointer-events-none" />
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent)]/5 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style={{ backgroundColor: 'var(--color-accent-soft)', border: '1px solid var(--color-border-accent)' }}>
-                <Shield className="w-3.5 h-3.5 text-[var(--color-accent)]" />
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] font-mono">VERIFIED // AFREXIMBANK</span>
-              </div>
-              <h2 className="text-2xl md:text-4xl font-bold mb-4 font-syne text-[var(--color-text-primary)]">Annita Joins the MANSA Platform</h2>
-              <p className="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed mb-4">
-                Annita has been officially onboarded onto MANSA, Africa's premier due diligence repository, initiated by African Export-Import Bank (Afreximbank). This strategic milestone reinforces our unwavering commitment to transparency, credibility, and trust — the foundations of cross-border trade and investment.
-              </p>
-              <p className="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">
-                By meeting MANSA's rigorous due diligence standards, Annita is now positioned to unlock new trade and investment opportunities across the continent. As Africa moves toward the AfCFTA era, we remain dedicated to equipping businesses with the tools and infrastructure needed to compete globally, scale efficiently, and thrive in a borderless economy.
-              </p>
-            </div>
-            <div className="lg:col-span-4 flex flex-col gap-3">
-              <div className="p-4 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60">
-                <div className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Due Diligence Status</div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-[var(--color-accent)]" />
-                  <span className="text-sm font-bold text-[var(--color-accent)] font-mono">VERIFIED</span>
-                </div>
-              </div>
-              <div className="p-4 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60">
-                <div className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Trade Readiness</div>
-                <div className="flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-[var(--color-accent)]" />
-                  <span className="text-sm font-bold text-[var(--color-accent)] font-mono">AfCFTA READY</span>
-                </div>
-              </div>
-              <div className="p-4 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60">
-                <div className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-widest mb-2">Issued By</div>
-                <div className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-[var(--color-accent)]" />
-                  <span className="text-sm font-bold text-[var(--color-text-primary)] font-mono">Afreximbank</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Beta Signup Section */}
-      <section className="py-10 md:py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-8"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style={{ backgroundColor: 'var(--color-accent-soft)', border: '1px solid var(--color-border-accent)' }}>
-            <Sparkles className="w-3.5 h-3.5 text-[var(--color-accent)]" />
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] font-mono">Limited Beta</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-syne text-[var(--color-text-primary)]">Join AnnitaPlug Beta</h2>
-          <p className="text-[var(--color-text-secondary)] max-w-2xl">
-            AnnitaPlug is Annita's AI commerce and payment OS — one chat interface connecting buyers, sellers, and logistics across Africa's digital economy. Limited spots available: 100 per role.
-          </p>
-        </motion.div>
-        <BetaSignup />
       </section>
 
       {/* CTA Section */}

@@ -6,6 +6,7 @@ import { Download, Bell, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import Navigation from '@/components/navigation'
+import BetaSignup from '@/components/beta-signup'
 import { HoneypotField } from '@/components/HoneypotField'
 import { submitDownloadNotifyForm } from '@/lib/api'
 
@@ -638,6 +639,28 @@ export default function DownloadPage() {
         </motion.div>
       </section>
 
+      {/* Beta Signup Section */}
+      <section className="py-16 md:py-24 px-4 md:px-8 max-w-[1600px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-8 text-center"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4" style={{ backgroundColor: 'var(--color-accent-soft)', border: '1px solid var(--color-border-accent)' }}>
+            <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-accent)' }} />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-accent)] font-mono">Limited Beta</span>
+          </div>
+          <h2 className="text-2xl md:text-4xl font-bold mb-4 font-syne text-[var(--color-text-primary)]">Join AnnitaPlug Beta</h2>
+          <p className="text-[var(--color-text-secondary)] max-w-2xl mx-auto">
+            AnnitaPlug is Annita's AI commerce and payment OS — one chat interface connecting buyers, sellers, and logistics across Africa's digital economy. Limited spots available: 100 per role.
+          </p>
+        </motion.div>
+        <div className="max-w-4xl mx-auto">
+          <BetaSignup />
+        </div>
+      </section>
+
       {/* Notify Me Section */}
       <section className="py-16 md:py-24 px-4 md:px-8 max-w-[1600px] mx-auto">
         <motion.div
@@ -741,7 +764,7 @@ export default function DownloadPage() {
                 <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" /> Ecosystem
               </div>
               <div className="space-y-2">
-                <Link href="/login" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
+                <Link href="/ecosystem" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
                 <a href="https://www.an-nitapay.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AnnitaPay</a>
                 <a href="https://www.an-nita-pulse.org" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Pulse</a>
                 <a href="https://www.ezri-africa.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Ezri</a>

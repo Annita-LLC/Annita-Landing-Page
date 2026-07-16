@@ -8,6 +8,7 @@ import NextImage from 'next/image'
 import Navigation from '@/components/navigation'
 import NewsletterSection from '@/components/newsletter-section'
 import { HoneypotField } from '@/components/HoneypotField'
+import { fetchJobPostings, submitCareerApplication } from '@/lib/api'
 
 interface JobPosting {
   id: number
@@ -52,10 +53,9 @@ export default function CareersPage() {
 
   const fetchJobs = async () => {
     try {
-      const response = await fetch('/api/careers/jobs')
-      const data = await response.json()
-      if (data.success) {
-        setJobs(data.data)
+      const data = await fetchJobPostings()
+      if (data) {
+        setJobs(data)
       }
     } catch (error) {
       console.error('Failed to fetch jobs:', error)
@@ -75,13 +75,8 @@ export default function CareersPage() {
     setIsSubmitting(true)
     
     try {
-      const response = await fetch('/api/careers/apply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-      
-      if (response.ok) {
+      const result = await submitCareerApplication(formData)
+      if (result.success) {
         setSubmitStatus('success')
         setFormData({
           jobId: undefined,
@@ -516,7 +511,7 @@ export default function CareersPage() {
                 <span className="w-1 h-1 bg-[var(--color-accent)] rounded-full" /> Ecosystem
               </div>
               <div className="space-y-2">
-                <Link href="/login" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
+                <Link href="/ecosystem" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Ecosystem</Link>
                 <a href="https://www.an-nitapay.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">AnnitaPay</a>
                 <a href="https://www.an-nita-pulse.org" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Annita Pulse</a>
                 <a href="https://www.ezri-africa.com" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Ezri</a>
