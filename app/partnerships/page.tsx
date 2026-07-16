@@ -16,7 +16,7 @@ export default function PartnershipsPage() {
     contactName: '',
     email: '',
     phone: '',
-    partnershipType: 'technology',
+    partnershipType: 'technology' as 'technology' | 'distribution' | 'investment' | 'other',
     companyDescription: '',
     partnershipGoals: '',
     mouDocumentUrl: '',
@@ -136,7 +136,7 @@ export default function PartnershipsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm hover:border-[var(--color-accent)]/30 transition-all cursor-pointer group relative overflow-hidden"
-              onClick={() => setFormData({ ...formData, partnershipType: type.value })}
+              onClick={() => setFormData({ ...formData, partnershipType: type.value as 'technology' | 'distribution' | 'investment' | 'other' })}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl group-hover:bg-[var(--color-accent)]/10 transition-colors" />
               <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[var(--color-accent)]/30 group-hover:border-[var(--color-accent)] transition-colors" />
@@ -243,7 +243,7 @@ export default function PartnershipsPage() {
               <select
                 required
                 value={formData.partnershipType}
-                onChange={(e) => setFormData({ ...formData, partnershipType: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, partnershipType: e.target.value as 'technology' | 'distribution' | 'investment' | 'other' })}
                 className="w-full px-4 py-3 rounded-lg border border-[var(--color-border-card)] bg-[var(--color-surface-raised)]/30 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none transition-colors"
               >
                 {partnershipTypes.map((type) => (
