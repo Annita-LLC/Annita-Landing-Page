@@ -37,6 +37,7 @@ import careersRoutes from './routes/careers.js';
 import partnershipsRoutes from './routes/partnerships.js';
 import downloadNotifyRoutes from './routes/download-notify.js';
 import adminRoutes from './routes/admin.js';
+import { isInMaintenance, maintenanceMiddleware } from './middleware/maintenance.js';
 import { setupSheetHeaders } from './lib/google-sheets.js';
 import { startScheduler } from './jobs/scheduler.js';
 
@@ -122,6 +123,9 @@ app.use(ipRateLimit);
 // Legacy rate limiter (keep for compatibility)
 app.use(rateLimiter);
 
+// Maintenance mode middleware — blocks all non-exempt requests during maintenance
+app.use(maintenanceMiddleware());
+
 // ============================================================================
 // ROUTES
 // ============================================================================
@@ -158,6 +162,21 @@ if (config.features.enableBehavioralAnalysis) {
 
 // Admin routes (separate from public API, with token-based authentication)
 app.use('/admin', adminRoutes);
+
+// Public maintenance status endpoint (no auth required)
+app.get('/maintenance/status', async (_req, res) => {
+  try {
+    const state = await isInMaintenance();
+    res.json({
+      active: state.active,
+      reason: state.reason,
+      endTime: state.endTime ? state.endTime.toISOString() : null,
+    });
+  } catch (error) {
+    logger.error('Failed to fetch public maintenance status', error);
+    res.status(500).json({ active: false, reason: '', endTime: null });
+  }
+});
 
 // Health check endpoint with Fortune 500 Pentagon-grade debugging
 app.get('/health', async (req, res) => {

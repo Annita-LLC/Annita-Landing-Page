@@ -18,6 +18,39 @@ export default function DownloadPage() {
   const [honeypot, setHoneypot] = useState('')
   const [appProgress, setAppProgress] = useState(0)
   const [appLogIndex, setAppLogIndex] = useState(0)
+  const [liveLogs, setLiveLogs] = useState<{ time: string; text: string; type: 'success' | 'pending' | 'active' }[]>([])
+  const [betaCount, setBetaCount] = useState(847)
+  const [featureProgress, setFeatureProgress] = useState([
+    { label: 'Core Architecture', progress: 100, status: 'COMPLETE' },
+    { label: 'E-commerce Module', progress: 98, status: 'POLISHING' },
+    { label: 'AnnitaPay Integration', progress: 96, status: 'TESTING' },
+    { label: 'AI Assistant Engine', progress: 94, status: 'INTEGRATING' },
+    { label: 'Push Notifications', progress: 92, status: 'WIRING' },
+    { label: 'Offline Sync Engine', progress: 90, status: 'OPTIMIZING' },
+  ])
+
+  const buildLogEntries = [
+    { text: 'Core architecture build... PASSED', type: 'success' as const },
+    { text: 'E-commerce module: cart sync verified', type: 'success' as const },
+    { text: 'AnnitaPay SDK: token encryption OK', type: 'success' as const },
+    { text: 'AI engine: model inference optimized', type: 'success' as const },
+    { text: 'Push notification service: configuring APNs', type: 'pending' as const },
+    { text: 'Offline sync: conflict resolution 92%', type: 'pending' as const },
+    { text: 'UI/UX: dark mode assets rendering', type: 'active' as const },
+    { text: 'Localization: 14 languages at 95%', type: 'active' as const },
+    { text: 'Security audit: OWASP compliance 96%', type: 'success' as const },
+    { text: 'Beta testing: 847 testers onboarded', type: 'active' as const },
+    { text: 'Database migration: schema v0.95 applied', type: 'success' as const },
+    { text: 'CDN: edge nodes synced across 3 regions', type: 'success' as const },
+    { text: 'WebSocket gateway: real-time chat online', type: 'success' as const },
+    { text: 'Payment bridge: mobile money APIs connected', type: 'active' as const },
+    { text: 'AI model: fine-tuning product recommendations', type: 'pending' as const },
+    { text: 'Logistics routing: algorithm v2.1 deployed', type: 'success' as const },
+    { text: 'Image pipeline: CDN compression at 94%', type: 'pending' as const },
+    { text: 'Auth service: biometric login verified', type: 'success' as const },
+    { text: 'Analytics: event tracking pipeline live', type: 'active' as const },
+    { text: 'Crash reporter: Sentry integration complete', type: 'success' as const },
+  ]
 
   const appLogs = [
     'BOOTING ANNITAPLUG v0.95...',
@@ -63,6 +96,39 @@ export default function DownloadPage() {
     }, 300)
     return () => clearInterval(logInterval)
   }, [appLogs.length])
+
+  useEffect(() => {
+    let logIdx = 0
+    const liveLogInterval = setInterval(() => {
+      const entry = buildLogEntries[logIdx % buildLogEntries.length]
+      const now = new Date()
+      const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`
+      setLiveLogs((prev) => [...prev.slice(-7), { time, text: entry.text, type: entry.type }])
+      logIdx++
+    }, 2000)
+    return () => clearInterval(liveLogInterval)
+  }, [])
+
+  useEffect(() => {
+    const betaInterval = setInterval(() => {
+      setBetaCount((prev) => prev + Math.floor(Math.random() * 2))
+    }, 5000)
+    return () => clearInterval(betaInterval)
+  }, [])
+
+  useEffect(() => {
+    const featureInterval = setInterval(() => {
+      setFeatureProgress((prev) =>
+        prev.map((f) => {
+          if (f.progress >= 100) return f
+          const delta = Math.random() * 0.4 - 0.1
+          const newProgress = Math.min(Math.max(f.progress + delta, f.progress - 0.5), 99.5)
+          return { ...f, progress: Math.round(newProgress * 10) / 10 }
+        })
+      )
+    }, 3000)
+    return () => clearInterval(featureInterval)
+  }, [])
 
   async function handleNotify(e: React.FormEvent) {
     e.preventDefault()
@@ -425,9 +491,10 @@ export default function DownloadPage() {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md mb-4 border border-[var(--color-accent)]/20 bg-[var(--color-surface-card)]/60 backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-ping" />
-            <span className="text-[10px] font-mono tracking-widest text-[var(--color-accent)] font-bold uppercase">LIVE BUILD // 95% COMPLETE</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md mb-4 border border-[var(--color-accent)]/20 bg-[var(--color-surface-card)]/60 backdrop-blur-md relative overflow-hidden">
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--color-accent)]/10 to-transparent animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-ping relative z-10" />
+            <span className="text-[10px] font-mono tracking-widest text-[var(--color-accent)] font-bold uppercase relative z-10">LIVE BUILD // 95% COMPLETE</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-text-primary)] mb-3" style={{ fontFamily: 'var(--font-syne)' }}>
             App Development in Real Time
@@ -437,35 +504,37 @@ export default function DownloadPage() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {/* Progress Bars Card */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative rounded-2xl p-6 md:p-8 border border-[var(--color-border-card)] bg-[var(--color-surface-card)]/50 backdrop-blur-md overflow-hidden"
+            className="relative rounded-2xl p-4 sm:p-6 md:p-8 border border-[var(--color-border-card)] bg-[var(--color-surface-card)]/50 backdrop-blur-md overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl pointer-events-none" />
+            <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[var(--color-accent)]/50" />
+            <span className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-[var(--color-accent)]/50" />
+            <span className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-[var(--color-accent)]/50" />
+            <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[var(--color-accent)]/50" />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Feature Completion</h3>
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
+                  <h3 className="text-lg font-bold text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Feature Completion</h3>
+                </div>
                 <span className="text-[10px] font-mono text-[var(--color-accent)] font-bold">95%</span>
               </div>
 
-              <div className="space-y-5">
-                {[
-                  { label: 'Core Architecture', progress: 100, status: 'COMPLETE' },
-                  { label: 'E-commerce Module', progress: 98, status: 'POLISHING' },
-                  { label: 'AnnitaPay Integration', progress: 96, status: 'TESTING' },
-                  { label: 'AI Assistant Engine', progress: 94, status: 'INTEGRATING' },
-                  { label: 'Push Notifications', progress: 92, status: 'WIRING' },
-                  { label: 'Offline Sync Engine', progress: 90, status: 'OPTIMIZING' },
-                ].map((feature, i) => (
+              <div className="space-y-4 sm:space-y-5">
+                {featureProgress.map((feature, i) => (
                   <div key={i}>
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-xs font-medium text-[var(--color-text-secondary)]">{feature.label}</span>
-                      <span className="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wider">{feature.status}</span>
+                      <span className={`text-[9px] font-mono uppercase tracking-wider ${
+                        feature.progress === 100 ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-muted)]'
+                      }`}>{feature.status}</span>
                     </div>
                     <div className="relative h-2 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-default)] overflow-hidden">
                       <motion.div
@@ -473,20 +542,26 @@ export default function DownloadPage() {
                         whileInView={{ width: `${feature.progress}%` }}
                         viewport={{ once: true }}
                         transition={{ duration: 1.5, delay: i * 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-                        className="h-full rounded-full relative"
+                        className="h-full rounded-full relative transition-[width] duration-1000 ease-out"
                         style={{
+                          width: `${feature.progress}%`,
                           background: feature.progress === 100
                             ? 'linear-gradient(90deg, var(--color-accent), var(--color-accent))'
                             : 'linear-gradient(90deg, var(--color-accent)/60, var(--color-accent))'
                         }}
                       >
                         {feature.progress < 100 && (
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+                          <>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+                            <div className="absolute top-0 right-0 bottom-0 w-1 bg-white/40 blur-sm" />
+                          </>
                         )}
                       </motion.div>
                     </div>
                     <div className="text-right mt-0.5">
-                      <span className="text-[9px] font-mono text-[var(--color-text-muted)]">{feature.progress}%</span>
+                      <span className={`text-[9px] font-mono ${
+                        feature.progress === 100 ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-muted)]'
+                      }`}>{feature.progress.toFixed(1)}%</span>
                     </div>
                   </div>
                 ))}
@@ -520,68 +595,87 @@ export default function DownloadPage() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative rounded-2xl p-6 md:p-8 border border-[var(--color-border-card)] bg-[var(--color-surface-card)]/50 backdrop-blur-md overflow-hidden"
+            className="relative rounded-2xl p-4 sm:p-6 md:p-8 border border-[var(--color-border-card)] bg-[var(--color-surface-card)]/50 backdrop-blur-md overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-accent)]/5 rounded-full blur-3xl pointer-events-none" />
+            <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[var(--color-accent)]/50" />
+            <span className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-[var(--color-accent)]/50" />
+            <span className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-[var(--color-accent)]/50" />
+            <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[var(--color-accent)]/50" />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Build Log</h3>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
+                  </div>
+                  <h3 className="text-lg font-bold text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>Build Log</h3>
+                </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
-                  <span className="text-[10px] font-mono text-[var(--color-accent)] font-bold uppercase">LIVE</span>
+                  <span className="text-[10px] font-mono text-[var(--color-accent)] font-bold uppercase">STREAMING</span>
                 </div>
               </div>
 
-              <div className="space-y-2.5 font-mono text-xs max-h-[340px] overflow-hidden">
-                {[
-                  { time: '14:32:08', text: 'Core architecture build... PASSED', type: 'success' },
-                  { time: '14:32:15', text: 'E-commerce module: cart sync verified', type: 'success' },
-                  { time: '14:32:22', text: 'AnnitaPay SDK: token encryption OK', type: 'success' },
-                  { time: '14:32:31', text: 'AI engine: model inference optimized', type: 'success' },
-                  { time: '14:32:39', text: 'Push notification service: configuring APNs', type: 'pending' },
-                  { time: '14:32:47', text: 'Offline sync: conflict resolution 92%', type: 'pending' },
-                  { time: '14:32:55', text: 'UI/UX: dark mode assets rendering', type: 'active' },
-                  { time: '14:33:02', text: 'Localization: 14 languages at 95%', type: 'active' },
-                  { time: '14:33:10', text: 'Security audit: OWASP compliance 96%', type: 'success' },
-                  { time: '14:33:18', text: 'Beta testing: 847 testers onboarded', type: 'active' },
-                ].map((log, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.08 }}
-                    className="flex items-start gap-3"
-                  >
-                    <span className="text-[var(--color-text-muted)] shrink-0">{log.time}</span>
-                    <span className={`shrink-0 ${
-                      log.type === 'success' ? 'text-[var(--color-accent)]' :
-                      log.type === 'pending' ? 'text-yellow-500' :
-                      'text-[var(--color-text-secondary)]'
-                    }`}>
-                      {log.type === 'success' ? '[OK]' : log.type === 'pending' ? '[..]' : '[>>]'}
-                    </span>
-                    <span className={`${
-                      log.type === 'active' ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-tertiary)]'
-                    }`}>
-                      {log.text}
-                    </span>
-                  </motion.div>
-                ))}
+              <div className="relative rounded-lg border border-[var(--color-border-default)] bg-black/30 p-3 sm:p-4 overflow-hidden">
+                <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, currentColor 2px, currentColor 3px)' }} />
+                <div className="space-y-2 font-mono text-[10px] sm:text-xs h-[240px] sm:h-[280px] flex flex-col justify-end overflow-hidden">
+                  {liveLogs.length === 0 && (
+                    <div className="flex items-center gap-2 text-[var(--color-text-muted)]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-ping" />
+                      Connecting to build server...
+                    </div>
+                  )}
+                  {liveLogs.map((log, i) => (
+                    <motion.div
+                      key={`${log.time}-${i}`}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex items-start gap-2 sm:gap-3"
+                    >
+                      <span className="text-[var(--color-text-muted)] shrink-0">{log.time}</span>
+                      <span className={`shrink-0 ${
+                        log.type === 'success' ? 'text-[var(--color-accent)]' :
+                        log.type === 'pending' ? 'text-yellow-500' :
+                        'text-[var(--color-text-secondary)]'
+                      }`}>
+                        {log.type === 'success' ? '[OK]' : log.type === 'pending' ? '[..]' : '[>>]'}
+                      </span>
+                      <span className={`${
+                        log.type === 'active' ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-tertiary)]'
+                      }`}>
+                        {log.text}
+                      </span>
+                    </motion.div>
+                  ))}
+                  <div className="flex items-center gap-2 text-[var(--color-accent)]">
+                    <span>$</span>
+                    <span className="w-2 h-3.5 bg-[var(--color-accent)] animate-pulse" />
+                  </div>
+                </div>
               </div>
 
               {/* Stats row */}
-              <div className="mt-6 pt-6 border-t border-[var(--color-border-card)]/50 grid grid-cols-3 gap-4">
+              <div className="mt-6 pt-6 border-t border-[var(--color-border-card)]/50 grid grid-cols-3 gap-2 sm:gap-4">
                 <div className="text-center">
-                  <div className="text-xl font-bold text-[var(--color-accent)] font-mono">847</div>
+                  <motion.div
+                    key={betaCount}
+                    initial={{ opacity: 0.5, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-lg sm:text-xl font-bold text-[var(--color-accent)] font-mono"
+                  >
+                    {betaCount.toLocaleString()}
+                  </motion.div>
                   <div className="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wider">Beta Testers</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xl font-bold text-[var(--color-accent)] font-mono">14</div>
+                  <div className="text-lg sm:text-xl font-bold text-[var(--color-accent)] font-mono">14</div>
                   <div className="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wider">Languages</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xl font-bold text-[var(--color-accent)] font-mono">96%</div>
+                  <div className="text-lg sm:text-xl font-bold text-[var(--color-accent)] font-mono">96%</div>
                   <div className="text-[9px] font-mono text-[var(--color-text-muted)] uppercase tracking-wider">Security</div>
                 </div>
               </div>
@@ -656,7 +750,7 @@ export default function DownloadPage() {
             AnnitaPlug is Annita's AI commerce and payment OS — one chat interface connecting buyers, sellers, and logistics across Africa's digital economy. Limited spots available: 100 per role.
           </p>
         </motion.div>
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
           <BetaSignup />
         </div>
       </section>

@@ -19,6 +19,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.railway.app',
       },
+      {
+        protocol: 'https',
+        hostname: '**.un.org',
+      },
     ],
   },
   // Security headers (Pentagon-grade protection)
@@ -94,6 +98,10 @@ const nextConfig = {
       {
         source: '/api/:path*',
         destination: `${backendUrl}/api/:path*`,
+      },
+      {
+        source: '/maintenance/status',
+        destination: `${backendUrl}/maintenance/status`,
       },
     ];
   },

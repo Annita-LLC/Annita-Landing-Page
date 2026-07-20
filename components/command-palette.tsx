@@ -21,7 +21,8 @@ const commands: CommandItem[] = [
   { id: 'contact-sales', label: 'Contact Sales', description: 'Enterprise inquiries', href: '/contact-sales' },
   { id: 'awards', label: 'Awards', description: 'View recognitions', href: '/awards' },
   { id: 'login', label: 'Login', description: 'Access your account', href: '/ecosystem' },
-  { id: 'cookies', label: 'Cookie Policy', description: 'Privacy settings', href: '/cookies' }
+  { id: 'cookies', label: 'Cookie Policy', description: 'Privacy settings', href: '/cookies' },
+  { id: 'security', label: 'Security & Fraud Awareness', description: 'Stay safe from scams', href: '/security' }
 ]
 
 export default function CommandPalette() {

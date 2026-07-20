@@ -555,7 +555,7 @@ export default function HomePage() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
-          {/* Flagship Card - Annita Ecosystem */}
+          {/* Flagship Card - Annita LLC */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -576,13 +576,13 @@ export default function HomePage() {
                 />
               </div>
             </div>
-            <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-3" style={{ backgroundColor: 'var(--color-accent-soft)', color: 'var(--color-accent)' }}>Marketplace & SaaS</span>
-            <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Annita Ecosystem</h3>
+            <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-3" style={{ backgroundColor: 'var(--color-accent-soft)', color: 'var(--color-accent)' }}>Commerce & Payments Ecosystem</span>
+            <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Annita LLC</h3>
             <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)', lineHeight: '1.7' }}>
-              Africa's first offline-first, all-in-one digital ecosystem for MSMEs — marketplace, business tools, and fintech infrastructure in one place.
+              Annita is Africa's first all-in-one digital ecosystem, integrating e-commerce, fintech, AI, communication, marketing, logistics, and more into a single, connected system.
             </p>
             <Link href="/ecosystem" className="inline-flex items-center gap-2 font-semibold text-sm hover:underline group-hover:gap-3 transition-all" style={{ color: 'var(--color-accent)' }}>
-              Enter the Ecosystem <ChevronRight className="w-4 h-4" />
+              Enter the Ecosystem! <ChevronRight className="w-4 h-4" />
             </Link>
           </motion.div>
 
@@ -917,6 +917,7 @@ export default function HomePage() {
                 <Link href="/solutions" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Custom Solutions</Link>
                 <Link href="/careers" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Careers</Link>
                 <Link href="/partnerships" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Partnerships</Link>
+                <Link href="/partners" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Partners &amp; Supporters</Link>
                 <Link href="/awards" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Awards</Link>
               </div>
             </div>
@@ -928,6 +929,7 @@ export default function HomePage() {
                 <Link href="/privacy" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Privacy Policy</Link>
                 <Link href="/terms" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Terms & Conditions</Link>
                 <Link href="/cookies" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Cookie Policy</Link>
+                <Link href="/security" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Security &amp; Fraud Awareness</Link>
               </div>
             </div>
             <div>
@@ -945,7 +947,7 @@ export default function HomePage() {
             <p
               className="text-[10px] font-mono text-[var(--color-text-muted)]"
               onClick={handleCopyrightTap}
-              style={{ cursor: 'default', userSelect: 'text' }}
+              style={{ cursor: 'default', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' }}
             >
               © 2026 Annita LLC. All rights reserved.
             </p>

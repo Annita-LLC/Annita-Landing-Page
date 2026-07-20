@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Navigation from '@/components/navigation'
 import NewsletterSection from '@/components/newsletter-section'
-import { Trash2, Mail, Phone, MessageSquare } from 'lucide-react'
+import { Trash2, Mail, Phone, MessageSquare, Cookie, Smartphone, Globe, Shield, Settings, Clock, FileText } from 'lucide-react'
 import { useState } from 'react'
 import { HoneypotField } from '@/components/HoneypotField'
 import { submitAccountDeletionRequest } from '@/lib/api'
@@ -92,8 +92,8 @@ export default function CookiesPage() {
             className="text-4xl md:text-6xl font-extrabold leading-tight mb-6"
             style={{ fontFamily: 'var(--font-syne)', fontWeight: 800 }}
           >
-            <span className="text-[var(--color-text-primary)]">Cookie</span><br />
-            <span className="text-[var(--color-text-primary)]">Policy.</span>
+            <span className="text-[var(--color-text-primary)] tracking-[0.05em]">Cookie</span>
+            <span className="text-[var(--color-text-primary)] tracking-[0.05em] ml-4">Policy.</span>
           </motion.h1>
 
           <motion.p
@@ -109,78 +109,334 @@ export default function CookiesPage() {
 
       {/* Content Section */}
       <section className="py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-[1400px] mx-auto space-y-8">
+          {/* 1. What Are Cookies? */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="rounded-2xl p-8 md:p-12 tech-glow-card theme-card"
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
           >
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
-              What Are Cookies?
-            </h2>
-            <p className="text-base leading-relaxed mb-6 text-[var(--color-text-secondary)]">
-              Cookies are small text files that are placed on your device when you visit our website. They help us provide you with a better experience by allowing the website to remember your preferences and understand how you use our services.
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Cookie className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">1. What Are Cookies?</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              Cookies are small text files that are placed on your device when you visit our website or use our mobile applications. They help us provide you with a better experience by allowing the website to remember your preferences, maintain your session, and understand how you use our services.
             </p>
+            <p className="text-[var(--color-text-secondary)]">
+              Cookies are widely used to make websites work efficiently and to provide information to site owners. Cookies do not contain viruses, cannot install malware on your device, and do not damage your device. However, they do store personal data, which is why we are transparent about their use.
+            </p>
+          </motion.div>
 
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 mt-10 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
-              How We Use Cookies
-            </h2>
-            <ul className="space-y-4 mb-6 text-[var(--color-text-secondary)]">
-              <li className="flex items-start gap-3">
-                <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] mt-2 flex-shrink-0" />
-                <div>
-                  <strong className="text-[var(--color-text-primary)]">Essential Cookies:</strong> Required for the website to function properly, including security and basic features.
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] mt-2 flex-shrink-0" />
-                <div>
-                  <strong className="text-[var(--color-text-primary)]">Performance Cookies:</strong> Help us understand how visitors use our website by collecting anonymous analytics data.
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] mt-2 flex-shrink-0" />
-                <div>
-                  <strong className="text-[var(--color-text-primary)]">Functionality Cookies:</strong> Remember your preferences and settings to provide a more personalized experience.
-                </div>
-              </li>
+          {/* 2. Types of Cookies We Use */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Settings className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">2. Types of Cookies We Use</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-6">
+              We categorize cookies into four types based on their purpose and duration:
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="border-b border-[var(--color-border-card)]">
+                    <th className="text-left py-3 px-4 text-[var(--color-text-primary)] font-bold">Cookie Name</th>
+                    <th className="text-left py-3 px-4 text-[var(--color-text-primary)] font-bold">Type</th>
+                    <th className="text-left py-3 px-4 text-[var(--color-text-primary)] font-bold">Purpose</th>
+                    <th className="text-left py-3 px-4 text-[var(--color-text-primary)] font-bold">Duration</th>
+                  </tr>
+                </thead>
+                <tbody className="text-[var(--color-text-secondary)]">
+                  <tr className="border-b border-[var(--color-border-card)]/50">
+                    <td className="py-3 px-4 font-mono text-xs">annita_session</td>
+                    <td className="py-3 px-4">Essential</td>
+                    <td className="py-3 px-4">Maintains your logged-in session</td>
+                    <td className="py-3 px-4">Session (deleted on logout)</td>
+                  </tr>
+                  <tr className="border-b border-[var(--color-border-card)]/50">
+                    <td className="py-3 px-4 font-mono text-xs">annita_token</td>
+                    <td className="py-3 px-4">Essential</td>
+                    <td className="py-3 px-4">Authentication token for API requests</td>
+                    <td className="py-3 px-4">7 days</td>
+                  </tr>
+                  <tr className="border-b border-[var(--color-border-card)]/50">
+                    <td className="py-3 px-4 font-mono text-xs">annita_theme</td>
+                    <td className="py-3 px-4">Preference</td>
+                    <td className="py-3 px-4">Remembers your dark/light theme choice</td>
+                    <td className="py-3 px-4">365 days</td>
+                  </tr>
+                  <tr className="border-b border-[var(--color-border-card)]/50">
+                    <td className="py-3 px-4 font-mono text-xs">annita_lang</td>
+                    <td className="py-3 px-4">Preference</td>
+                    <td className="py-3 px-4">Remembers your selected language</td>
+                    <td className="py-3 px-4">365 days</td>
+                  </tr>
+                  <tr className="border-b border-[var(--color-border-card)]/50">
+                    <td className="py-3 px-4 font-mono text-xs">annita_consent</td>
+                    <td className="py-3 px-4">Essential</td>
+                    <td className="py-3 px-4">Records your cookie consent preferences</td>
+                    <td className="py-3 px-4">180 days</td>
+                  </tr>
+                  <tr className="border-b border-[var(--color-border-card)]/50">
+                    <td className="py-3 px-4 font-mono text-xs">_ga</td>
+                    <td className="py-3 px-4">Analytics</td>
+                    <td className="py-3 px-4">Google Analytics — distinguishes unique users</td>
+                    <td className="py-3 px-4">2 years</td>
+                  </tr>
+                  <tr className="border-b border-[var(--color-border-card)]/50">
+                    <td className="py-3 px-4 font-mono text-xs">_ga_XXXXXX</td>
+                    <td className="py-3 px-4">Analytics</td>
+                    <td className="py-3 px-4">Google Analytics 4 — session state</td>
+                    <td className="py-3 px-4">2 years</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 px-4 font-mono text-xs">annita_cart</td>
+                    <td className="py-3 px-4">Functionality</td>
+                    <td className="py-3 px-4">Remembers items in your shopping cart</td>
+                    <td className="py-3 px-4">30 days</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-[var(--color-text-tertiary)] text-xs mt-4">
+              Note: This table may not include cookies set by third-party services. Third-party cookies are governed by their respective privacy policies.
+            </p>
+          </motion.div>
+
+          {/* 3. Cookie Categories Explained */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Shield className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">3. Cookie Categories Explained</h2>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <p className="text-[var(--color-text-primary)] font-semibold mb-2">Essential Cookies</p>
+                <p className="text-[var(--color-text-secondary)]">Required for the website to function properly. These cookies enable core functionality such as security, network management, accessibility, and your session. The website cannot function properly without these cookies, so they cannot be disabled.</p>
+              </div>
+              <div>
+                <p className="text-[var(--color-text-primary)] font-semibold mb-2">Preference Cookies</p>
+                <p className="text-[var(--color-text-secondary)]">Remember your settings and preferences — such as language, theme (dark/light mode), and display options — to provide a more personalized experience. These cookies are optional and can be disabled.</p>
+              </div>
+              <div>
+                <p className="text-[var(--color-text-primary)] font-semibold mb-2">Analytics Cookies</p>
+                <p className="text-[var(--color-text-secondary)]">Help us understand how visitors use our website and mobile apps by collecting anonymous analytics data. This data is aggregated and used to improve performance, fix bugs, and enhance user experience. We use Google Analytics 4 for this purpose.</p>
+              </div>
+              <div>
+                <p className="text-[var(--color-text-primary)] font-semibold mb-2">Functionality Cookies</p>
+                <p className="text-[var(--color-text-secondary)]">Remember your choices — such as items in your shopping cart, recently viewed products, and form data — to provide enhanced and more personalized features. These cookies are optional.</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* 4. Mobile App Tracking */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Smartphone className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">4. Mobile App Tracking Technologies</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              Our mobile applications use technologies similar to cookies to provide functionality and analytics:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Local Storage:</strong> Stores your session data, cart contents, and preferences on your device for offline-first functionality</li>
+              <li><strong className="text-[var(--color-text-primary)]">Secure Keychain (iOS) / Keystore (Android):</strong> Stores authentication tokens and credentials securely in the device's encrypted storage</li>
+              <li><strong className="text-[var(--color-text-primary)]">Firebase Analytics SDK:</strong> Collects anonymous usage data (screen views, events, session duration) to help us improve the app</li>
+              <li><strong className="text-[var(--color-text-primary)]">Sentry SDK:</strong> Collects crash reports and performance data when errors occur, including device model, OS version, and stack traces</li>
+              <li><strong className="text-[var(--color-text-primary)]">Apple Advertising Identifier (IDFA) / Google Advertising ID (AAID):</strong> We do <strong className="text-[var(--color-text-primary)]">not</strong> collect or use these identifiers for advertising tracking</li>
             </ul>
-
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 mt-10 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
-              Managing Cookies
-            </h2>
-            <p className="text-base leading-relaxed mb-6 text-[var(--color-text-secondary)]">
-              You can control and manage cookies through your browser settings. Please note that disabling essential cookies may affect the functionality of our website. For more information on how to manage cookies in your browser, please refer to your browser's help documentation.
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              You can reset the advertising identifier on your device at any time through Settings &gt; Privacy &gt; Advertising (iOS) or Settings &gt; Google &gt; Ads (Android).
             </p>
+          </motion.div>
 
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 mt-10 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
-              Third-Party Cookies
-            </h2>
-            <p className="text-base leading-relaxed mb-6 text-[var(--color-text-secondary)]">
-              We may use third-party services that place cookies on your device, such as Google Analytics for website analytics. These third parties have their own privacy policies, and we encourage you to review them.
+          {/* 5. Third-Party Cookies & SDKs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Globe className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">5. Third-Party Cookies & SDKs</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              We use the following third-party services that may set cookies or use tracking technologies on your device:
             </p>
-
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 mt-10 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
-              Updates to This Policy
-            </h2>
-            <p className="text-base leading-relaxed mb-6 text-[var(--color-text-secondary)]">
-              We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We encourage you to review this policy periodically to stay informed about how we use cookies.
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Google Analytics 4:</strong> Web analytics — <a href="https://policies.google.com/technologies/cookies" target="_blank" rel="noopener noreferrer" className="text-[var(--color-accent)] hover:underline">Google's Cookie Policy</a></li>
+              <li><strong className="text-[var(--color-text-primary)]">Firebase:</strong> Mobile app analytics and crash reporting — <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer" className="text-[var(--color-accent)] hover:underline">Firebase Privacy Policy</a></li>
+              <li><strong className="text-[var(--color-text-primary)]">Sentry:</strong> Error tracking and performance monitoring — <a href="https://sentry.io/privacy/" target="_blank" rel="noopener noreferrer" className="text-[var(--color-accent)] hover:underline">Sentry Privacy Policy</a></li>
+              <li><strong className="text-[var(--color-text-primary)]">Resend:</strong> Email delivery service — <a href="https://resend.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[var(--color-accent)] hover:underline">Resend Privacy Policy</a></li>
+              <li><strong className="text-[var(--color-text-primary)]">Apple Sign-In / Google Sign-In:</strong> Authentication providers that may set cookies on their own domains</li>
+            </ul>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              We encourage you to review the privacy policies of these third parties to understand how they use cookies and tracking technologies.
             </p>
+          </motion.div>
 
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 mt-10 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
-              Contact Us
-            </h2>
-            <p className="text-base leading-relaxed text-[var(--color-text-secondary)]">
-              If you have any questions about our use of cookies, please contact us at{' '}
-              <a href="mailto:info@an-nita.com" className="text-[var(--color-accent)] hover:underline">
-                info@an-nita.com
-              </a>
+          {/* 6. Managing Cookies in Your Browser */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Settings className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">6. Managing Cookies in Your Browser</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              You can control and manage cookies through your browser settings. Here are instructions for the most popular browsers:
             </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { browser: 'Google Chrome', instructions: 'Settings > Privacy and security > Cookies and other site data' },
+                { browser: 'Safari (macOS)', instructions: 'Safari > Preferences > Privacy > Manage cookies and website data' },
+                { browser: 'Mozilla Firefox', instructions: 'Settings > Privacy & Security > Cookies and Site Data' },
+                { browser: 'Microsoft Edge', instructions: 'Settings > Cookies and site permissions > Cookies and site data' },
+                { browser: 'Opera', instructions: 'Settings > Privacy & security > Cookies' },
+                { browser: 'Safari (iOS)', instructions: 'Settings > Safari > Privacy & Security > Block All Cookies' },
+              ].map((browser) => (
+                <div key={browser.browser} className="p-4 rounded-lg border border-[var(--color-border-card)] bg-[var(--color-surface-raised)]/20">
+                  <p className="text-[var(--color-text-primary)] font-semibold text-sm mb-1">{browser.browser}</p>
+                  <p className="text-[var(--color-text-tertiary)] text-xs font-mono">{browser.instructions}</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              Please note that disabling essential cookies may affect the functionality of our website. You may not be able to log in, make purchases, or access certain features.
+            </p>
+          </motion.div>
 
-            <div className="mt-10 pt-8 border-t border-[var(--color-border-card)]">
+          {/* 7. Cookie Duration & Expiration */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Clock className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">7. Cookie Duration & Expiration</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              Cookies are categorized by how long they remain on your device:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Session Cookies:</strong> Temporary cookies that expire when you close your browser. Used for maintaining your session during a single visit</li>
+              <li><strong className="text-[var(--color-text-primary)]">Persistent Cookies:</strong> Remain on your device for a set period or until you manually delete them. Used for remembering preferences and analytics</li>
+              <li><strong className="text-[var(--color-text-primary)]">First-Party Cookies:</strong> Set by Annita directly on our domain. These are the cookies listed in the table above</li>
+              <li><strong className="text-[var(--color-text-primary)]">Third-Party Cookies:</strong> Set by external services (Google Analytics, Firebase) on their own domains. We have limited control over these cookies</li>
+            </ul>
+          </motion.div>
+
+          {/* 8. Your Cookie Consent */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Shield className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">8. Your Cookie Consent</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              When you first visit our website, we display a cookie consent banner that allows you to:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Accept All:</strong> Consent to all cookie categories, including analytics and functionality cookies</li>
+              <li><strong className="text-[var(--color-text-primary)]">Essential Only:</strong> Only allow essential cookies required for the website to function</li>
+              <li><strong className="text-[var(--color-text-primary)]">Manage Preferences:</strong> Selectively enable or disable individual cookie categories</li>
+            </ul>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              Your consent is stored in the <code className="text-xs font-mono text-[var(--color-accent)]">annita_consent</code> cookie for 180 days. After that period, the consent banner will reappear. You can also withdraw your consent at any time by clearing your browser cookies or contacting us.
+            </p>
+          </motion.div>
+
+          {/* 9. Updates to This Policy */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">9. Updates to This Policy</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              We may update this Cookie Policy from time to time to reflect changes in our practices, technologies, or for other operational, legal, or regulatory reasons. When we update this policy:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li>We will update the "Last Updated" date at the bottom of this page</li>
+              <li>Material changes will trigger a new cookie consent banner for existing users</li>
+              <li>The previous version will be available upon request</li>
+              <li>We encourage you to review this policy periodically</li>
+            </ul>
+          </motion.div>
+
+          {/* 10. Contact Us */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Mail className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">10. Contact Us</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              If you have any questions about our use of cookies or this Cookie Policy, please contact us:
+            </p>
+            <div className="space-y-2 text-[var(--color-text-secondary)]">
+              <p><strong className="text-[var(--color-text-primary)]">Email:</strong> <a href="mailto:privacy@an-nita.com" className="text-[var(--color-accent)] hover:underline">privacy@an-nita.com</a></p>
+              <p><strong className="text-[var(--color-text-primary)]">Phone/WhatsApp:</strong> +231 886 213 748</p>
+              <p><strong className="text-[var(--color-text-primary)]">Mail:</strong> Annita LLC, Data Protection Officer, Monrovia, Liberia</p>
+            </div>
+            <div className="mt-6 pt-6 border-t border-[var(--color-border-card)]">
               <p className="text-sm text-[var(--color-text-muted)]">
-                Last Updated: June 2026
+                Last Updated: July 2026
               </p>
             </div>
           </motion.div>
@@ -401,6 +657,7 @@ export default function CookiesPage() {
                 <Link href="/privacy" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Privacy Policy</Link>
                 <Link href="/terms" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Terms & Conditions</Link>
                 <Link href="/cookies" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Cookie Policy</Link>
+                <Link href="/security" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Security &amp; Fraud Awareness</Link>
               </div>
             </div>
             <div>

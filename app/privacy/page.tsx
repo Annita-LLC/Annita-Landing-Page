@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { Shield, Lock, Eye, Trash2, Mail, Phone, MessageSquare } from 'lucide-react'
+import { Shield, Lock, Eye, Trash2, Mail, Phone, MessageSquare, Globe, Clock, Baby, Smartphone, Bell, FileText, Building2, Share2, Database } from 'lucide-react'
 import Link from 'next/link'
 import NextImage from 'next/image'
 import Navigation from '@/components/navigation'
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
             </span>
           </motion.div>
           
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-[var(--color-text-primary)]" style={{ fontFamily: 'var(--font-syne)' }}>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-[var(--color-text-primary)] tracking-[0.05em]" style={{ fontFamily: 'var(--font-syne)' }}>
             Privacy Policy
           </h1>
           <p className="text-lg md:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto">
@@ -94,8 +94,46 @@ export default function PrivacyPage() {
 
       {/* Content Sections */}
       <section className="px-4 md:px-8 py-16 max-w-[1600px] mx-auto">
-        <div className="max-w-5xl mx-auto space-y-16">
-          {/* Data Collection */}
+        <div className="max-w-[1400px] mx-auto space-y-16">
+          {/* Quick Navigation */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-accent)]/20 rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">Quick Navigation</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+              {[
+                '1. Information We Collect',
+                '2. How We Use Your Information',
+                '3. Information Sharing & Disclosure',
+                '4. Data Retention',
+                '5. International Data Transfers',
+                '6. Children\u2019s Privacy',
+                '7. Mobile App Privacy',
+                '8. Data Security',
+                '9. Data Breach Notification',
+                '10. Your Privacy Rights',
+                '11. CCPA & CPRA Rights',
+                '12. African Data Protection',
+                '13. Cookies & Tracking',
+                '14. Changes to This Policy',
+                '15. Contact for Privacy',
+              ].map((item) => (
+                <div key={item} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors cursor-default">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* 1. Data Collection */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -106,21 +144,46 @@ export default function PrivacyPage() {
               <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
                 <Eye className="w-5 h-5 text-[var(--color-accent)]" />
               </div>
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">Data Collection</h2>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">1. Information We Collect</h2>
             </div>
             <p className="text-[var(--color-text-secondary)] mb-4">
               We collect information you provide directly to us, such as when you create an account, use our services, or communicate with us. This includes:
             </p>
-            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
-              <li>Personal information (name, email, phone number)</li>
-              <li>Account credentials and authentication data</li>
-              <li>Payment information (processed securely through third-party providers)</li>
-              <li>Usage data and analytics</li>
-              <li>Device information and IP address</li>
-            </ul>
+            <div className="space-y-4">
+              <div>
+                <p className="text-[var(--color-text-primary)] font-semibold mb-2">Information You Provide</p>
+                <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+                  <li>Personal information (full name, email address, phone number, business name)</li>
+                  <li>Account credentials and authentication data</li>
+                  <li>Profile photo and business logo uploads</li>
+                  <li>Product listings, descriptions, and images (Marketplace sellers)</li>
+                  <li>Messages and communications with other users or customer support</li>
+                  <li>Payment information (processed securely through third-party providers — we do not store full card numbers)</li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-[var(--color-text-primary)] font-semibold mb-2">Information Collected Automatically</p>
+                <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+                  <li>Device information (model, OS version, unique device identifier, screen resolution)</li>
+                  <li>IP address and approximate location (city/country level)</li>
+                  <li>Usage data (pages visited, features used, time spent, tap/click interactions)</li>
+                  <li>Crash reports and performance diagnostics (via Sentry)</li>
+                  <li>Camera and photo library access (only when you choose to upload images)</li>
+                  <li>Location data (only when you enable location-based features, such as nearby sellers)</li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-[var(--color-text-primary)] font-semibold mb-2">Information from Third Parties</p>
+                <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+                  <li>Apple Sign-In / Google Sign-In data (name, email) when you use these authentication methods</li>
+                  <li>Payment verification data from banks and mobile money operators</li>
+                  <li>Logistics tracking data from delivery partners</li>
+                </ul>
+              </div>
+            </div>
           </motion.div>
 
-          {/* Data Usage */}
+          {/* 2. How We Use Your Data */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -131,7 +194,7 @@ export default function PrivacyPage() {
               <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
                 <Lock className="w-5 h-5 text-[var(--color-accent)]" />
               </div>
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">How We Use Your Data</h2>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">2. How We Use Your Information</h2>
             </div>
             <p className="text-[var(--color-text-secondary)] mb-4">
               We use your information to provide, maintain, and improve our services, including:
@@ -146,7 +209,138 @@ export default function PrivacyPage() {
             </ul>
           </motion.div>
 
-          {/* Data Security */}
+          {/* 3. Information Sharing & Disclosure */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Share2 className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">3. Information Sharing & Disclosure</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              We do not sell your personal data. We may share your information with the following categories of recipients, only as necessary to provide our Services:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Service Providers:</strong> Payment processors, cloud hosting (Railway, Vercel), email delivery (Resend), and analytics providers — all bound by data processing agreements</li>
+              <li><strong className="text-[var(--color-text-primary)]">Logistics Partners:</strong> Delivery companies receiving order fulfillment details (name, address, phone) for shipments</li>
+              <li><strong className="text-[var(--color-text-primary)]">Marketplace Participants:</strong> Buyers and sellers see each other's names and contact details for transactions they are party to</li>
+              <li><strong className="text-[var(--color-text-primary)]">Legal Authorities:</strong> When required by law, court order, or government regulation, including anti-fraud and AML investigations</li>
+              <li><strong className="text-[var(--color-text-primary)]">Business Transfers:</strong> In the event of a merger, acquisition, or asset sale, user data may be transferred as a business asset</li>
+            </ul>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              We never share your data for advertising purposes with third-party ad networks.
+            </p>
+          </motion.div>
+
+          {/* 4. Data Retention */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Clock className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">4. Data Retention</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              We retain your personal data only as long as necessary to fulfill the purposes outlined in this policy:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Active Accounts:</strong> Data is retained while your account is active and up to 90 days after deletion request</li>
+              <li><strong className="text-[var(--color-text-primary)]">Transaction Records:</strong> Financial transaction data is retained for 7 years per Liberian financial regulations</li>
+              <li><strong className="text-[var(--color-text-primary)]">Marketplace Listings:</strong> Product listings are retained for 1 year after removal for dispute resolution</li>
+              <li><strong className="text-[var(--color-text-primary)]">Communications:</strong> Support tickets and messages retained for 2 years</li>
+              <li><strong className="text-[var(--color-text-primary)]">Analytics Data:</strong> Aggregated, anonymized analytics retained indefinitely; individual-level data deleted after 26 months</li>
+              <li><strong className="text-[var(--color-text-primary)]">Security Logs:</strong> IP addresses and access logs retained for 1 year for fraud prevention</li>
+            </ul>
+          </motion.div>
+
+          {/* 5. International Data Transfers */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Globe className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">5. International Data Transfers</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              Annita LLC is headquartered in Liberia, but our cloud infrastructure and third-party service providers may process data in other countries, including the United States, European Union, and South Africa.
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li>We ensure all international transfers comply with applicable data protection laws</li>
+              <li>For EU/EEA users, we rely on Standard Contractual Clauses (SCCs) for data transfers to non-adequate countries</li>
+              <li>For users in countries with data localization requirements, we work to store data within the required jurisdiction where technically feasible</li>
+              <li>You acknowledge that by using our Services, your data may be processed in countries with different data protection standards than your country of residence</li>
+            </ul>
+          </motion.div>
+
+          {/* 6. Children's Privacy */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Baby className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">6. Children's Privacy</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              Our Services are not directed to children under 18 years of age. We do not knowingly collect personal information from children under 18.
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li>If you are a parent or guardian and believe your child has provided us with personal data, contact us immediately at <a href="mailto:privacy@an-nita.com" className="text-[var(--color-accent)] hover:underline">privacy@an-nita.com</a></li>
+              <li>We will take steps to delete such information and terminate the child's account</li>
+              <li>We comply with the U.S. Children's Online Privacy Protection Act (COPPA) and the EU General Data Protection Regulation (GDPR) provisions regarding minors</li>
+              <li>For users aged 13-17 in jurisdictions where parental consent is required, we seek verifiable parental consent before collecting personal data</li>
+            </ul>
+          </motion.div>
+
+          {/* 7. Mobile App Privacy */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Smartphone className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">7. Mobile App Privacy</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              Our iOS and Android applications request certain permissions to provide full functionality. Below is a detailed explanation of each permission and how we use it:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Camera:</strong> Used only when you choose to take photos for product listings, profile pictures, or support tickets. We do not access your camera without your explicit action</li>
+              <li><strong className="text-[var(--color-text-primary)]">Photo Library:</strong> Used only when you choose to upload existing photos. We do not browse your photo library without your permission</li>
+              <li><strong className="text-[var(--color-text-primary)]">Location:</strong> Used for location-based features such as finding nearby sellers, delivery address auto-fill, and marketplace discovery. You can disable this at any time in your device settings</li>
+              <li><strong className="text-[var(--color-text-primary)]">Push Notifications:</strong> Used for order updates, payment confirmations, and important account alerts. You can customize notification preferences in app settings</li>
+              <li><strong className="text-[var(--color-text-primary)]">Storage:</strong> Used for offline-first caching so you can browse listings and manage orders without an internet connection</li>
+              <li><strong className="text-[var(--color-text-primary)]">Biometric (Face ID/Touch ID/Fingerprint):</strong> Used for optional secure login. Biometric data never leaves your device and is not stored on our servers</li>
+            </ul>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              <strong className="text-[var(--color-text-primary)]">SDK Disclosures:</strong> Our apps integrate the following third-party SDKs: Firebase (analytics, crash reporting), Sentry (error tracking), and Resend (email delivery). Each SDK collects data in accordance with its own privacy policy.
+            </p>
+          </motion.div>
+
+          {/* 8. Data Security */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -157,7 +351,7 @@ export default function PrivacyPage() {
               <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
                 <Shield className="w-5 h-5 text-[var(--color-accent)]" />
               </div>
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">Data Security</h2>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">8. Data Security</h2>
             </div>
             <p className="text-[var(--color-text-secondary)] mb-4">
               We implement industry-standard security measures to protect your data:
@@ -171,7 +365,35 @@ export default function PrivacyPage() {
             </ul>
           </motion.div>
 
-          {/* Your Rights */}
+          {/* 9. Data Breach Notification */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Bell className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">9. Data Breach Notification</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              In the event of a personal data breach that is likely to result in a risk to your rights and freedoms, we will:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li>Notify affected users within 72 hours of becoming aware of the breach, in accordance with GDPR Article 34</li>
+              <li>Provide details of the breach, the likely consequences, and the measures we are taking to address it</li>
+              <li>Notify the relevant data protection authorities where required by law</li>
+              <li>Take immediate steps to contain the breach, investigate its cause, and prevent recurrence</li>
+              <li>Provide ongoing updates as new information becomes available</li>
+            </ul>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              Our incident response plan is tested quarterly, and all staff are trained on breach reporting procedures.
+            </p>
+          </motion.div>
+
+          {/* 10. Your Privacy Rights */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -182,7 +404,7 @@ export default function PrivacyPage() {
               <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
                 <Trash2 className="w-5 h-5 text-[var(--color-accent)]" />
               </div>
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">Your Rights</h2>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">10. Your Privacy Rights</h2>
             </div>
             <p className="text-[var(--color-text-secondary)] mb-4">
               Under GDPR and other privacy regulations, you have the right to:
@@ -195,6 +417,141 @@ export default function PrivacyPage() {
               <li>Data portability</li>
               <li>Withdraw consent</li>
             </ul>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              To exercise any of these rights, contact us at <a href="mailto:privacy@an-nita.com" className="text-[var(--color-accent)] hover:underline">privacy@an-nita.com</a>. We will respond to your request within 30 days.
+            </p>
+          </motion.div>
+
+          {/* 11. CCPA & CPRA Rights */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">11. CCPA & CPRA Rights</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              If you are a California resident, the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA) grant you additional rights:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Right to Know:</strong> Request disclosure of the categories and specific pieces of personal data we collect</li>
+              <li><strong className="text-[var(--color-text-primary)]">Right to Delete:</strong> Request deletion of your personal data (subject to legal exceptions)</li>
+              <li><strong className="text-[var(--color-text-primary)]">Right to Correct:</strong> Request correction of inaccurate personal information</li>
+              <li><strong className="text-[var(--color-text-primary)]">Right to Opt-Out:</strong> Opt-out of the sale or sharing of your personal data (we do not sell your data)</li>
+              <li><strong className="text-[var(--color-text-primary)]">Right to Limit:</strong> Limit the use of sensitive personal information for secondary purposes</li>
+              <li><strong className="text-[var(--color-text-primary)]">Right to Non-Discrimination:</strong> We will not discriminate against you for exercising your privacy rights</li>
+            </ul>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              Submit CCPA/CPRA requests to <a href="mailto:privacy@an-nita.com" className="text-[var(--color-accent)] hover:underline">privacy@an-nita.com</a> with the subject line "CCPA Request."
+            </p>
+          </motion.div>
+
+          {/* 12. African Data Protection Compliance */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">12. African Data Protection Compliance</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              As a Liberia-headquartered company serving users across Africa, we are committed to complying with emerging African data protection frameworks:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Nigeria (NDPA 2023):</strong> We comply with the Nigeria Data Protection Act for Nigerian users</li>
+              <li><strong className="text-[var(--color-text-primary)]">Kenya (Data Protection Act 2019):</strong> We register cross-border data processing as required for Kenyan users</li>
+              <li><strong className="text-[var(--color-text-primary)]">South Africa (POPIA):</strong> We comply with the Protection of Personal Information Act for South African users</li>
+              <li><strong className="text-[var(--color-text-primary)]">Ghana (Data Protection Act 2012):</strong> We register with the Ghana Data Protection Commission as a data controller</li>
+              <li><strong className="text-[var(--color-text-primary)]">AU Convention on Cyber Security:</strong> We align with the Malabo Convention principles for data protection</li>
+              <li><strong className="text-[var(--color-text-primary)]">Liberia:</strong> We comply with all applicable Liberian data and telecommunications regulations</li>
+            </ul>
+          </motion.div>
+
+          {/* 13. Cookies & Tracking */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Database className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">13. Cookies & Tracking Technologies</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              We use cookies and similar tracking technologies (web beacons, pixels, SDKs) to operate and improve our Services. For detailed information about the specific cookies we use and how to manage them, please review our <Link href="/cookies" className="text-[var(--color-accent)] hover:underline">Cookie Policy</Link>.
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li><strong className="text-[var(--color-text-primary)]">Essential Cookies:</strong> Required for authentication, security, and core functionality</li>
+              <li><strong className="text-[var(--color-text-primary)]">Analytics Cookies:</strong> Help us understand how users interact with our Services (anonymized)</li>
+              <li><strong className="text-[var(--color-text-primary)]">Preference Cookies:</strong> Remember your language, theme, and display settings</li>
+              <li><strong className="text-[var(--color-text-primary)]">Mobile SDKs:</strong> Firebase and Sentry SDKs collect device-level analytics and crash data</li>
+            </ul>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              We do not use cookies for targeted advertising. You can control cookies through your browser settings or our cookie consent banner.
+            </p>
+          </motion.div>
+
+          {/* 14. Changes to This Policy */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">14. Changes to This Policy</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              We may update this Privacy Policy from time to time to reflect changes in our practices, technologies, legal requirements, or other factors. When we do:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-[var(--color-text-secondary)]">
+              <li>We will update the "Last Updated" date at the bottom of this page</li>
+              <li>Material changes will be communicated via email or in-app notification at least 30 days before taking effect</li>
+              <li>The previous version will be available upon request</li>
+              <li>Continued use of our Services after changes take effect constitutes acceptance of the updated policy</li>
+            </ul>
+          </motion.div>
+
+          {/* 15. Contact for Privacy */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-[var(--color-border-card)] rounded-xl p-6 md:p-8 bg-[var(--color-surface-card)]/30 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/30 flex items-center justify-center">
+                <Mail className="w-5 h-5 text-[var(--color-accent)]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">15. Contact for Privacy</h2>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mb-4">
+              If you have any questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact our Data Protection Officer:
+            </p>
+            <div className="space-y-2 text-[var(--color-text-secondary)]">
+              <p><strong className="text-[var(--color-text-primary)]">Email:</strong> <a href="mailto:privacy@an-nita.com" className="text-[var(--color-accent)] hover:underline">privacy@an-nita.com</a></p>
+              <p><strong className="text-[var(--color-text-primary)]">Phone/WhatsApp:</strong> +231 886 213 748</p>
+              <p><strong className="text-[var(--color-text-primary)]">Mail:</strong> Annita LLC, Data Protection Officer, Monrovia, Liberia</p>
+            </div>
+            <p className="text-[var(--color-text-secondary)] mt-4">
+              You also have the right to lodge a complaint with your local data protection authority if you believe our processing of your personal data infringes applicable laws.
+            </p>
           </motion.div>
 
           {/* Account Deletion Form */}
@@ -413,6 +770,7 @@ export default function PrivacyPage() {
                 <Link href="/privacy" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Privacy Policy</Link>
                 <Link href="/terms" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Terms & Conditions</Link>
                 <Link href="/cookies" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Cookie Policy</Link>
+                <Link href="/security" className="block text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">Security &amp; Fraud Awareness</Link>
               </div>
             </div>
             <div>

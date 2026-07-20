@@ -137,8 +137,11 @@ export class LandingPageLogger {
     this.logFilePath = path.join(logDir, `landing-page-server-${new Date().toISOString().split('T')[0]}.log`);
     try {
       this.logStream = fs.createWriteStream(this.logFilePath, { flags: 'a' });
+      this.logStream.on('error', () => {
+        this.logStream = null;
+      });
     } catch (err) {
-      // Stream failed, console fallback only
+      this.logStream = null;
     }
 
     // Pre-register landing page endpoints

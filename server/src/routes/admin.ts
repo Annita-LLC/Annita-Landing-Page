@@ -12,6 +12,7 @@ import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 import { config } from '../config/index.js';
 import { sendAdminAccessEmail, sendAdminCodeEmail } from '../lib/email.js';
+import { setMaintenanceMode } from '../middleware/maintenance.js';
 
 const router = Router();
 
@@ -325,6 +326,8 @@ router.post('/maintenance/toggle', validateToken, async (req: AuthenticatedReque
         result: 'success'
       });
 
+      setMaintenanceMode(true, title || 'Scheduled Maintenance', new Date(Date.now() + 2 * 60 * 60 * 1000));
+
       res.json({ message: 'Maintenance mode activated', maintenance });
     } else {
       // Deactivate all active maintenance
@@ -338,6 +341,8 @@ router.post('/maintenance/toggle', validateToken, async (req: AuthenticatedReque
         action: 'MAINTENANCE_OFF',
         result: 'success'
       });
+
+      setMaintenanceMode(false);
 
       res.json({ message: 'Maintenance mode deactivated' });
     }

@@ -10,6 +10,9 @@ import TechCursor from '@/components/tech-cursor'
 import ParticleBackground from '@/components/particle-background'
 import CommandPalette from '@/components/command-palette'
 import SoundEffects from '@/components/sound-effects'
+import WhatsAppFloat from '@/components/whatsapp-float'
+import SecurityAwarenessModal from '@/components/security-awareness-modal'
+import SecurityAwarenessBanner from '@/components/security-awareness-banner'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const syne = Syne({ subsets: ['latin'], variable: '--font-syne', weight: ['600', '700', '800'] })
@@ -31,13 +34,16 @@ export const metadata: Metadata = {
   publisher: 'Annita LLC',
   icons: {
     icon: [
-      { url: '/annita-real-logo.png', sizes: 'any', type: 'image/png' },
-      { url: '/favicon.ico', sizes: '16x16', type: 'image/x-icon' }
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.png', sizes: '16x16', type: 'image/png' },
+      { url: '/annita-real-logo.png', sizes: 'any', type: 'image/png' }
     ],
     apple: [
-      { url: '/annita-real-logo.png', sizes: '180x180', type: 'image/png' }
-    ]
+      { url: '/favicon.png', sizes: '180x180', type: 'image/png' }
+    ],
+    shortcut: ['/favicon.png'],
   },
+  manifest: '/manifest.webmanifest',
   formatDetection: {
     email: false,
     address: false,
@@ -56,7 +62,7 @@ export const metadata: Metadata = {
         url: '/annita-real-logo.png',
         width: 1200,
         height: 630,
-        alt: 'Annita LLC Enterprise Digital Ecosystem',
+        alt: 'Annita LLC - Africa\'s Unified Digital Ecosystem',
       }
     ],
     locale: 'en_US',
@@ -66,7 +72,14 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Annita LLC | Africa\'s Unified Digital Infrastructure & Ecosystem',
     description: 'Africa\'s first all-in-one digital ecosystem integrating fintech, healthcare tech, and AI recruitment.',
-    images: ['/annita-real-logo.png'],
+    images: [
+      {
+        url: '/annita-real-logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Annita LLC - Africa\'s Unified Digital Ecosystem',
+      }
+    ],
     creator: '@AnnitaLLC',
   },
   robots: {
@@ -90,6 +103,10 @@ export const metadata: Metadata = {
       me: ['security@an-nita.com'],
     },
   },
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#00C28A' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0f1c' },
+  ],
 }
 
 const organizationJsonLd = {
@@ -98,7 +115,12 @@ const organizationJsonLd = {
   'name': 'Annita LLC',
   'alternateName': 'Annita',
   'url': 'https://www.an-nita.com',
-  'logo': 'https://www.an-nita.com/annita-real-logo.png',
+  'logo': {
+    '@type': 'ImageObject',
+    'url': 'https://www.an-nita.com/annita-real-logo.png',
+    'width': 1200,
+    'height': 630,
+  },
   'sameAs': [
     'https://twitter.com/AnnitaLLC',
     'https://github.com/Annita-LLC'
@@ -121,6 +143,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${syne.variable}`}>
       <head>
+        <link rel="icon" href="/favicon.png" type="image/png" sizes="any" />
+        <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/favicon.png" type="image/png" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="mask-icon" href="/favicon.png" color="#00C28A" />
+        <link rel="shortcut icon" href="/favicon.png" />
+        <meta name="application-name" content="Annita LLC" />
+        <meta name="apple-mobile-web-app-title" content="Annita" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -138,6 +171,9 @@ export default function RootLayout({
         <ScrollProgress />
         <CommandPalette />
         <CookiesBanner />
+        <WhatsAppFloat />
+        <SecurityAwarenessModal />
+        <SecurityAwarenessBanner />
         <Analytics />
       </body>
     </html>

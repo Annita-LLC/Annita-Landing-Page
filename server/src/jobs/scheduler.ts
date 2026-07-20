@@ -264,15 +264,9 @@ export function startScheduler(): void {
   }, 60000);
   schedulerIntervals.push(weeklyInterval);
   
-  // Schedule maintenance activation (Sunday at configured time)
+  // Schedule maintenance activation (every minute — checks DB for windows where startTime <= now)
   const maintenanceInterval = setInterval(() => {
-    const now = new Date();
-    if (now.getDay() === 0) { // Sunday
-      const scheduledTime = parseTime(MAINTENANCE_TIME, REPORT_TIMEZONE);
-      if (isTimeMatch(now, scheduledTime)) {
-        maintenanceActivationJob();
-      }
-    }
+    maintenanceActivationJob();
   }, 60000);
   schedulerIntervals.push(maintenanceInterval);
   
@@ -285,7 +279,7 @@ export function startScheduler(): void {
   logger.info('Scheduled job system started', {
     dailyReport: REPORT_TIME,
     weeklyReport: 'Saturday ' + REPORT_TIME,
-    maintenance: 'Sunday ' + MAINTENANCE_TIME
+    maintenance: 'Every minute (DB-driven activation/deactivation)'
   });
 }
 

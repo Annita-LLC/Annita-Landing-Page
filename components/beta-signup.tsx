@@ -214,7 +214,7 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
         </div>
 
         {/* Content Area */}
-        <div className="p-6 md:p-8 relative">
+        <div className="p-4 sm:p-6 md:p-8 relative">
           {/* Corner accents */}
           <span className="absolute top-0 left-0 w-2 h-2 border-t border-l" style={{ borderColor: 'var(--color-accent)' }} />
           <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r" style={{ borderColor: 'var(--color-accent)' }} />
@@ -239,7 +239,7 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
               </div>
 
               {/* Role Selector */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
                 {[
                   { role: 'buyer' as Role, icon: User, label: 'Buyer' },
                   { role: 'seller' as Role, icon: Store, label: 'MSMEs' },
@@ -257,7 +257,7 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
                       disabled={isClosed}
                       whileHover={!isClosed ? { scale: 1.02 } : {}}
                       whileTap={!isClosed ? { scale: 0.98 } : {}}
-                      className="relative p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2"
+                      className="relative p-3 sm:p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-1.5 sm:gap-2"
                       style={{
                         borderColor: isSelected
                           ? 'var(--color-accent)'
@@ -274,7 +274,7 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
                       }}
                     >
                       <Icon
-                        className="w-6 h-6"
+                        className="w-5 h-5 sm:w-6 sm:h-6"
                         style={{
                           color: isSelected
                             ? 'var(--color-accent)'
@@ -284,7 +284,7 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
                         }}
                       />
                       <span
-                        className="text-xs font-semibold font-mono"
+                        className="text-[10px] sm:text-xs font-semibold font-mono"
                         style={{
                           color: isSelected
                             ? 'var(--color-accent)'
@@ -322,7 +322,7 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <HoneypotField onChange={(value) => setFormData(prev => ({ ...prev, website_url: value }))} />
                 {/* Shared fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   <div>
                     <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
                       Full Name <span style={{ color: 'var(--color-accent)' }}>*</span>
@@ -359,7 +359,7 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   <div>
                     <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
                       WhatsApp Number
@@ -405,43 +405,45 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
                 {/* Role-specific fields */}
                 {currentRole === 'buyer' && (
                   <>
-                    <div>
-                      <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-                        How do you usually pay?
-                      </label>
-                      <div className="relative group">
-                        <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <select
-                          value={formData.payMethod}
-                          onChange={(e) => setFormData(prev => ({ ...prev, payMethod: e.target.value }))}
-                          className="theme-input w-full px-4 py-3 rounded-lg text-sm"
-                        >
-                          <option value="">Select one</option>
-                          <option value="Cash">Cash</option>
-                          <option value="Mobile money">Mobile money</option>
-                          <option value="Bank transfer">Bank transfer</option>
-                          <option value="Card">Card</option>
-                          <option value="Mix of methods">Mix of methods</option>
-                        </select>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div>
+                        <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                          How do you usually pay?
+                        </label>
+                        <div className="relative group">
+                          <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <select
+                            value={formData.payMethod}
+                            onChange={(e) => setFormData(prev => ({ ...prev, payMethod: e.target.value }))}
+                            className="theme-input w-full px-4 py-3 rounded-lg text-sm"
+                          >
+                            <option value="">Select one</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Mobile money">Mobile money</option>
+                            <option value="Bank transfer">Bank transfer</option>
+                            <option value="Card">Card</option>
+                            <option value="Mix of methods">Mix of methods</option>
+                          </select>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-                        Age
-                      </label>
-                      <div className="relative group">
-                        <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <input
-                          type="number"
-                          value={formData.age}
-                          onChange={(e) => setFormData(prev => ({ ...prev, age: e.target.value }))}
-                          placeholder="25"
-                          className="theme-input w-full px-4 py-3 rounded-lg text-sm"
-                          min="18"
-                          max="100"
-                        />
+                      <div>
+                        <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                          Age
+                        </label>
+                        <div className="relative group">
+                          <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <input
+                            type="number"
+                            value={formData.age}
+                            onChange={(e) => setFormData(prev => ({ ...prev, age: e.target.value }))}
+                            placeholder="25"
+                            className="theme-input w-full px-4 py-3 rounded-lg text-sm"
+                            min="18"
+                            max="100"
+                          />
+                        </div>
                       </div>
                     </div>
                   </>
@@ -449,83 +451,87 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
 
                 {currentRole === 'seller' && (
                   <>
-                    <div>
-                      <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-                        Business Name <span style={{ color: 'var(--color-accent)' }}>*</span>
-                      </label>
-                      <div className="relative group">
-                        <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <input
-                          type="text"
-                          value={formData.businessName}
-                          onChange={(e) => setFormData(prev => ({ ...prev, businessName: e.target.value }))}
-                          placeholder="Nimba Pastry"
-                          className="theme-input w-full px-4 py-3 rounded-lg text-sm"
-                          required
-                        />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div>
+                        <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                          Business Name <span style={{ color: 'var(--color-accent)' }}>*</span>
+                        </label>
+                        <div className="relative group">
+                          <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <input
+                            type="text"
+                            value={formData.businessName}
+                            onChange={(e) => setFormData(prev => ({ ...prev, businessName: e.target.value }))}
+                            placeholder="Nimba Pastry"
+                            className="theme-input w-full px-4 py-3 rounded-lg text-sm"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                          Business Category
+                        </label>
+                        <div className="relative group">
+                          <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <select
+                            value={formData.businessCategory}
+                            onChange={(e) => setFormData(prev => ({ ...prev, businessCategory: e.target.value }))}
+                            className="theme-input w-full px-4 py-3 rounded-lg text-sm"
+                          >
+                            <option value="">Select one</option>
+                            <option value="Retail / shop">Retail / shop</option>
+                            <option value="Food & agro-processing">Food & agro-processing</option>
+                            <option value="Fashion & beauty">Fashion & beauty</option>
+                            <option value="Services">Services</option>
+                            <option value="Electronics / tech">Electronics / tech</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-                        Business Category
-                      </label>
-                      <div className="relative group">
-                        <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <select
-                          value={formData.businessCategory}
-                          onChange={(e) => setFormData(prev => ({ ...prev, businessCategory: e.target.value }))}
-                          className="theme-input w-full px-4 py-3 rounded-lg text-sm"
-                        >
-                          <option value="">Select one</option>
-                          <option value="Retail / shop">Retail / shop</option>
-                          <option value="Food & agro-processing">Food & agro-processing</option>
-                          <option value="Fashion & beauty">Fashion & beauty</option>
-                          <option value="Services">Services</option>
-                          <option value="Electronics / tech">Electronics / tech</option>
-                          <option value="Other">Other</option>
-                        </select>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div>
+                        <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                          Years in Business
+                        </label>
+                        <div className="relative group">
+                          <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <select
+                            value={formData.yearsInBusiness}
+                            onChange={(e) => setFormData(prev => ({ ...prev, yearsInBusiness: e.target.value, justStarting: '' }))}
+                            className="theme-input w-full px-4 py-3 rounded-lg text-sm"
+                          >
+                            <option value="">Select one</option>
+                            <option value="Less than 1 year">Less than 1 year</option>
+                            <option value="1-2 years">1-2 years</option>
+                            <option value="3-5 years">3-5 years</option>
+                            <option value="6-10 years">6-10 years</option>
+                            <option value="10+ years">10+ years</option>
+                          </select>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-                        Years in Business
-                      </label>
-                      <div className="relative group">
-                        <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <select
-                          value={formData.yearsInBusiness}
-                          onChange={(e) => setFormData(prev => ({ ...prev, yearsInBusiness: e.target.value, justStarting: '' }))}
-                          className="theme-input w-full px-4 py-3 rounded-lg text-sm"
-                        >
-                          <option value="">Select one</option>
-                          <option value="Less than 1 year">Less than 1 year</option>
-                          <option value="1-2 years">1-2 years</option>
-                          <option value="3-5 years">3-5 years</option>
-                          <option value="6-10 years">6-10 years</option>
-                          <option value="10+ years">10+ years</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-                        Just Starting?
-                      </label>
-                      <div className="relative group">
-                        <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
-                        <select
-                          value={formData.justStarting}
-                          onChange={(e) => setFormData(prev => ({ ...prev, justStarting: e.target.value, yearsInBusiness: '' }))}
-                          className="theme-input w-full px-4 py-3 rounded-lg text-sm"
-                        >
-                          <option value="">Select one</option>
-                          <option value="Yes, planning to start">Yes, planning to start</option>
-                          <option value="Yes, just launched">Yes, just launched</option>
-                          <option value="No">No, already established</option>
-                        </select>
+                      <div>
+                        <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                          Just Starting?
+                        </label>
+                        <div className="relative group">
+                          <span className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--color-border-card)] group-focus-within:border-[var(--color-accent)] transition-colors pointer-events-none z-10" />
+                          <select
+                            value={formData.justStarting}
+                            onChange={(e) => setFormData(prev => ({ ...prev, justStarting: e.target.value, yearsInBusiness: '' }))}
+                            className="theme-input w-full px-4 py-3 rounded-lg text-sm"
+                          >
+                            <option value="">Select one</option>
+                            <option value="Yes, planning to start">Yes, planning to start</option>
+                            <option value="Yes, just launched">Yes, just launched</option>
+                            <option value="No">No, already established</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
                     <div>
@@ -596,7 +602,7 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
                         ))}
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
                           Cities / Areas Covered
@@ -635,7 +641,7 @@ export default function BetaSignup({ className = '' }: BetaSignupProps) {
                         </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <label className="block text-xs font-mono mb-2" style={{ color: 'var(--color-text-secondary)' }}>
                           Individual or Company? <span style={{ color: 'var(--color-accent)' }}>*</span>

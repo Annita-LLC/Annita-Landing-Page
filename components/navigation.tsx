@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform, AnimatePresence, useSpring } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
-import { Menu, X, ChevronRight, Home, Wrench, Info, Trophy, Download, type LucideIcon } from 'lucide-react'
+import { Menu, X, ChevronRight, Home, Wrench, Info, Trophy, Download, Mail, Headphones, Handshake, ShoppingCart, MonitorSmartphone, Building2, Briefcase, Code, Palette, Users, Cpu, Heart, type LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ThemeToggle } from './theme-toggle'
@@ -10,8 +10,8 @@ import { useTheme } from './theme-provider'
 
 const ecosystemItems = [
   {
-    name: 'Annita Ecosystem',
-    description: 'Marketplace & SaaS',
+    name: 'Annita LLC',
+    description: 'Commerce and Payment Ecosystem',
     icon: '/annita-real-logo.png',
     href: '/ecosystem',
     isFlagship: true,
@@ -49,21 +49,31 @@ const ecosystemItems = [
   },
 ]
 
-const contactUsItems = [
+type DropdownItem = {
+  name: string
+  description: string
+  href: string
+  icon: LucideIcon
+}
+
+const contactUsItems: DropdownItem[] = [
   {
     name: 'General Inquiries',
     description: 'Get in touch with our team',
     href: '/contact',
+    icon: Mail,
   },
   {
     name: 'Support',
     description: 'Technical support and assistance',
     href: '/contact?subject=support',
+    icon: Headphones,
   },
   {
     name: 'Partnerships',
     description: 'Explore partnership opportunities',
     href: '/partnerships',
+    icon: Handshake,
   },
 ]
 
@@ -72,16 +82,19 @@ const contactSalesItems = [
     name: 'Sales Inquiry',
     description: 'Discuss our solutions for your business',
     href: '/contact-sales',
+    icon: ShoppingCart,
   },
   {
     name: 'Request Demo',
     description: 'Schedule a product demonstration',
     href: '/contact-sales?type=demo',
+    icon: MonitorSmartphone,
   },
   {
     name: 'Enterprise Solutions',
     description: 'Custom enterprise implementations',
     href: '/contact-sales?type=enterprise',
+    icon: Building2,
   },
 ]
 
@@ -90,21 +103,25 @@ const careersItems = [
     name: 'Open Positions',
     description: 'View all available job openings',
     href: '/careers',
+    icon: Briefcase,
   },
   {
     name: 'Engineering',
     description: 'Software development roles',
     href: '/careers?department=engineering',
+    icon: Code,
   },
   {
     name: 'Design',
     description: 'UI/UX and product design',
     href: '/careers?department=design',
+    icon: Palette,
   },
   {
     name: 'Business',
     description: 'Sales, marketing, and operations',
     href: '/careers?department=business',
+    icon: Users,
   },
 ]
 
@@ -113,16 +130,25 @@ const partnershipsItems = [
     name: 'Partner Program',
     description: 'Join our partner ecosystem',
     href: '/partnerships',
+    icon: Handshake,
+  },
+  {
+    name: 'Partners & Supporters',
+    description: 'See who stands with us',
+    href: '/partners',
+    icon: Heart,
   },
   {
     name: 'Technology Partners',
     description: 'Integrate with our platform',
     href: '/partnerships?type=technology',
+    icon: Cpu,
   },
   {
     name: 'Strategic Alliances',
     description: 'Build strategic relationships',
     href: '/partnerships?type=strategic',
+    icon: Users,
   },
 ]
 
@@ -170,7 +196,7 @@ export default function Navigation() {
   return (
     <>
       <motion.header
-        className={`sticky top-0 z-50 w-full h-14 md:h-[64px] transition-all duration-300 ${
+        className={`sticky top-[var(--security-banner-height,0px)] z-50 w-full h-14 md:h-[64px] transition-all duration-300 ${
           scrolled
             ? 'border-b border-[var(--color-border-default)] shadow-md'
             : 'border-b border-transparent'
@@ -504,6 +530,9 @@ export default function Navigation() {
                       <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
                       <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
 
+                      <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <item.icon className="w-4 h-4 text-[var(--color-accent)]" />
+                      </div>
                       <div className="flex-1">
                         <div className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">{item.name}</div>
                         <div className="text-xs text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] transition-colors">{item.description}</div>
@@ -548,6 +577,9 @@ export default function Navigation() {
                       <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
                       <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
 
+                      <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <item.icon className="w-4 h-4 text-[var(--color-accent)]" />
+                      </div>
                       <div className="flex-1">
                         <div className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">{item.name}</div>
                         <div className="text-xs text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] transition-colors">{item.description}</div>
@@ -592,6 +624,9 @@ export default function Navigation() {
                       <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
                       <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
 
+                      <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <item.icon className="w-4 h-4 text-[var(--color-accent)]" />
+                      </div>
                       <div className="flex-1">
                         <div className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">{item.name}</div>
                         <div className="text-xs text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] transition-colors">{item.description}</div>
@@ -636,6 +671,9 @@ export default function Navigation() {
                       <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
                       <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
 
+                      <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <item.icon className="w-4 h-4 text-[var(--color-accent)]" />
+                      </div>
                       <div className="flex-1">
                         <div className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">{item.name}</div>
                         <div className="text-xs text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] transition-colors">{item.description}</div>
@@ -698,7 +736,7 @@ export default function Navigation() {
                         />
                       </div>
                       <div>
-                        <div className="font-bold text-[var(--color-text-primary)] text-sm" style={{ fontFamily: 'var(--font-syne)' }}>Annita Ecosystem</div>
+                        <div className="font-bold text-[var(--color-text-primary)] text-lg" style={{ fontFamily: 'var(--font-syne)' }}>Annita<span className="text-[var(--color-accent)]">.</span></div>
                         <div className="text-[10px] font-mono text-[var(--color-accent)]">SYSTEM: ONLINE</div>
                       </div>
                     </div>
@@ -810,6 +848,9 @@ export default function Navigation() {
                                   >
                                     <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
                                     <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
+                                    <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                      <item.icon className="w-4 h-4 text-[var(--color-accent)]" />
+                                    </div>
                                     <div className="flex-1">
                                       <div className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">{item.name}</div>
                                       <div className="text-xs text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] transition-colors">{item.description}</div>
@@ -867,6 +908,9 @@ export default function Navigation() {
                                   >
                                     <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
                                     <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
+                                    <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                      <item.icon className="w-4 h-4 text-[var(--color-accent)]" />
+                                    </div>
                                     <div className="flex-1">
                                       <div className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">{item.name}</div>
                                       <div className="text-xs text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] transition-colors">{item.description}</div>
@@ -924,6 +968,9 @@ export default function Navigation() {
                                   >
                                     <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
                                     <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
+                                    <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                      <item.icon className="w-4 h-4 text-[var(--color-accent)]" />
+                                    </div>
                                     <div className="flex-1">
                                       <div className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">{item.name}</div>
                                       <div className="text-xs text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] transition-colors">{item.description}</div>
@@ -981,6 +1028,9 @@ export default function Navigation() {
                                   >
                                     <span className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
                                     <span className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-transparent group-hover:border-[var(--color-accent)]/50 transition-colors" />
+                                    <div className="w-8 h-8 rounded-lg bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                      <item.icon className="w-4 h-4 text-[var(--color-accent)]" />
+                                    </div>
                                     <div className="flex-1">
                                       <div className="font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">{item.name}</div>
                                       <div className="text-xs text-[var(--color-text-tertiary)] group-hover:text-[var(--color-text-secondary)] transition-colors">{item.description}</div>
@@ -1075,17 +1125,6 @@ export default function Navigation() {
                     </div>
                   </div>
 
-                  {/* CTA Section */}
-                  <div className="pt-4 border-t border-[var(--color-border-card)]/30">
-                    <Link
-                      href="/ecosystem"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full px-6 py-4 bg-[var(--color-accent)] text-[var(--color-accent-foreground)] rounded-xl font-bold text-sm hover:brightness-110 hover:shadow-lg transition-all duration-300 relative overflow-hidden group text-center"
-                    >
-                      <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                      <div className="relative z-10">Enter Ecosystem →</div>
-                    </Link>
-                  </div>
                 </div>
 
                 {/* Footer Info */}
@@ -1104,6 +1143,10 @@ export default function Navigation() {
                       <span className="text-[var(--color-text-muted)]">|</span>
                       <Link href="/cookies" onClick={() => setMobileMenuOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
                         Cookie Policy
+                      </Link>
+                      <span className="text-[var(--color-text-muted)]">|</span>
+                      <Link href="/security" onClick={() => setMobileMenuOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
+                        Security
                       </Link>
                     </div>
                   </div>

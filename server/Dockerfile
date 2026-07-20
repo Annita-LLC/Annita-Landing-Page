@@ -59,7 +59,9 @@ COPY --from=builder --chown=appuser:nodejs /app/src ./src
 COPY --from=builder --chown=appuser:nodejs /app/package*.json ./
 
 # Security: Ensure proper permissions on writable directories
-RUN chown -R appuser:nodejs /app/generated
+RUN chown -R appuser:nodejs /app/generated && \
+    mkdir -p /app/logs && \
+    chown -R appuser:nodejs /app/logs
 
 # Security: Set environment variables (OWASP/Snyk)
 ENV NODE_ENV=production \

@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/contact-sales',
     '/solutions',
     '/solutions/request',
+    '/security',
   ]
 
   return routes.map((route) => ({
