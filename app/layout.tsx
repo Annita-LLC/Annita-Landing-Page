@@ -131,7 +131,7 @@ const organizationJsonLd = {
     'email': 'sales@an-nita.com',
     'availableLanguage': 'en'
   },
-  'description': 'Africa\'s first all-in-one digital ecosystem, integrating secure payment infrastructure (AnnitaPay), AI recruiting solutions (Ezri AI), decentralized health ledgers (Pulse Health), e-commerce, and logistics. Verified on MANSA, Afreximbank\'s due diligence repository, for cross-border trade readiness.'
+  'description': 'Africa\'s first all-in-one digital ecosystem, integrating secure payment infrastructure (AnnitaPay), AI recruiting solutions (Ezri AI), decentralized health ledgers (Pulse Health), e-commerce, and logistics. MANSA-verified by Afreximbank.'
 }
 
 export default function RootLayout({

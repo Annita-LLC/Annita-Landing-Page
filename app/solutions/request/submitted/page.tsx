@@ -188,7 +188,7 @@ export default function SubmittedPage() {
                   className="rounded-lg"
                 />
                 <div>
-                  <div className="font-bold text-white">Annita<span className="text-[var(--color-accent)]">.</span></div>
+                  <div className="font-bold text-[var(--color-text-primary)]">Annita<span className="text-[var(--color-accent)]">.</span></div>
                   <div className="text-[10px] font-mono text-[var(--color-accent)]">SYSTEM: ONLINE</div>
                 </div>
               </div>

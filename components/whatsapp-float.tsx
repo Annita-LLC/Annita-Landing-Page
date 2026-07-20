@@ -176,19 +176,23 @@ export default function WhatsAppFloat() {
       {/* Hidden Restore Tab */}
       <AnimatePresence>
         {isHidden && (
-          <motion.button
+          <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={restoreFloat}
-            className="w-10 h-10 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-card)] shadow-lg flex items-center justify-center text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] hover:border-[var(--color-accent)] transition-all"
-            aria-label="Show chat button"
-            title="Show chat"
+            className="flex items-center gap-2"
           >
-            <Eye className="w-5 h-5" />
-          </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={restoreFloat}
+              className="w-10 h-10 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-card)] shadow-lg flex items-center justify-center text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] hover:border-[var(--color-accent)] transition-all"
+              aria-label="Show chat button"
+              title="Show chat"
+            >
+              <Eye className="w-5 h-5" />
+            </motion.button>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -205,17 +209,17 @@ export default function WhatsAppFloat() {
             </button>
           )}
           {showBadge && !isOpen && (
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10" />
+            <span className="absolute top-0 left-0 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10" />
           )}
-          {/* Hide button */}
+          {/* Hide button - always visible on mobile, hover on desktop */}
           {!isOpen && (
             <button
               onClick={hideFloat}
-              className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-card)] flex items-center justify-center text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors z-20 opacity-0 group-hover:opacity-100"
+              className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-card)] shadow-md flex items-center justify-center text-[var(--color-text-tertiary)] hover:text-red-500 hover:border-red-500/50 transition-all z-20 sm:opacity-0 sm:group-hover:opacity-100"
               aria-label="Hide chat button"
               title="Hide for now"
             >
-              <EyeOff className="w-3 h-3" />
+              <EyeOff className="w-3.5 h-3.5" />
             </button>
           )}
           <motion.button

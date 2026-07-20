@@ -87,12 +87,12 @@ export default function AwardsPage() {
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      title: 'MANSA Platform Onboarding',
-      description: 'Officially onboarded onto MANSA, Africa\'s premier due diligence repository initiated by Afreximbank. By meeting MANSA\'s rigorous due diligence standards, Annita reinforces its commitment to transparency, credibility, and trust — the foundations of cross-border trade and investment. This milestone positions Annita to unlock new trade and investment opportunities across the continent as Africa moves toward the AfCFTA era.',
+      title: 'MANSA Verified',
+      description: 'Verified on MANSA by Afreximbank — Africa\'s pan-African due diligence repository for cross-border trade.',
       category: 'Institutional Trust',
       year: '2025',
       metric: 'Afreximbank',
-      metricLabel: 'Due Diligence Verified',
+      metricLabel: 'Due Diligence',
     },
   ]
 

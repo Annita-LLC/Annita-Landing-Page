@@ -57,8 +57,8 @@ const homeAwards = [
     status: 'VERIFIED'
   },
   {
-    title: 'MANSA Platform Onboarding',
-    description: 'Officially onboarded onto MANSA, Africa\'s premier due diligence repository by Afreximbank — reinforcing trust, transparency, and cross-border trade readiness.',
+    title: 'MANSA Verified',
+    description: 'Verified on MANSA by Afreximbank — Africa\'s pan-African due diligence repository.',
     year: '2025',
     category: 'Institutional Trust',
     status: 'VERIFIED'
@@ -419,15 +419,9 @@ export default function HomePage() {
               </a>
             </div>
 
-            {/* Two-line message */}
-            <div className="max-w-2xl">
-              <p className="text-sm md:text-base text-[var(--color-text-primary)] font-semibold leading-relaxed">
-                Annita is verified on MANSA — Africa's premier due diligence platform by Afreximbank.
-              </p>
-              <p className="text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed mt-2">
-                Trust, transparency, and cross-border trade readiness — built into everything we do.
-              </p>
-            </div>
+            <p className="text-sm text-[var(--color-text-secondary)] max-w-md">
+              MANSA-verified by Afreximbank for cross-border due diligence.
+            </p>
           </div>
         </motion.div>
       </section>
