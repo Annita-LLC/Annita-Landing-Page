@@ -40,7 +40,7 @@ const envSchema = z.object({
   RATE_LIMIT_BURST_LIMIT: z.string().default('150'),
 
   // Logging Configuration
-  LOG_LEVEL: z.enum(['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']).default('INFO'),
+  LOG_LEVEL: z.string().transform(v => v.toUpperCase()).pipe(z.enum(['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'])).default('INFO'),
   LOG_FORMAT: z.enum(['json', 'console']).default('console'),
 
   // Monitoring
