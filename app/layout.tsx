@@ -12,7 +12,6 @@ import CommandPalette from '@/components/command-palette'
 import SoundEffects from '@/components/sound-effects'
 import WhatsAppFloat from '@/components/whatsapp-float'
 import SecurityAwarenessModal from '@/components/security-awareness-modal'
-import SecurityAwarenessBanner from '@/components/security-awareness-banner'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const syne = Syne({ subsets: ['latin'], variable: '--font-syne', weight: ['600', '700', '800'] })
@@ -173,7 +172,6 @@ export default function RootLayout({
         <CookiesBanner />
         <WhatsAppFloat />
         <SecurityAwarenessModal />
-        <SecurityAwarenessBanner />
         <Analytics />
       </body>
     </html>

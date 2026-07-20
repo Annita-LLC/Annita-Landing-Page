@@ -70,7 +70,6 @@
  ROOT — dark mode utility vars (applies when no .light or .dark class)
  ============================================================================ */
 :root {
-  --security-banner-height: 0px;
   --hero-glow: radial-gradient(
     ellipse 100% 80% at 50% -20%,
     rgba(0, 194, 138, 0.14),

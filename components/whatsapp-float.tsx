@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Phone, ChevronRight } from 'lucide-react'
+import { X, Phone, ChevronRight, Eye, EyeOff } from 'lucide-react'
 
 const WHATSAPP_NUMBERS = [
   {
@@ -23,11 +23,26 @@ export default function WhatsAppFloat() {
   const [isOpen, setIsOpen] = useState(false)
   const [showBadge, setShowBadge] = useState(true)
   const [userMessage, setUserMessage] = useState('')
+  const [isHidden, setIsHidden] = useState(false)
 
   useEffect(() => {
     const dismissed = sessionStorage.getItem('chat-badge-dismissed')
     if (dismissed) setShowBadge(false)
+    const hidden = sessionStorage.getItem('chat-float-hidden')
+    if (hidden) setIsHidden(true)
   }, [])
+
+  const hideFloat = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsHidden(true)
+    setIsOpen(false)
+    sessionStorage.setItem('chat-float-hidden', '1')
+  }
+
+  const restoreFloat = () => {
+    setIsHidden(false)
+    sessionStorage.removeItem('chat-float-hidden')
+  }
 
   const handleOpenWhatsApp = (number: string) => {
     const text = userMessage.trim() || "Hi Annita team! I'd like to chat with support."
@@ -158,36 +173,68 @@ export default function WhatsAppFloat() {
         )}
       </AnimatePresence>
 
-      {/* Floating Button */}
-      <div className="relative">
-        {showBadge && !isOpen && (
-          <button
-            onClick={dismissBadge}
-            className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-card)] flex items-center justify-center text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors z-10"
-            aria-label="Dismiss badge"
+      {/* Hidden Restore Tab */}
+      <AnimatePresence>
+        {isHidden && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={restoreFloat}
+            className="w-10 h-10 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-card)] shadow-lg flex items-center justify-center text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] hover:border-[var(--color-accent)] transition-all"
+            aria-label="Show chat button"
+            title="Show chat"
           >
-            <X className="w-3 h-3" />
-          </button>
+            <Eye className="w-5 h-5" />
+          </motion.button>
         )}
-        {showBadge && !isOpen && (
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10" />
-        )}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-14 h-14 rounded-full bg-gradient-to-br from-[#25D366] to-[#0084FF] shadow-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity"
-          aria-label="Open chat"
-        >
-          {isOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-            </svg>
+      </AnimatePresence>
+
+      {/* Floating Button */}
+      {!isHidden && (
+        <div className="relative">
+          {showBadge && !isOpen && (
+            <button
+              onClick={dismissBadge}
+              className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-card)] flex items-center justify-center text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors z-10"
+              aria-label="Dismiss badge"
+            >
+              <X className="w-3 h-3" />
+            </button>
           )}
-        </motion.button>
-      </div>
+          {showBadge && !isOpen && (
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse z-10" />
+          )}
+          {/* Hide button */}
+          {!isOpen && (
+            <button
+              onClick={hideFloat}
+              className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-card)] flex items-center justify-center text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] transition-colors z-20 opacity-0 group-hover:opacity-100"
+              aria-label="Hide chat button"
+              title="Hide for now"
+            >
+              <EyeOff className="w-3 h-3" />
+            </button>
+          )}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-14 h-14 rounded-full bg-gradient-to-br from-[#25D366] to-[#0084FF] shadow-lg flex items-center justify-center text-white hover:opacity-90 transition-opacity group"
+            aria-label="Open chat"
+          >
+            {isOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+              </svg>
+            )}
+          </motion.button>
+        </div>
+      )}
     </div>
   )
 }

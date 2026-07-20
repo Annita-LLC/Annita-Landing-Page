@@ -196,7 +196,7 @@ export default function Navigation() {
   return (
     <>
       <motion.header
-        className={`sticky top-[var(--security-banner-height,0px)] z-50 w-full h-14 md:h-[64px] transition-all duration-300 ${
+        className={`sticky top-0 z-50 w-full h-14 md:h-[64px] transition-all duration-300 ${
           scrolled
             ? 'border-b border-[var(--color-border-default)] shadow-md'
             : 'border-b border-transparent'
@@ -741,7 +741,6 @@ export default function Navigation() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <ThemeToggle />
                       <button
                         onClick={() => setMobileMenuOpen(false)}
                         className="p-2 rounded-lg border border-[var(--color-border-card)] hover:border-[var(--color-accent)] bg-[var(--color-surface-raised)]/50 hover:bg-[var(--color-accent-soft)] transition-all"
@@ -1117,14 +1116,6 @@ export default function Navigation() {
                     </div>
                   </div>
 
-                  {/* Theme Toggle Section */}
-                  <div className="pt-4 border-t border-[var(--color-border-card)]/30">
-                    <div className="flex items-center justify-between px-4 py-2">
-                      <span className="text-xs font-mono text-[var(--color-text-muted)] uppercase tracking-wider">Theme</span>
-                      <ThemeToggle />
-                    </div>
-                  </div>
-
                 </div>
 
                 {/* Footer Info */}
@@ -1132,23 +1123,6 @@ export default function Navigation() {
                   <div className="text-[9px] font-mono text-[var(--color-text-muted)] text-center space-y-1">
                     <div>© 2024 Annita LLC. All rights reserved.</div>
                     <div>Built for Africa. Operating at World Standard.</div>
-                    <div className="flex items-center justify-center gap-3">
-                      <Link href="/privacy" onClick={() => setMobileMenuOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
-                        Privacy Policy
-                      </Link>
-                      <span className="text-[var(--color-text-muted)]">|</span>
-                      <Link href="/terms" onClick={() => setMobileMenuOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
-                        Terms & Conditions
-                      </Link>
-                      <span className="text-[var(--color-text-muted)]">|</span>
-                      <Link href="/cookies" onClick={() => setMobileMenuOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
-                        Cookie Policy
-                      </Link>
-                      <span className="text-[var(--color-text-muted)]">|</span>
-                      <Link href="/security" onClick={() => setMobileMenuOpen(false)} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
-                        Security
-                      </Link>
-                    </div>
                   </div>
                 </div>
               </div>
