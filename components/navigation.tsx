@@ -244,6 +244,9 @@ export default function Navigation() {
             <Link href="/solutions" className="text-sm font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
               Custom Solutions
             </Link>
+            <Link href="/services" className="text-sm font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
+              Managed IT
+            </Link>
             <Link href="/download" className="text-sm font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
               Download App
             </Link>
@@ -348,6 +351,9 @@ export default function Navigation() {
                 <path d="M1 2l3 3 3-3" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
+            <Link href="/services" className="text-sm font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
+              Managed IT
+            </Link>
             <Link href="/download" className="text-sm font-medium text-[var(--color-text-tertiary)] hover:text-[var(--color-accent)] transition-colors">
               Download
             </Link>
@@ -786,6 +792,7 @@ export default function Navigation() {
                       {([
                         { name: 'Home', href: '/', icon: Home },
                         { name: 'Custom Solutions', href: '/solutions', icon: Wrench },
+                        { name: 'Managed IT Services', href: '/services', icon: Cpu },
                         { name: 'Download App', href: '/download', icon: Download },
                         { name: 'About Us', href: '/about', icon: Info },
                         { name: 'Awards', href: '/awards', icon: Trophy }
